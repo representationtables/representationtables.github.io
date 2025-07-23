@@ -1,0 +1,6 @@
+C110,Cyclic group,110,1,C110,"110,6"
+D55,Dihedral group,55,2+,D55,"110,5"
+F11,Frobenius group; = C11⋊C10 = AGL1(𝔽11) = Aut(D11) = Hol(C11),11,10+,F11,"110,1"
+D5×C11,Direct product of C11 and D5,55,2,D5xC11,"110,3"
+C5×D11,Direct product of C5 and D11,55,2,C5xD11,"110,4"
+C2×C11⋊C5,Direct product of C2 and C11⋊C5,22,5,C2xC11:C5,"110,2"

@@ -1,0 +1,5 @@
+C116,Cyclic group,116,1,C116,"116,2"
+D58,Dihedral group; = C2×D29,58,2+,D58,"116,4"
+Dic29,Dicyclic group; = C29⋊2C4,116,2-,Dic29,"116,1"
+C29⋊C4,The semidirect product of C29 and C4 acting faithfully,29,4+,C29:C4,"116,3"
+C2×C58,"Abelian group of type [2,58]",116,,C2xC58,"116,5"

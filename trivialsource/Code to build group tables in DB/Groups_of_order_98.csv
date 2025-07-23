@@ -1,0 +1,5 @@
+C98,Cyclic group,98,1,C98,"98,2"
+D49,Dihedral group,49,2+,D49,"98,1"
+C7⋊D7,The semidirect product of C7 and D7 acting via D7/C7=C2,49,,C7:D7,"98,4"
+C7×C14,"Abelian group of type [7,14]",98,,C7xC14,"98,5"
+C7×D7,Direct product of C7 and D7; = AΣL1(𝔽49),14,2,C7xD7,"98,3"
