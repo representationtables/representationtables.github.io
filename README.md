@@ -1,2 +1,1 @@
-# representationtables.github.io
-repository containing representation tables
+representationtables.github.io
