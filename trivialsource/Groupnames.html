@@ -1,0 +1,726 @@
+
+<!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.1 transitional//en">
+<html>
+<head>
+  <title>GroupNames</title>
+  <meta name="Author" content="Tim Dokchitser">
+  <meta name="Description" content="GroupNames, finite groups of order up to 60">
+  <meta name="Keywords" content="GroupNames, Small finite groups">
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="logo2.ico">
+</head>
+
+<body>
+
+<div style="float: left; width: 330px">
+<div id="suggest"></div>
+<form action="javascript: go=true; redirect=false; UpdateSuggestions(-1);" id='search-form'>
+<input id='search-text' name='q' placeholder='&thinsp;Search [? for help]' 
+  type='text' oninput="javascript: UpdateSuggestions(-1)" 
+  autocomplete="off" autofocus>
+<button id='search-button' type='submit'>Go</button>
+</form>
+</div>
+
+<div class='bbg'>
+<div class='btab'>
+  <div class='btab1'><a href="index.html">Home</a></div>
+  <div class='btab1'><a href="about.html">About</a></div>
+  <div class='btab6'><a href="cyclic.html">C<sub>n</sub></a></div>
+  <div class='btab6'><a href="dihedral.html">D<sub>n</sub></a></div>
+  <div class='btab6'><a href="symmetric.html">S<sub>n</sub></a></div>
+  <div class='btab6'><a href="alternating.html">A<sub>n</sub></a></div>
+  <div class='btab3'><a href="T.html">Degree</a></div>
+</div>
+<div class='btab'>
+  <div class='btab1'><a href="linear.html">Linear</a></div>
+  <div class='btab1'><a href="R.html">Irr&thinsp;Reps</a></div>
+  <div class='btab4'><a href="characters.html">Characters</a></div>
+  <div class='btab5'><a href="X.html">&times;</a></div>
+  <div class='btab5'><a href="extensions.html">&rtimes;</a></div>
+  <div class='btab5'><a href="extensions.html">.</a></div>
+  <div class='btab5'><a href="o.html">&#9675;</a></div>
+  <div class='btab5'><a href="wr.html">&#x2240;</a></div>
+</div>
+</div>
+
+
+
+
+<p>
+
+<div class="gnfloat">
+
+<h2 style='padding: 0'>Group&#x200B;Names [Beta]</h2>
+
+Finite groups of order &le;500, group names, 
+<a href='extensions.html'>extensions</a>, presentations, properties and <a href='characters.html'>character tables</a>.
+
+<p>
+Order&nbsp;
+<a href="index.html">&le;60</a>,&nbsp;
+<a href="index120.html">&le;120</a>,&nbsp;
+<a href="index250.html">&le;250</a>,&nbsp;
+<a href="index500.html">&le;500</a><br>
+</p>
+
+<p>
+Orders with &gt;300 groups of order&nbsp;n<br>
+n = <a href="order128.html">128</a>, <a href="order192.html">192</a>, <span class='notinDB'>256</span>, <a href="order288.html">288</a>, <a href="order320.html">320</a>, <span class='notinDB'>384</span>, <a href="order432.html">432</a>, <a href="order448.html">448</a>, <a href="order480.html">480</a>.
+</p>
+
+<p>
+[<a href='NA.html'>non</a>]&#x200B;<a href='A.html'>abelian</a>, [<a href='NSo.html'>non</a>]&#x200B;<a href='So.html'>soluble</a>, <a href='SS.html'>super&#x200B;soluble</a>, 
+[<a href='NM.html'>non</a>]&#x200B;<a href='M.html'>monomial</a>, <a href='ZG.html'>Z-groups</a>, <a href='AG.html'>A-groups</a>, <a href='MC.html'>metacyclic</a>, 
+<a href='MA.html'>metabelian</a>, <a href='pG.html'>p-groups</a>, <a href='pE.html'>elementary</a>, <a href='pHE.html'>hyper&#x200B;elementary</a>, <a href='linear.html'>linear</a>, <a href='P.html'>perfect</a>,
+<a href='Si.html'>simple</a>, <a href='AS.html'>almost simple</a>, <a href='QS.html'>quasisimple</a>, <a href='RG.html'>rational</a> groups.
+</p>
+</div>
+
+</p>
+
+
+<h3 class='gpsep' style='width: 48%;'><span id='order1'>Groups of order 1</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c1"><a href="1/C1.html">C<sub>1</sub></a></td><td>Trivial group</td><td><a href="T15.html#c1">1</a></td><td><a href="R.html#dim1+">1+</a></td><td>C1</td><td>1,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 48%;'><span id='order2'>Groups of order 2</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c2"><a href="1/C2.html">C<sub>2</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c2">2</a></td><td><a href="R.html#dim1+">1+</a></td><td>C2</td><td>2,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 48%;'><span id='order3'>Groups of order 3</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c3"><a href="1/C3.html">C<sub>3</sub></a></td><td><a href="cyclic.html">Cyclic</a> group; = <a href="alternating.html">A</a><sub>3</sub> = triangle rotations</td><td><a href="T15.html#c3">3</a></td><td><a href="R.html#dim1">1</a></td><td>C3</td><td>3,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 48%;'><span id='order4'>Groups of order 4</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c4"><a href="1/C4.html">C<sub>4</sub></a></td><td><a href="cyclic.html">Cyclic</a> group; = square rotations</td><td><a href="T15.html#c4">4</a></td><td><a href="R.html#dim1">1</a></td><td>C4</td><td>4,1</td></tr>
+<tr><td id="c2^2"><a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a></td><td>Klein 4-group V<sub>4</sub> = elementary <a href="A.html">abelian</a> group of type [2,2]; = rectangle symmetries</td><td><a href="T15.html#c2^2">4</a></td><td></td><td>C2^2</td><td>4,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 48%;'><span id='order5'>Groups of order 5</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c5"><a href="1/C5.html">C<sub>5</sub></a></td><td><a href="cyclic.html">Cyclic</a> group; = pentagon rotations</td><td><a href="T15.html#c5">5</a></td><td><a href="R.html#dim1">1</a></td><td>C5</td><td>5,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 48%;'><span id='order6'>Groups of order 6</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c6"><a href="1/C6.html">C<sub>6</sub></a></td><td><a href="cyclic.html">Cyclic</a> group; = hexagon rotations</td><td><a href="T15.html#c6">6</a></td><td><a href="R.html#dim1">1</a></td><td>C6</td><td>6,2</td></tr>
+<tr><td id="s3"><a href="1/S3.html">S<sub>3</sub></a></td><td><a href="symmetric.html">Symmetric</a> group on 3 letters; = <a href="dihedral.html">D</a><sub>3</sub> = <a href="linear.html#gl">GL</a><sub>2</sub>(&#x1D53D;<sub>2</sub>) = triangle symmetries = 1<sup>st</sup> non-abelian group</td><td><a href="T15.html#s3">3</a></td><td><a href="R.html#dim2+">2+</a></td><td>S3</td><td>6,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 48%;'><span id='order7'>Groups of order 7</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c7"><a href="1/C7.html">C<sub>7</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c7">7</a></td><td><a href="R.html#dim1">1</a></td><td>C7</td><td>7,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 48%;'><span id='order8'>Groups of order 8</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c8"><a href="1/C8.html">C<sub>8</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c8">8</a></td><td><a href="R.html#dim1">1</a></td><td>C8</td><td>8,1</td></tr>
+<tr><td id="d4"><a href="1/D4.html">D<sub>4</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = <a href="heisenberg.html">He</a><sub>2</sub> = <a href="linear.html#asigmal">A&Sigma;L</a><sub>1</sub>(&#x1D53D;<sub>4</sub>) = <a href="extraspecial.html">2<span class='supb'><sub>+</sub><sup>&hairsp;1+2</sup></span></a> = square symmetries</td><td><a href="T15.html#d4">4</a></td><td><a href="R.html#dim2+">2+</a></td><td>D4</td><td>8,3</td></tr>
+<tr><td id="q8"><a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="quaternion.html">Quaternion</a> group; = <a href="1/C4.html">C<sub>4</sub></a><a href="1/e2/C2byC4.html#d1">.</a><a href="1/C2.html">C<sub>2</sub></a> = <a href="dicyclic.html">Dic</a><sub>2</sub> = <a href="extraspecial.html">2<span class='supb'><sub>-</sub><sup>&hairsp;1+2</sup></span></a></td><td><a href="T15.html#q8">8</a></td><td><a href="R.html#dim2-">2-</a></td><td>Q8</td><td>8,4</td></tr>
+<tr><td id="c2^3"><a href="1/C2^3.html">C<span class='supb'><sub>2</sub><sup>3</sup></span></a></td><td>Elementary <a href="A.html">abelian</a> group of type [2,2,2]</td><td><a href="T15.html#c2^3">8</a></td><td></td><td>C2^3</td><td>8,5</td></tr>
+<tr><td id="c2xc4"><a href="1/C2xC4.html">C<sub>2</sub>&times;C<sub>4</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,4]</td><td><a href="T15.html#c2xc4">8</a></td><td></td><td>C2xC4</td><td>8,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 48%;'><span id='order9'>Groups of order 9</span></h3>
+
+<table class="gptable" columns="6" style='width: 70%;'>
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c9"><a href="1/C9.html">C<sub>9</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c9">9</a></td><td><a href="R.html#dim1">1</a></td><td>C9</td><td>9,1</td></tr>
+<tr><td id="c3^2"><a href="1/C3^2.html">C<span class='supb'><sub>3</sub><sup>2</sup></span></a></td><td>Elementary <a href="A.html">abelian</a> group of type [3,3]</td><td><a href="T15.html#c3^2">9</a></td><td></td><td>C3^2</td><td>9,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order10'>Groups of order 10</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c10"><a href="1/C10.html">C<sub>10</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c10">10</a></td><td><a href="R.html#dim1">1</a></td><td>C10</td><td>10,2</td></tr>
+<tr><td id="d5"><a href="1/D5.html">D<sub>5</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = pentagon symmetries</td><td><a href="T15.html#d5">5</a></td><td><a href="R.html#dim2+">2+</a></td><td>D5</td><td>10,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order11'>Groups of order 11</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c11"><a href="1/C11.html">C<sub>11</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c11">11</a></td><td><a href="R.html#dim1">1</a></td><td>C11</td><td>11,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order12'>Groups of order 12</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c12"><a href="1/C12.html">C<sub>12</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c12">12</a></td><td><a href="R.html#dim1">1</a></td><td>C12</td><td>12,2</td></tr>
+<tr><td id="a4"><a href="1/A4.html">A<sub>4</sub></a></td><td><a href="alternating.html">Alternating</a> group on 4 letters; = <a href="linear.html#psl">PSL</a><sub>2</sub>(&#x1D53D;<sub>3</sub>) = L<sub>2</sub>(3) = tetrahedron rotations</td><td><a href="T15.html#a4">4</a></td><td><a href="R.html#a4">3+</a></td><td>A4</td><td>12,3</td></tr>
+<tr><td id="d6"><a href="1/D6.html">D<sub>6</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = <a href="1/C2.html">C<sub>2</sub></a>&times;<a href="1/S3.html">S<sub>3</sub></a> = hexagon symmetries</td><td><a href="T15.html#d6">6</a></td><td><a href="R.html#dim2+">2+</a></td><td>D6</td><td>12,4</td></tr>
+<tr><td id="dic3"><a href="1/Dic3.html">Dic<sub>3</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C3.html">C<sub>3</sub></a><a href="1/e2/C4byC3.html#s1">&rtimes;</a><a href="1/C4.html">C<sub>4</sub></a></td><td><a href="T15.html#dic3">12</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic3</td><td>12,1</td></tr>
+<tr><td id="c2xc6"><a href="1/C2xC6.html">C<sub>2</sub>&times;C<sub>6</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,6]</td><td><a href="T15.html#c2xc6">12</a></td><td></td><td>C2xC6</td><td>12,5</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order13'>Groups of order 13</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c13"><a href="1/C13.html">C<sub>13</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c13">13</a></td><td><a href="R.html#dim1">1</a></td><td>C13</td><td>13,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order14'>Groups of order 14</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c14"><a href="1/C14.html">C<sub>14</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c14">14</a></td><td><a href="R.html#dim1">1</a></td><td>C14</td><td>14,2</td></tr>
+<tr><td id="d7"><a href="1/D7.html">D<sub>7</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T15.html#d7">7</a></td><td><a href="R.html#dim2+">2+</a></td><td>D7</td><td>14,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order15'>Groups of order 15</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c15"><a href="1/C15.html">C<sub>15</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T15.html#c15">15</a></td><td><a href="R.html#dim1">1</a></td><td>C15</td><td>15,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order16'>Groups of order 16</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c16"><a href="1/C16.html">C<sub>16</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c16">16</a></td><td><a href="R.html#dim1">1</a></td><td>C16</td><td>16,1</td></tr>
+<tr><td id="d8"><a href="1/D8.html">D<sub>8</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T15.html#d8">8</a></td><td><a href="R.html#dim2+">2+</a></td><td>D8</td><td>16,7</td></tr>
+<tr><td id="q16"><a href="1/Q16.html">Q<sub>16</sub></a></td><td>Generalised <a href="quaternion.html">quaternion</a> group; = <a href="1/C8.html">C<sub>8</sub></a><a href="1/e2/C2byC8.html#d1">.</a><a href="1/C2.html">C<sub>2</sub></a> = <a href="dicyclic.html">Dic</a><sub>4</sub></td><td><a href="T31.html#q16">16</a></td><td><a href="R.html#dim2-">2-</a></td><td>Q16</td><td>16,9</td></tr>
+<tr><td id="sd16"><a href="1/SD16.html">SD<sub>16</sub></a></td><td><a href="semidihedral.html">Semidihedral</a> group; = <a href="1/Q8.html">Q<sub>8</sub></a><a href="1/e5/C2byQ8.html#s1">&rtimes;</a><a href="1/C2.html">C<sub>2</sub></a> = QD<sub>16</sub></td><td><a href="T15.html#sd16">8</a></td><td><a href="R.html#sd16">2</a></td><td>SD16</td><td>16,8</td></tr>
+<tr><td id="m4(2)"><a href="1/M4(2).html">M<sub>4</sub>(2)</a></td><td><a href="modular.html">Modular maximal-cyclic</a> group; = <a href="1/C8.html">C<sub>8</sub></a><a href="1/e2/C2byC8.html#s3">&rtimes;<sub class='subsml'>3</sub></a><a href="1/C2.html">C<sub>2</sub></a></td><td><a href="T15.html#m4(2)">8</a></td><td><a href="R.html#m4(2)">2</a></td><td>M4(2)</td><td>16,6</td></tr>
+<tr><td id="c4od4"><a href="1/C4oD4.html">C<sub>4</sub>&#x25CB;D<sub>4</sub></a></td><td>Pauli group = central product of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T15.html#c4od4">8</a></td><td><a href="R.html#c4od4">2</a></td><td>C4oD4</td><td>16,13</td></tr>
+<tr><td id="c2^2:c4"><a href="1/C2^2sC4.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&rtimes;C<sub>4</sub></a></td><td><a href="1/e3/C4byC2^2.html#s1">The semidirect product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub></td><td><a href="T15.html#c2^2:c4">8</a></td><td></td><td>C2^2:C4</td><td>16,3</td></tr>
+<tr><td id="c4:c4"><a href="1/C4sC4.html">C<sub>4</sub>&rtimes;C<sub>4</sub></a></td><td><a href="1/e2/C4byC4.html#s1">The semidirect product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub></td><td><a href="T31.html#c4:c4">16</a></td><td></td><td>C4:C4</td><td>16,4</td></tr>
+<tr><td id="c4^2"><a href="1/C4^2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span></a></td><td><a href="A.html">Abelian</a> group of type [4,4]</td><td><a href="T31.html#c4^2">16</a></td><td></td><td>C4^2</td><td>16,2</td></tr>
+<tr><td id="c2^4"><a href="1/C2^4.html">C<span class='supb'><sub>2</sub><sup>4</sup></span></a></td><td>Elementary <a href="A.html">abelian</a> group of type [2,2,2,2]</td><td><a href="T31.html#c2^4">16</a></td><td></td><td>C2^4</td><td>16,14</td></tr>
+<tr><td id="c2xc8"><a href="1/C2xC8.html">C<sub>2</sub>&times;C<sub>8</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,8]</td><td><a href="T31.html#c2xc8">16</a></td><td></td><td>C2xC8</td><td>16,5</td></tr>
+<tr><td id="c2^2xc4"><a href="1/C2^2xC4.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;C<sub>4</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,2,4]</td><td><a href="T31.html#c2^2xc4">16</a></td><td></td><td>C2^2xC4</td><td>16,10</td></tr>
+<tr><td id="c2xd4"><a href="1/C2xD4.html">C<sub>2</sub>&times;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T15.html#c2xd4">8</a></td><td></td><td>C2xD4</td><td>16,11</td></tr>
+<tr><td id="c2xq8"><a href="1/C2xQ8.html">C<sub>2</sub>&times;Q<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T31.html#c2xq8">16</a></td><td></td><td>C2xQ8</td><td>16,12</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order17'>Groups of order 17</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c17"><a href="1/C17.html">C<sub>17</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c17">17</a></td><td><a href="R.html#dim1">1</a></td><td>C17</td><td>17,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order18'>Groups of order 18</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c18"><a href="1/C18.html">C<sub>18</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c18">18</a></td><td><a href="R.html#dim1">1</a></td><td>C18</td><td>18,2</td></tr>
+<tr><td id="d9"><a href="1/D9.html">D<sub>9</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T15.html#d9">9</a></td><td><a href="R.html#dim2+">2+</a></td><td>D9</td><td>18,1</td></tr>
+<tr><td id="c3:s3"><a href="1/C3sS3.html">C<sub>3</sub>&rtimes;S<sub>3</sub></a></td><td><a href="1/e2/S3byC3.html#s1">The semidirect product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/S3.html">S<sub>3</sub></a> acting via <a href="1/S3.html">S<sub>3</sub></a>/C<sub>3</sub>=C<sub>2</sub></td><td><a href="T15.html#c3:s3">9</a></td><td></td><td>C3:S3</td><td>18,4</td></tr>
+<tr><td id="c3xc6"><a href="1/C3xC6.html">C<sub>3</sub>&times;C<sub>6</sub></a></td><td><a href="A.html">Abelian</a> group of type [3,6]</td><td><a href="T31.html#c3xc6">18</a></td><td></td><td>C3xC6</td><td>18,5</td></tr>
+<tr><td id="c3xs3"><a href="1/C3xS3.html">C<sub>3</sub>&times;S<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/S3.html">S<sub>3</sub></a>; = <a href="linear.html#u">U</a><sub>2</sub>(&#x1D53D;<sub>2</sub>)</td><td><a href="T15.html#c3xs3">6</a></td><td><a href="R.html#c3xs3">2</a></td><td>C3xS3</td><td>18,3</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order19'>Groups of order 19</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c19"><a href="1/C19.html">C<sub>19</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c19">19</a></td><td><a href="R.html#dim1">1</a></td><td>C19</td><td>19,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order20'>Groups of order 20</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c20"><a href="1/C20.html">C<sub>20</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c20">20</a></td><td><a href="R.html#dim1">1</a></td><td>C20</td><td>20,2</td></tr>
+<tr><td id="d10"><a href="1/D10.html">D<sub>10</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = <a href="1/C2.html">C<sub>2</sub></a>&times;<a href="1/D5.html">D<sub>5</sub></a></td><td><a href="T15.html#d10">10</a></td><td><a href="R.html#dim2+">2+</a></td><td>D10</td><td>20,4</td></tr>
+<tr><td id="f5"><a href="1/F5.html">F<sub>5</sub></a></td><td><a href="frobenius.html">Frobenius</a> group; = <a href="1/C5.html">C<sub>5</sub></a><a href="1/e2/C4byC5.html#s1">&rtimes;</a><a href="1/C4.html">C<sub>4</sub></a> = <a href="linear.html#agl">AGL</a><sub>1</sub>(&#x1D53D;<sub>5</sub>) = Aut(<a href="1/D5.html">D<sub>5</sub></a>) = Hol(<a href="1/C5.html">C<sub>5</sub></a>) = Sz(2)</td><td><a href="T15.html#f5">5</a></td><td><a href="R.html#f5">4+</a></td><td>F5</td><td>20,3</td></tr>
+<tr><td id="dic5"><a href="1/Dic5.html">Dic<sub>5</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C5.html">C<sub>5</sub></a><a href="1/e2/C4byC5.html#s2">&rtimes;<sub class='subsml'>2</sub></a><a href="1/C4.html">C<sub>4</sub></a></td><td><a href="T31.html#dic5">20</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic5</td><td>20,1</td></tr>
+<tr><td id="c2xc10"><a href="1/C2xC10.html">C<sub>2</sub>&times;C<sub>10</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,10]</td><td><a href="T31.html#c2xc10">20</a></td><td></td><td>C2xC10</td><td>20,5</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order21'>Groups of order 21</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c21"><a href="1/C21.html">C<sub>21</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c21">21</a></td><td><a href="R.html#dim1">1</a></td><td>C21</td><td>21,2</td></tr>
+<tr><td id="c7:c3"><a href="1/C7sC3.html">C<sub>7</sub>&rtimes;C<sub>3</sub></a></td><td><a href="1/e2/C3byC7.html#s1">The semidirect product</a> of <a href="1/C7.html">C<sub>7</sub></a> and <a href="1/C3.html">C<sub>3</sub></a> acting faithfully</td><td><a href="T15.html#c7:c3">7</a></td><td><a href="R.html#c7:c3">3</a></td><td>C7:C3</td><td>21,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order22'>Groups of order 22</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c22"><a href="1/C22.html">C<sub>22</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c22">22</a></td><td><a href="R.html#dim1">1</a></td><td>C22</td><td>22,2</td></tr>
+<tr><td id="d11"><a href="1/D11.html">D<sub>11</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T15.html#d11">11</a></td><td><a href="R.html#dim2+">2+</a></td><td>D11</td><td>22,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order23'>Groups of order 23</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c23"><a href="1/C23.html">C<sub>23</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c23">23</a></td><td><a href="R.html#dim1">1</a></td><td>C23</td><td>23,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order24'>Groups of order 24</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c24"><a href="1/C24.html">C<sub>24</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c24">24</a></td><td><a href="R.html#dim1">1</a></td><td>C24</td><td>24,2</td></tr>
+<tr><td id="s4"><a href="1/S4.html">S<sub>4</sub></a></td><td><a href="symmetric.html">Symmetric</a> group on 4 letters; = <a href="linear.html#pgl">PGL</a><sub>2</sub>(&#x1D53D;<sub>3</sub>) = Aut(<a href="1/Q8.html">Q<sub>8</sub></a>) = Hol(<a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a>) = tetrahedron symmetries = cube/octahedron rotations</td><td><a href="T15.html#s4">4</a></td><td><a href="R.html#s4">3+</a></td><td>S4</td><td>24,12</td></tr>
+<tr><td id="d12"><a href="1/D12.html">D<sub>12</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T15.html#d12">12</a></td><td><a href="R.html#dim2+">2+</a></td><td>D12</td><td>24,6</td></tr>
+<tr><td id="dic6"><a href="1/Dic6.html">Dic<sub>6</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C3.html">C<sub>3</sub></a><a href="1/e5/Q8byC3.html#s1">&rtimes;</a><a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T31.html#dic6">24</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic6</td><td>24,4</td></tr>
+<tr><td id="sl(2,3)"><a href="1/SL(2,3).html">SL<sub>2</sub>(&#x1D53D;<sub>3</sub>)</a></td><td><a href="linear.html#sl">Special linear group</a> on &#x1D53D;<span class='supb'><sub>3</sub><sup>2</sup></span>; = <a href="1/Q8.html">Q<sub>8</sub></a><a href="1/e5/C3byQ8.html#s1">&rtimes;</a><a href="1/C3.html">C<sub>3</sub></a> = 2T = &lt;2,3,3&gt; = 1<sup>st</sup> non-monomial group</td><td><a href="T15.html#sl(2,3)">8</a></td><td><a href="R.html#dim2-">2-</a></td><td>SL(2,3)</td><td>24,3</td></tr>
+<tr><td id="c3:d4"><a href="1/C3sD4.html">C<sub>3</sub>&rtimes;D<sub>4</sub></a></td><td><a href="1/e4/D4byC3.html#s2">The semidirect product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>2</sub></td><td><a href="T15.html#c3:d4">12</a></td><td><a href="R.html#c3:d4">2</a></td><td>C3:D4</td><td>24,8</td></tr>
+<tr><td id="c3:c8"><a href="1/C3sC8.html">C<sub>3</sub>&rtimes;C<sub>8</sub></a></td><td><a href="1/e2/C8byC3.html#s1">The semidirect product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/C8.html">C<sub>8</sub></a> acting via <a href="1/C8.html">C<sub>8</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T31.html#c3:c8">24</a></td><td><a href="R.html#c3:c8">2</a></td><td>C3:C8</td><td>24,1</td></tr>
+<tr><td id="c2xc12"><a href="1/C2xC12.html">C<sub>2</sub>&times;C<sub>12</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,12]</td><td><a href="T31.html#c2xc12">24</a></td><td></td><td>C2xC12</td><td>24,9</td></tr>
+<tr><td id="c2^2xc6"><a href="1/C2^2xC6.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;C<sub>6</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,2,6]</td><td><a href="T31.html#c2^2xc6">24</a></td><td></td><td>C2^2xC6</td><td>24,15</td></tr>
+<tr><td id="c2xa4"><a href="1/C2xA4.html">C<sub>2</sub>&times;A<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/A4.html">A<sub>4</sub></a>; = <a href="linear.html#asigmal">A&Sigma;L</a><sub>1</sub>(&#x1D53D;<sub>8</sub>)</td><td><a href="T15.html#c2xa4">6</a></td><td><a href="R.html#c2xa4">3+</a></td><td>C2xA4</td><td>24,13</td></tr>
+<tr><td id="c4xs3"><a href="1/C4xS3.html">C<sub>4</sub>&times;S<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T15.html#c4xs3">12</a></td><td><a href="R.html#c4xs3">2</a></td><td>C4xS3</td><td>24,5</td></tr>
+<tr><td id="c3xd4"><a href="1/C3xD4.html">C<sub>3</sub>&times;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T15.html#c3xd4">12</a></td><td><a href="R.html#c3xd4">2</a></td><td>C3xD4</td><td>24,10</td></tr>
+<tr><td id="c2^2xs3"><a href="1/C2^2xS3.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;S<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T15.html#c2^2xs3">12</a></td><td></td><td>C2^2xS3</td><td>24,14</td></tr>
+<tr><td id="c3xq8"><a href="1/C3xQ8.html">C<sub>3</sub>&times;Q<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T31.html#c3xq8">24</a></td><td><a href="R.html#c3xq8">2</a></td><td>C3xQ8</td><td>24,11</td></tr>
+<tr><td id="c2xdic3"><a href="1/C2xDic3.html">C<sub>2</sub>&times;Dic<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/Dic3.html">Dic<sub>3</sub></a></td><td><a href="T31.html#c2xdic3">24</a></td><td></td><td>C2xDic3</td><td>24,7</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order25'>Groups of order 25</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c25"><a href="1/C25.html">C<sub>25</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c25">25</a></td><td><a href="R.html#dim1">1</a></td><td>C25</td><td>25,1</td></tr>
+<tr><td id="c5^2"><a href="1/C5^2.html">C<span class='supb'><sub>5</sub><sup>2</sup></span></a></td><td>Elementary <a href="A.html">abelian</a> group of type [5,5]</td><td><a href="T31.html#c5^2">25</a></td><td></td><td>C5^2</td><td>25,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order26'>Groups of order 26</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c26"><a href="1/C26.html">C<sub>26</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c26">26</a></td><td><a href="R.html#dim1">1</a></td><td>C26</td><td>26,2</td></tr>
+<tr><td id="d13"><a href="1/D13.html">D<sub>13</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T15.html#d13">13</a></td><td><a href="R.html#dim2+">2+</a></td><td>D13</td><td>26,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order27'>Groups of order 27</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c27"><a href="1/C27.html">C<sub>27</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c27">27</a></td><td><a href="R.html#dim1">1</a></td><td>C27</td><td>27,1</td></tr>
+<tr><td id="he3"><a href="1/He3.html">He<sub>3</sub></a></td><td><a href="heisenberg.html">Heisenberg</a> group; = <a href="1/C3^2.html">C<span class='supb'><sub>3</sub><sup>2</sup></span></a><a href="1/e3/C3byC3^2.html#s1">&rtimes;</a><a href="1/C3.html">C<sub>3</sub></a> = <a href="extraspecial.html">3<span class='supb'><sub>+</sub><sup>&hairsp;1+2</sup></span></a></td><td><a href="T15.html#he3">9</a></td><td><a href="R.html#he3">3</a></td><td>He3</td><td>27,3</td></tr>
+<tr><td id="es-(3,1)"><a href="1/ES-(3,1).html">3<span class='supb'><sub>-</sub><sup>&hairsp;1+2</sup></span></a></td><td><a href="extraspecial.html">Extraspecial</a> group</td><td><a href="T15.html#es-(3,1)">9</a></td><td><a href="R.html#es-(3,1)">3</a></td><td>ES-(3,1)</td><td>27,4</td></tr>
+<tr><td id="c3^3"><a href="1/C3^3.html">C<span class='supb'><sub>3</sub><sup>3</sup></span></a></td><td>Elementary <a href="A.html">abelian</a> group of type [3,3,3]</td><td><a href="T31.html#c3^3">27</a></td><td></td><td>C3^3</td><td>27,5</td></tr>
+<tr><td id="c3xc9"><a href="1/C3xC9.html">C<sub>3</sub>&times;C<sub>9</sub></a></td><td><a href="A.html">Abelian</a> group of type [3,9]</td><td><a href="T31.html#c3xc9">27</a></td><td></td><td>C3xC9</td><td>27,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order28'>Groups of order 28</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c28"><a href="1/C28.html">C<sub>28</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c28">28</a></td><td><a href="R.html#dim1">1</a></td><td>C28</td><td>28,2</td></tr>
+<tr><td id="d14"><a href="1/D14.html">D<sub>14</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = <a href="1/C2.html">C<sub>2</sub></a>&times;<a href="1/D7.html">D<sub>7</sub></a></td><td><a href="T15.html#d14">14</a></td><td><a href="R.html#dim2+">2+</a></td><td>D14</td><td>28,3</td></tr>
+<tr><td id="dic7"><a href="1/Dic7.html">Dic<sub>7</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C7.html">C<sub>7</sub></a><a href="1/e2/C4byC7.html#s1">&rtimes;</a><a href="1/C4.html">C<sub>4</sub></a></td><td><a href="T31.html#dic7">28</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic7</td><td>28,1</td></tr>
+<tr><td id="c2xc14"><a href="1/C2xC14.html">C<sub>2</sub>&times;C<sub>14</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,14]</td><td><a href="T31.html#c2xc14">28</a></td><td></td><td>C2xC14</td><td>28,4</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order29'>Groups of order 29</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c29"><a href="1/C29.html">C<sub>29</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c29">29</a></td><td><a href="R.html#dim1">1</a></td><td>C29</td><td>29,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order30'>Groups of order 30</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c30"><a href="1/C30.html">C<sub>30</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c30">30</a></td><td><a href="R.html#dim1">1</a></td><td>C30</td><td>30,4</td></tr>
+<tr><td id="d15"><a href="1/D15.html">D<sub>15</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T15.html#d15">15</a></td><td><a href="R.html#dim2+">2+</a></td><td>D15</td><td>30,3</td></tr>
+<tr><td id="c5xs3"><a href="1/C5xS3.html">C<sub>5</sub>&times;S<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T15.html#c5xs3">15</a></td><td><a href="R.html#c5xs3">2</a></td><td>C5xS3</td><td>30,1</td></tr>
+<tr><td id="c3xd5"><a href="1/C3xD5.html">C<sub>3</sub>&times;D<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/D5.html">D<sub>5</sub></a></td><td><a href="T15.html#c3xd5">15</a></td><td><a href="R.html#c3xd5">2</a></td><td>C3xD5</td><td>30,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order31'>Groups of order 31</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c31"><a href="1/C31.html">C<sub>31</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T31.html#c31">31</a></td><td><a href="R.html#dim1">1</a></td><td>C31</td><td>31,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order32'>Groups of order 32</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c32"><a href="1/C32.html">C<sub>32</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c32">32</a></td><td><a href="R.html#dim1">1</a></td><td>C32</td><td>32,1</td></tr>
+<tr><td id="d16"><a href="1/D16.html">D<sub>16</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d16">16</a></td><td><a href="R.html#dim2+">2+</a></td><td>D16</td><td>32,18</td></tr>
+<tr><td id="q32"><a href="1/Q32.html">Q<sub>32</sub></a></td><td>Generalised <a href="quaternion.html">quaternion</a> group; = <a href="1/C16.html">C<sub>16</sub></a><a href="1/e2/C2byC16.html#d1">.</a><a href="1/C2.html">C<sub>2</sub></a> = <a href="dicyclic.html">Dic</a><sub>8</sub></td><td><a href="T.html#q32">32</a></td><td><a href="R.html#dim2-">2-</a></td><td>Q32</td><td>32,20</td></tr>
+<tr><td id="es+(2,2)"><a href="1/ES+(2,2).html">2<span class='supb'><sub>+</sub><sup>&hairsp;1+4</sup></span></a></td><td><a href="extraspecial.html">Extraspecial</a> group; = <a href="1/D4.html">D<sub>4</sub></a><a href="o.html">&#x25CB;</a><a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T15.html#es+(2,2)">8</a></td><td><a href="R.html#es+(2,2)">4+</a></td><td>ES+(2,2)</td><td>32,49</td></tr>
+<tr><td id="sd32"><a href="1/SD32.html">SD<sub>32</sub></a></td><td><a href="semidihedral.html">Semidihedral</a> group; = <a href="1/C16.html">C<sub>16</sub></a><a href="1/e2/C2byC16.html#s2">&rtimes;<sub class='subsml'>2</sub></a><a href="1/C2.html">C<sub>2</sub></a> = QD<sub>32</sub></td><td><a href="T31.html#sd32">16</a></td><td><a href="R.html#sd32">2</a></td><td>SD32</td><td>32,19</td></tr>
+<tr><td id="es-(2,2)"><a href="1/ES-(2,2).html">2<span class='supb'><sub>-</sub><sup>&hairsp;1+4</sup></span></a></td><td>Gamma matrices = <a href="extraspecial.html">Extraspecial</a> group; = <a href="1/D4.html">D<sub>4</sub></a><a href="o.html">&#x25CB;</a><a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T31.html#es-(2,2)">16</a></td><td><a href="R.html#es-(2,2)">4-</a></td><td>ES-(2,2)</td><td>32,50</td></tr>
+<tr><td id="m5(2)"><a href="1/M5(2).html">M<sub>5</sub>(2)</a></td><td><a href="modular.html">Modular maximal-cyclic</a> group; = <a href="1/C16.html">C<sub>16</sub></a><a href="1/e2/C2byC16.html#s3">&rtimes;<sub class='subsml'>3</sub></a><a href="1/C2.html">C<sub>2</sub></a></td><td><a href="T31.html#m5(2)">16</a></td><td><a href="R.html#m5(2)">2</a></td><td>M5(2)</td><td>32,17</td></tr>
+<tr><td id="c4wrc2"><a href="1/C4wrC2.html">C<sub>4</sub>&#x2240;C<sub>2</sub></a></td><td><a href="wr.html">Wreath product</a> of <a href="1/C4.html">C<sub>4</sub></a> by <a href="1/C2.html">C<sub>2</sub></a></td><td><a href="T15.html#c4wrc2">8</a></td><td><a href="R.html#c4wrc2">2</a></td><td>C4wrC2</td><td>32,11</td></tr>
+<tr><td id="c2^2wrc2"><a href="1/C2^2wrC2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&#x2240;C<sub>2</sub></a></td><td><a href="wr.html">Wreath product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> by <a href="1/C2.html">C<sub>2</sub></a></td><td><a href="T15.html#c2^2wrc2">8</a></td><td></td><td>C2^2wrC2</td><td>32,27</td></tr>
+<tr><td id="c8od4"><a href="1/C8oD4.html">C<sub>8</sub>&#x25CB;D<sub>4</sub></a></td><td>Central product of <a href="1/C8.html">C<sub>8</sub></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T31.html#c8od4">16</a></td><td><a href="R.html#c8od4">2</a></td><td>C8oD4</td><td>32,38</td></tr>
+<tr><td id="c4od8"><a href="1/C4oD8.html">C<sub>4</sub>&#x25CB;D<sub>8</sub></a></td><td>Central product of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/D8.html">D<sub>8</sub></a></td><td><a href="T31.html#c4od8">16</a></td><td><a href="R.html#c4od8">2</a></td><td>C4oD8</td><td>32,42</td></tr>
+<tr><td id="c2^3:c4"><a href="1/C2^3sC4.html">C<span class='supb'><sub>2</sub><sup>3</sup></span>&rtimes;C<sub>4</sub></a></td><td><a href="1/e6/C4byC2^3.html#s1">The semidirect product</a> of <a href="1/C2^3.html">C<span class='supb'><sub>2</sub><sup>3</sup></span></a> and <a href="1/C4.html">C<sub>4</sub></a> acting faithfully</td><td><a href="T15.html#c2^3:c4">8</a></td><td><a href="R.html#c2^3:c4">4+</a></td><td>C2^3:C4</td><td>32,6</td></tr>
+<tr><td id="c8:c2^2"><a href="1/C8sC2^2.html">C<sub>8</sub>&rtimes;C<span class='supb'><sub>2</sub><sup>2</sup></span></a></td><td><a href="1/e3/C2^2byC8.html#s1">The semidirect product</a> of <a href="1/C8.html">C<sub>8</sub></a> and <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> acting faithfully; = Aut(<a href="1/D8.html">D<sub>8</sub></a>) = Hol(<a href="1/C8.html">C<sub>8</sub></a>)</td><td><a href="T15.html#c8:c2^2">8</a></td><td><a href="R.html#c8:c2^2">4+</a></td><td>C8:C2^2</td><td>32,43</td></tr>
+<tr><td id="c4:d4"><a href="1/C4sD4.html">C<sub>4</sub>&rtimes;D<sub>4</sub></a></td><td><a href="1/e4/D4byC4.html#s2">The semidirect product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>2</sub></td><td><a href="T31.html#c4:d4">16</a></td><td></td><td>C4:D4</td><td>32,28</td></tr>
+<tr><td id="c4:1d4"><a href="1/C4s1D4.html">C<sub>4</sub>&rtimes;<sub class='subsml'>1</sub>D<sub>4</sub></a></td><td><a href="1/e4/D4byC4.html#s1">The semidirect product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T31.html#c4:1d4">16</a></td><td></td><td>C4:1D4</td><td>32,34</td></tr>
+<tr><td id="c2^2:c8"><a href="1/C2^2sC8.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&rtimes;C<sub>8</sub></a></td><td><a href="1/e3/C8byC2^2.html#s1">The semidirect product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/C8.html">C<sub>8</sub></a> acting via <a href="1/C8.html">C<sub>8</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T31.html#c2^2:c8">16</a></td><td></td><td>C2^2:C8</td><td>32,5</td></tr>
+<tr><td id="c2^2:q8"><a href="1/C2^2sQ8.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&rtimes;Q<sub>8</sub></a></td><td><a href="1/e6/Q8byC2^2.html#s1">The semidirect product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/Q8.html">Q<sub>8</sub></a> acting via <a href="1/Q8.html">Q<sub>8</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T31.html#c2^2:q8">16</a></td><td></td><td>C2^2:Q8</td><td>32,29</td></tr>
+<tr><td id="d4:c4"><a href="1/D4sC4.html">D<sub>4</sub>&rtimes;C<sub>4</sub></a></td><td><a href="1/e4/C4byD4.html#s1">1<sup>st</sup> semidirect product</a> of <a href="1/D4.html">D<sub>4</sub></a> and <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub></td><td><a href="T31.html#d4:c4">16</a></td><td></td><td>D4:C4</td><td>32,9</td></tr>
+<tr><td id="c4^2:c2"><a href="1/C4^2sC2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span>&rtimes;C<sub>2</sub></a></td><td><a href="1/e3/C2byC4^2.html#s1">1<sup>st</sup> semidirect product</a> of <a href="1/C4^2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span></a> and <a href="1/C2.html">C<sub>2</sub></a> acting faithfully</td><td><a href="T31.html#c4^2:c2">16</a></td><td></td><td>C4^2:C2</td><td>32,24</td></tr>
+<tr><td id="c4^2:2c2"><a href="1/C4^2s2C2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span>&rtimes;<sub class='subsml'>2</sub>C<sub>2</sub></a></td><td><a href="1/e3/C2byC4^2.html#s2">2<sup>nd</sup> semidirect product</a> of <a href="1/C4^2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span></a> and <a href="1/C2.html">C<sub>2</sub></a> acting faithfully</td><td><a href="T31.html#c4^2:2c2">16</a></td><td></td><td>C4^2:2C2</td><td>32,33</td></tr>
+<tr><td id="c4:c8"><a href="1/C4sC8.html">C<sub>4</sub>&rtimes;C<sub>8</sub></a></td><td><a href="1/e2/C8byC4.html#s1">The semidirect product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/C8.html">C<sub>8</sub></a> acting via <a href="1/C8.html">C<sub>8</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T.html#c4:c8">32</a></td><td></td><td>C4:C8</td><td>32,12</td></tr>
+<tr><td id="c4:q8"><a href="1/C4sQ8.html">C<sub>4</sub>&rtimes;Q<sub>8</sub></a></td><td><a href="1/e5/Q8byC4.html#s1">The semidirect product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/Q8.html">Q<sub>8</sub></a> acting via <a href="1/Q8.html">Q<sub>8</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T.html#c4:q8">32</a></td><td></td><td>C4:Q8</td><td>32,35</td></tr>
+<tr><td id="c8:c4"><a href="1/C8sC4.html">C<sub>8</sub>&rtimes;C<sub>4</sub></a></td><td><a href="1/e2/C4byC8.html#s3">3<sup>rd</sup> semidirect product</a> of <a href="1/C8.html">C<sub>8</sub></a> and <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub></td><td><a href="T.html#c8:c4">32</a></td><td></td><td>C8:C4</td><td>32,4</td></tr>
+<tr><td id="q8:c4"><a href="1/Q8sC4.html">Q<sub>8</sub>&rtimes;C<sub>4</sub></a></td><td><a href="1/e5/C4byQ8.html#s1">1<sup>st</sup> semidirect product</a> of <a href="1/Q8.html">Q<sub>8</sub></a> and <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub></td><td><a href="T.html#q8:c4">32</a></td><td></td><td>Q8:C4</td><td>32,10</td></tr>
+<tr><td id="c4.d4"><a href="1/C4.D4.html">C<sub>4</sub>.D<sub>4</sub></a></td><td><a href="1/e4/D4byC4.html#d9">1<sup>st</sup> non-split extension</a> by <a href="1/C4.html">C<sub>4</sub></a> of <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>2</sub></td><td><a href="T15.html#c4.d4">8</a></td><td><a href="R.html#c4.d4">4+</a></td><td>C4.D4</td><td>32,7</td></tr>
+<tr><td id="c8.c4"><a href="1/C8.C4.html">C<sub>8</sub>.C<sub>4</sub></a></td><td><a href="1/e2/C4byC8.html#d1">1<sup>st</sup> non-split extension</a> by <a href="1/C8.html">C<sub>8</sub></a> of <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub></td><td><a href="T31.html#c8.c4">16</a></td><td><a href="R.html#c8.c4">2</a></td><td>C8.C4</td><td>32,15</td></tr>
+<tr><td id="c4.4d4"><a href="1/C4.4D4.html">C<sub>4</sub>.<sub class='subsml'>4</sub>D<sub>4</sub></a></td><td><a href="1/e4/D4byC4.html#d4">4<sup>th</sup> non-split extension</a> by <a href="1/C4.html">C<sub>4</sub></a> of <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T31.html#c4.4d4">16</a></td><td></td><td>C4.4D4</td><td>32,31</td></tr>
+<tr><td id="c8.c2^2"><a href="1/C8.C2^2.html">C<sub>8</sub>.C<span class='supb'><sub>2</sub><sup>2</sup></span></a></td><td><a href="1/e3/C2^2byC8.html#d1">The non-split extension</a> by <a href="1/C8.html">C<sub>8</sub></a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> acting faithfully</td><td><a href="T31.html#c8.c2^2">16</a></td><td><a href="R.html#c8.c2^2">4-</a></td><td>C8.C2^2</td><td>32,44</td></tr>
+<tr><td id="c4.10d4"><a href="1/C4.10D4.html">C<sub>4</sub>.<sub class='subsml'>10</sub>D<sub>4</sub></a></td><td><a href="1/e4/D4byC4.html#d10">2<sup>nd</sup> non-split extension</a> by <a href="1/C4.html">C<sub>4</sub></a> of <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>2</sub></td><td><a href="T31.html#c4.10d4">16</a></td><td><a href="R.html#c4.10d4">4-</a></td><td>C4.10D4</td><td>32,8</td></tr>
+<tr><td id="c2^2.d4"><a href="1/C2^2.D4.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>.D<sub>4</sub></a></td><td><a href="1/e5/D4byC2^2.html#d4">3<sup>rd</sup> non-split extension</a> by <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> of <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>2</sub></td><td><a href="T31.html#c2^2.d4">16</a></td><td></td><td>C2^2.D4</td><td>32,30</td></tr>
+<tr><td id="c2.d8"><a href="1/C2.D8.html">C<sub>2</sub>.D<sub>8</sub></a></td><td><a href="1/e8/D8byC2.html#d2">2<sup>nd</sup> central extension</a> by <a href="1/C2.html">C<sub>2</sub></a> of <a href="1/D8.html">D<sub>8</sub></a></td><td><a href="T.html#c2.d8">32</a></td><td></td><td>C2.D8</td><td>32,14</td></tr>
+<tr><td id="c4.q8"><a href="1/C4.Q8.html">C<sub>4</sub>.Q<sub>8</sub></a></td><td><a href="1/e5/Q8byC4.html#d1">1<sup>st</sup> non-split extension</a> by <a href="1/C4.html">C<sub>4</sub></a> of <a href="1/Q8.html">Q<sub>8</sub></a> acting via <a href="1/Q8.html">Q<sub>8</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T.html#c4.q8">32</a></td><td></td><td>C4.Q8</td><td>32,13</td></tr>
+<tr><td id="c2.c4^2"><a href="1/C2.C4^2.html">C<sub>2</sub>.C<span class='supb'><sub>4</sub><sup>2</sup></span></a></td><td><a href="1/e3/C4^2byC2.html#d1">1<sup>st</sup> central stem extension</a> by <a href="1/C2.html">C<sub>2</sub></a> of <a href="1/C4^2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span></a></td><td><a href="T.html#c2.c4^2">32</a></td><td></td><td>C2.C4^2</td><td>32,2</td></tr>
+<tr><td id="c4^2.c2"><a href="1/C4^2.C2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span>.C<sub>2</sub></a></td><td><a href="1/e3/C2byC4^2.html#d4">4<sup>th</sup> non-split extension</a> by <a href="1/C4^2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span></a> of <a href="1/C2.html">C<sub>2</sub></a> acting faithfully</td><td><a href="T.html#c4^2.c2">32</a></td><td></td><td>C4^2.C2</td><td>32,32</td></tr>
+<tr><td id="c2^5"><a href="1/C2^5.html">C<span class='supb'><sub>2</sub><sup>5</sup></span></a></td><td>Elementary <a href="A.html">abelian</a> group of type [2,2,2,2,2]</td><td><a href="T.html#c2^5">32</a></td><td></td><td>C2^5</td><td>32,51</td></tr>
+<tr><td id="c4xc8"><a href="1/C4xC8.html">C<sub>4</sub>&times;C<sub>8</sub></a></td><td><a href="A.html">Abelian</a> group of type [4,8]</td><td><a href="T.html#c4xc8">32</a></td><td></td><td>C4xC8</td><td>32,3</td></tr>
+<tr><td id="c2xc16"><a href="1/C2xC16.html">C<sub>2</sub>&times;C<sub>16</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,16]</td><td><a href="T.html#c2xc16">32</a></td><td></td><td>C2xC16</td><td>32,16</td></tr>
+<tr><td id="c2xc4^2"><a href="1/C2xC4^2.html">C<sub>2</sub>&times;C<span class='supb'><sub>4</sub><sup>2</sup></span></a></td><td><a href="A.html">Abelian</a> group of type [2,4,4]</td><td><a href="T.html#c2xc4^2">32</a></td><td></td><td>C2xC4^2</td><td>32,21</td></tr>
+<tr><td id="c2^2xc8"><a href="1/C2^2xC8.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;C<sub>8</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,2,8]</td><td><a href="T.html#c2^2xc8">32</a></td><td></td><td>C2^2xC8</td><td>32,36</td></tr>
+<tr><td id="c2^3xc4"><a href="1/C2^3xC4.html">C<span class='supb'><sub>2</sub><sup>3</sup></span>&times;C<sub>4</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,2,2,4]</td><td><a href="T.html#c2^3xc4">32</a></td><td></td><td>C2^3xC4</td><td>32,45</td></tr>
+<tr><td id="c4xd4"><a href="1/C4xD4.html">C<sub>4</sub>&times;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T31.html#c4xd4">16</a></td><td></td><td>C4xD4</td><td>32,25</td></tr>
+<tr><td id="c2xd8"><a href="1/C2xD8.html">C<sub>2</sub>&times;D<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/D8.html">D<sub>8</sub></a></td><td><a href="T31.html#c2xd8">16</a></td><td></td><td>C2xD8</td><td>32,39</td></tr>
+<tr><td id="c2xsd16"><a href="1/C2xSD16.html">C<sub>2</sub>&times;SD<sub>16</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/SD16.html">SD<sub>16</sub></a></td><td><a href="T31.html#c2xsd16">16</a></td><td></td><td>C2xSD16</td><td>32,40</td></tr>
+<tr><td id="c2^2xd4"><a href="1/C2^2xD4.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T31.html#c2^2xd4">16</a></td><td></td><td>C2^2xD4</td><td>32,46</td></tr>
+<tr><td id="c2xm4(2)"><a href="1/C2xM4(2).html">C<sub>2</sub>&times;M<sub>4</sub>(2)</a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/M4(2).html">M<sub>4</sub>(2)</a></td><td><a href="T31.html#c2xm4(2)">16</a></td><td></td><td>C2xM4(2)</td><td>32,37</td></tr>
+<tr><td id="c4xq8"><a href="1/C4xQ8.html">C<sub>4</sub>&times;Q<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T.html#c4xq8">32</a></td><td></td><td>C4xQ8</td><td>32,26</td></tr>
+<tr><td id="c2xq16"><a href="1/C2xQ16.html">C<sub>2</sub>&times;Q<sub>16</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/Q16.html">Q<sub>16</sub></a></td><td><a href="T.html#c2xq16">32</a></td><td></td><td>C2xQ16</td><td>32,41</td></tr>
+<tr><td id="c2^2xq8"><a href="1/C2^2xQ8.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;Q<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T.html#c2^2xq8">32</a></td><td></td><td>C2^2xQ8</td><td>32,47</td></tr>
+<tr><td id="c2xc4od4"><a href="1/C2xC4oD4.html">C<sub>2</sub>&times;C<sub>4</sub>&#x25CB;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/C4oD4.html">C<sub>4</sub>&#x25CB;D<sub>4</sub></a></td><td><a href="T31.html#c2xc4od4">16</a></td><td></td><td>C2xC4oD4</td><td>32,48</td></tr>
+<tr><td id="c2xc2^2:c4"><a href="1/C2xC2^2sC4.html">C<sub>2</sub>&times;C<span class='supb'><sub>2</sub><sup>2</sup></span>&rtimes;C<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/C2^2sC4.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&rtimes;C<sub>4</sub></a></td><td><a href="T31.html#c2xc2^2:c4">16</a></td><td></td><td>C2xC2^2:C4</td><td>32,22</td></tr>
+<tr><td id="c2xc4:c4"><a href="1/C2xC4sC4.html">C<sub>2</sub>&times;C<sub>4</sub>&rtimes;C<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/C4sC4.html">C<sub>4</sub>&rtimes;C<sub>4</sub></a></td><td><a href="T.html#c2xc4:c4">32</a></td><td></td><td>C2xC4:C4</td><td>32,23</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order33'>Groups of order 33</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c33"><a href="1/C33.html">C<sub>33</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c33">33</a></td><td><a href="R.html#dim1">1</a></td><td>C33</td><td>33,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order34'>Groups of order 34</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c34"><a href="1/C34.html">C<sub>34</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c34">34</a></td><td><a href="R.html#dim1">1</a></td><td>C34</td><td>34,2</td></tr>
+<tr><td id="d17"><a href="1/D17.html">D<sub>17</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d17">17</a></td><td><a href="R.html#dim2+">2+</a></td><td>D17</td><td>34,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order35'>Groups of order 35</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c35"><a href="1/C35.html">C<sub>35</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c35">35</a></td><td><a href="R.html#dim1">1</a></td><td>C35</td><td>35,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order36'>Groups of order 36</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c36"><a href="1/C36.html">C<sub>36</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c36">36</a></td><td><a href="R.html#dim1">1</a></td><td>C36</td><td>36,2</td></tr>
+<tr><td id="d18"><a href="1/D18.html">D<sub>18</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = <a href="1/C2.html">C<sub>2</sub></a>&times;<a href="1/D9.html">D<sub>9</sub></a></td><td><a href="T31.html#d18">18</a></td><td><a href="R.html#dim2+">2+</a></td><td>D18</td><td>36,4</td></tr>
+<tr><td id="dic9"><a href="1/Dic9.html">Dic<sub>9</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C9.html">C<sub>9</sub></a><a href="1/e2/C4byC9.html#s1">&rtimes;</a><a href="1/C4.html">C<sub>4</sub></a></td><td><a href="T.html#dic9">36</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic9</td><td>36,1</td></tr>
+<tr><td id="c3^2:c4"><a href="1/C3^2sC4.html">C<span class='supb'><sub>3</sub><sup>2</sup></span>&rtimes;C<sub>4</sub></a></td><td><a href="1/e3/C4byC3^2.html#s1">The semidirect product</a> of <a href="1/C3^2.html">C<span class='supb'><sub>3</sub><sup>2</sup></span></a> and <a href="1/C4.html">C<sub>4</sub></a> acting faithfully</td><td><a href="T15.html#c3^2:c4">6</a></td><td><a href="R.html#c3^2:c4">4+</a></td><td>C3^2:C4</td><td>36,9</td></tr>
+<tr><td id="c3:dic3"><a href="1/C3sDic3.html">C<sub>3</sub>&rtimes;Dic<sub>3</sub></a></td><td><a href="1/e2/Dic3byC3.html#s1">The semidirect product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/Dic3.html">Dic<sub>3</sub></a> acting via <a href="1/Dic3.html">Dic<sub>3</sub></a>/C<sub>6</sub>=C<sub>2</sub></td><td><a href="T.html#c3:dic3">36</a></td><td></td><td>C3:Dic3</td><td>36,7</td></tr>
+<tr><td id="c3.a4"><a href="1/C3.A4.html">C<sub>3</sub>.A<sub>4</sub></a></td><td><a href="1/e4/A4byC3.html#d1">The central extension</a> by <a href="1/C3.html">C<sub>3</sub></a> of <a href="1/A4.html">A<sub>4</sub></a></td><td><a href="T31.html#c3.a4">18</a></td><td><a href="R.html#c3.a4">3</a></td><td>C3.A4</td><td>36,3</td></tr>
+<tr><td id="c6^2"><a href="1/C6^2.html">C<span class='supb'><sub>6</sub><sup>2</sup></span></a></td><td><a href="A.html">Abelian</a> group of type [6,6]</td><td><a href="T.html#c6^2">36</a></td><td></td><td>C6^2</td><td>36,14</td></tr>
+<tr><td id="c2xc18"><a href="1/C2xC18.html">C<sub>2</sub>&times;C<sub>18</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,18]</td><td><a href="T.html#c2xc18">36</a></td><td></td><td>C2xC18</td><td>36,5</td></tr>
+<tr><td id="c3xc12"><a href="1/C3xC12.html">C<sub>3</sub>&times;C<sub>12</sub></a></td><td><a href="A.html">Abelian</a> group of type [3,12]</td><td><a href="T.html#c3xc12">36</a></td><td></td><td>C3xC12</td><td>36,8</td></tr>
+<tr><td id="s3^2"><a href="1/S3^2.html">S<span class='supb'><sub>3</sub><sup>2</sup></span></a></td><td><a href="X.html">Direct product</a> of <a href="1/S3.html">S<sub>3</sub></a> and <a href="1/S3.html">S<sub>3</sub></a>; = <a href="linear.html#spin+">Spin+</a><sub>4</sub>(&#x1D53D;<sub>2</sub>) = Hol(<a href="1/S3.html">S<sub>3</sub></a>)</td><td><a href="T15.html#s3^2">6</a></td><td><a href="R.html#s3^2">4+</a></td><td>S3^2</td><td>36,10</td></tr>
+<tr><td id="s3xc6"><a href="1/S3xC6.html">S<sub>3</sub>&times;C<sub>6</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C6.html">C<sub>6</sub></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T15.html#s3xc6">12</a></td><td><a href="R.html#s3xc6">2</a></td><td>S3xC6</td><td>36,12</td></tr>
+<tr><td id="c3xa4"><a href="1/C3xA4.html">C<sub>3</sub>&times;A<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/A4.html">A<sub>4</sub></a></td><td><a href="T15.html#c3xa4">12</a></td><td><a href="R.html#c3xa4">3</a></td><td>C3xA4</td><td>36,11</td></tr>
+<tr><td id="c3xdic3"><a href="1/C3xDic3.html">C<sub>3</sub>&times;Dic<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/Dic3.html">Dic<sub>3</sub></a></td><td><a href="T15.html#c3xdic3">12</a></td><td><a href="R.html#c3xdic3">2</a></td><td>C3xDic3</td><td>36,6</td></tr>
+<tr><td id="c2xc3:s3"><a href="1/C2xC3sS3.html">C<sub>2</sub>&times;C<sub>3</sub>&rtimes;S<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/C3sS3.html">C<sub>3</sub>&rtimes;S<sub>3</sub></a></td><td><a href="T31.html#c2xc3:s3">18</a></td><td></td><td>C2xC3:S3</td><td>36,13</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order37'>Groups of order 37</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c37"><a href="1/C37.html">C<sub>37</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c37">37</a></td><td><a href="R.html#dim1">1</a></td><td>C37</td><td>37,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order38'>Groups of order 38</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c38"><a href="1/C38.html">C<sub>38</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c38">38</a></td><td><a href="R.html#dim1">1</a></td><td>C38</td><td>38,2</td></tr>
+<tr><td id="d19"><a href="1/D19.html">D<sub>19</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d19">19</a></td><td><a href="R.html#dim2+">2+</a></td><td>D19</td><td>38,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order39'>Groups of order 39</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c39"><a href="1/C39.html">C<sub>39</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c39">39</a></td><td><a href="R.html#dim1">1</a></td><td>C39</td><td>39,2</td></tr>
+<tr><td id="c13:c3"><a href="1/C13sC3.html">C<sub>13</sub>&rtimes;C<sub>3</sub></a></td><td><a href="1/e2/C3byC13.html#s1">The semidirect product</a> of <a href="1/C13.html">C<sub>13</sub></a> and <a href="1/C3.html">C<sub>3</sub></a> acting faithfully</td><td><a href="T15.html#c13:c3">13</a></td><td><a href="R.html#c13:c3">3</a></td><td>C13:C3</td><td>39,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order40'>Groups of order 40</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c40"><a href="1/C40.html">C<sub>40</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c40">40</a></td><td><a href="R.html#dim1">1</a></td><td>C40</td><td>40,2</td></tr>
+<tr><td id="d20"><a href="1/D20.html">D<sub>20</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d20">20</a></td><td><a href="R.html#dim2+">2+</a></td><td>D20</td><td>40,6</td></tr>
+<tr><td id="dic10"><a href="1/Dic10.html">Dic<sub>10</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C5.html">C<sub>5</sub></a><a href="1/e5/Q8byC5.html#s1">&rtimes;</a><a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T.html#dic10">40</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic10</td><td>40,4</td></tr>
+<tr><td id="c5:d4"><a href="1/C5sD4.html">C<sub>5</sub>&rtimes;D<sub>4</sub></a></td><td><a href="1/e4/D4byC5.html#s2">The semidirect product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>2</sub></td><td><a href="T31.html#c5:d4">20</a></td><td><a href="R.html#c5:d4">2</a></td><td>C5:D4</td><td>40,8</td></tr>
+<tr><td id="c5:c8"><a href="1/C5sC8.html">C<sub>5</sub>&rtimes;C<sub>8</sub></a></td><td><a href="1/e2/C8byC5.html#s1">The semidirect product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/C8.html">C<sub>8</sub></a> acting via <a href="1/C8.html">C<sub>8</sub></a>/C<sub>2</sub>=C<sub>4</sub></td><td><a href="T.html#c5:c8">40</a></td><td><a href="R.html#c5:c8">4-</a></td><td>C5:C8</td><td>40,3</td></tr>
+<tr><td id="c5:2c8"><a href="1/C5s2C8.html">C<sub>5</sub>&rtimes;<sub class='subsml'>2</sub>C<sub>8</sub></a></td><td><a href="1/e2/C8byC5.html#s2">The semidirect product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/C8.html">C<sub>8</sub></a> acting via <a href="1/C8.html">C<sub>8</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T.html#c5:2c8">40</a></td><td><a href="R.html#c5:2c8">2</a></td><td>C5:2C8</td><td>40,1</td></tr>
+<tr><td id="c2xc20"><a href="1/C2xC20.html">C<sub>2</sub>&times;C<sub>20</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,20]</td><td><a href="T.html#c2xc20">40</a></td><td></td><td>C2xC20</td><td>40,9</td></tr>
+<tr><td id="c2^2xc10"><a href="1/C2^2xC10.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;C<sub>10</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,2,10]</td><td><a href="T.html#c2^2xc10">40</a></td><td></td><td>C2^2xC10</td><td>40,14</td></tr>
+<tr><td id="c2xf5"><a href="1/C2xF5.html">C<sub>2</sub>&times;F<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/F5.html">F<sub>5</sub></a>; = Aut(<a href="1/D10.html">D<sub>10</sub></a>) = Hol(<a href="1/C10.html">C<sub>10</sub></a>)</td><td><a href="T15.html#c2xf5">10</a></td><td><a href="R.html#c2xf5">4+</a></td><td>C2xF5</td><td>40,12</td></tr>
+<tr><td id="c4xd5"><a href="1/C4xD5.html">C<sub>4</sub>&times;D<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/D5.html">D<sub>5</sub></a></td><td><a href="T31.html#c4xd5">20</a></td><td><a href="R.html#c4xd5">2</a></td><td>C4xD5</td><td>40,5</td></tr>
+<tr><td id="c5xd4"><a href="1/C5xD4.html">C<sub>5</sub>&times;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T31.html#c5xd4">20</a></td><td><a href="R.html#c5xd4">2</a></td><td>C5xD4</td><td>40,10</td></tr>
+<tr><td id="c2^2xd5"><a href="1/C2^2xD5.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;D<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/D5.html">D<sub>5</sub></a></td><td><a href="T31.html#c2^2xd5">20</a></td><td></td><td>C2^2xD5</td><td>40,13</td></tr>
+<tr><td id="c5xq8"><a href="1/C5xQ8.html">C<sub>5</sub>&times;Q<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T.html#c5xq8">40</a></td><td><a href="R.html#c5xq8">2</a></td><td>C5xQ8</td><td>40,11</td></tr>
+<tr><td id="c2xdic5"><a href="1/C2xDic5.html">C<sub>2</sub>&times;Dic<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/Dic5.html">Dic<sub>5</sub></a></td><td><a href="T.html#c2xdic5">40</a></td><td></td><td>C2xDic5</td><td>40,7</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order41'>Groups of order 41</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c41"><a href="1/C41.html">C<sub>41</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c41">41</a></td><td><a href="R.html#dim1">1</a></td><td>C41</td><td>41,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order42'>Groups of order 42</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c42"><a href="1/C42.html">C<sub>42</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c42">42</a></td><td><a href="R.html#dim1">1</a></td><td>C42</td><td>42,6</td></tr>
+<tr><td id="d21"><a href="1/D21.html">D<sub>21</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d21">21</a></td><td><a href="R.html#dim2+">2+</a></td><td>D21</td><td>42,5</td></tr>
+<tr><td id="f7"><a href="1/F7.html">F<sub>7</sub></a></td><td><a href="frobenius.html">Frobenius</a> group; = <a href="1/C7.html">C<sub>7</sub></a><a href="1/e3/C6byC7.html#s1">&rtimes;</a><a href="1/C6.html">C<sub>6</sub></a> = <a href="linear.html#agl">AGL</a><sub>1</sub>(&#x1D53D;<sub>7</sub>) = Aut(<a href="1/D7.html">D<sub>7</sub></a>) = Hol(<a href="1/C7.html">C<sub>7</sub></a>)</td><td><a href="T15.html#f7">7</a></td><td><a href="R.html#f7">6+</a></td><td>F7</td><td>42,1</td></tr>
+<tr><td id="s3xc7"><a href="1/S3xC7.html">S<sub>3</sub>&times;C<sub>7</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C7.html">C<sub>7</sub></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T31.html#s3xc7">21</a></td><td><a href="R.html#s3xc7">2</a></td><td>S3xC7</td><td>42,3</td></tr>
+<tr><td id="c3xd7"><a href="1/C3xD7.html">C<sub>3</sub>&times;D<sub>7</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/D7.html">D<sub>7</sub></a></td><td><a href="T31.html#c3xd7">21</a></td><td><a href="R.html#c3xd7">2</a></td><td>C3xD7</td><td>42,4</td></tr>
+<tr><td id="c2xc7:c3"><a href="1/C2xC7sC3.html">C<sub>2</sub>&times;C<sub>7</sub>&rtimes;C<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/C7sC3.html">C<sub>7</sub>&rtimes;C<sub>3</sub></a></td><td><a href="T15.html#c2xc7:c3">14</a></td><td><a href="R.html#c2xc7:c3">3</a></td><td>C2xC7:C3</td><td>42,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order43'>Groups of order 43</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c43"><a href="1/C43.html">C<sub>43</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c43">43</a></td><td><a href="R.html#dim1">1</a></td><td>C43</td><td>43,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order44'>Groups of order 44</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c44"><a href="1/C44.html">C<sub>44</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c44">44</a></td><td><a href="R.html#dim1">1</a></td><td>C44</td><td>44,2</td></tr>
+<tr><td id="d22"><a href="1/D22.html">D<sub>22</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = <a href="1/C2.html">C<sub>2</sub></a>&times;<a href="1/D11.html">D<sub>11</sub></a></td><td><a href="T31.html#d22">22</a></td><td><a href="R.html#dim2+">2+</a></td><td>D22</td><td>44,3</td></tr>
+<tr><td id="dic11"><a href="1/Dic11.html">Dic<sub>11</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C11.html">C<sub>11</sub></a><a href="1/e2/C4byC11.html#s1">&rtimes;</a><a href="1/C4.html">C<sub>4</sub></a></td><td><a href="T.html#dic11">44</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic11</td><td>44,1</td></tr>
+<tr><td id="c2xc22"><a href="1/C2xC22.html">C<sub>2</sub>&times;C<sub>22</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,22]</td><td><a href="T.html#c2xc22">44</a></td><td></td><td>C2xC22</td><td>44,4</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order45'>Groups of order 45</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c45"><a href="1/C45.html">C<sub>45</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c45">45</a></td><td><a href="R.html#dim1">1</a></td><td>C45</td><td>45,1</td></tr>
+<tr><td id="c3xc15"><a href="1/C3xC15.html">C<sub>3</sub>&times;C<sub>15</sub></a></td><td><a href="A.html">Abelian</a> group of type [3,15]</td><td><a href="T.html#c3xc15">45</a></td><td></td><td>C3xC15</td><td>45,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order46'>Groups of order 46</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c46"><a href="1/C46.html">C<sub>46</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c46">46</a></td><td><a href="R.html#dim1">1</a></td><td>C46</td><td>46,2</td></tr>
+<tr><td id="d23"><a href="1/D23.html">D<sub>23</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d23">23</a></td><td><a href="R.html#dim2+">2+</a></td><td>D23</td><td>46,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order47'>Groups of order 47</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c47"><a href="1/C47.html">C<sub>47</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c47">47</a></td><td><a href="R.html#dim1">1</a></td><td>C47</td><td>47,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order48'>Groups of order 48</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c48"><a href="1/C48.html">C<sub>48</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c48">48</a></td><td><a href="R.html#dim1">1</a></td><td>C48</td><td>48,2</td></tr>
+<tr><td id="d24"><a href="1/D24.html">D<sub>24</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d24">24</a></td><td><a href="R.html#dim2+">2+</a></td><td>D24</td><td>48,7</td></tr>
+<tr><td id="dic12"><a href="1/Dic12.html">Dic<sub>12</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C3.html">C<sub>3</sub></a><a href="1/e10/Q16byC3.html#s1">&rtimes;<sub class='subsml'>1</sub></a><a href="1/Q16.html">Q<sub>16</sub></a></td><td><a href="T.html#dic12">48</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic12</td><td>48,8</td></tr>
+<tr><td id="gl(2,3)"><a href="1/GL(2,3).html">GL<sub>2</sub>(&#x1D53D;<sub>3</sub>)</a></td><td><a href="linear.html#gl">General linear group</a> on &#x1D53D;<span class='supb'><sub>3</sub><sup>2</sup></span>; = <a href="1/Q8.html">Q<sub>8</sub></a><a href="1/e5/S3byQ8.html#s1">&rtimes;</a><a href="1/S3.html">S<sub>3</sub></a> = Aut(<a href="1/C3^2.html">C<span class='supb'><sub>3</sub><sup>2</sup></span></a>)</td><td><a href="T15.html#gl(2,3)">8</a></td><td><a href="R.html#gl(2,3)">2</a></td><td>GL(2,3)</td><td>48,29</td></tr>
+<tr><td id="csu(2,3)"><a href="1/CSU(2,3).html">CSU<sub>2</sub>(&#x1D53D;<sub>3</sub>)</a></td><td><a href="linear.html#csu">Conformal special unitary group</a> on &#x1D53D;<span class='supb'><sub>3</sub><sup>2</sup></span>; = <a href="1/Q8.html">Q<sub>8</sub></a><a href="1/e5/S3byQ8.html#d1">.</a><a href="1/S3.html">S<sub>3</sub></a> = 2O = &lt;2,3,4&gt;</td><td><a href="T31.html#csu(2,3)">16</a></td><td><a href="R.html#dim2-">2-</a></td><td>CSU(2,3)</td><td>48,28</td></tr>
+<tr><td id="c4od12"><a href="1/C4oD12.html">C<sub>4</sub>&#x25CB;D<sub>12</sub></a></td><td>Central product of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/D12.html">D<sub>12</sub></a></td><td><a href="T31.html#c4od12">24</a></td><td><a href="R.html#c4od12">2</a></td><td>C4oD12</td><td>48,37</td></tr>
+<tr><td id="a4:c4"><a href="1/A4sC4.html">A<sub>4</sub>&rtimes;C<sub>4</sub></a></td><td><a href="1/e4/C4byA4.html#s1">The semidirect product</a> of <a href="1/A4.html">A<sub>4</sub></a> and <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub>; = SL<sub>2</sub>(&#x2124;/4&#x2124;)</td><td><a href="T15.html#a4:c4">12</a></td><td><a href="R.html#a4:c4">3</a></td><td>A4:C4</td><td>48,30</td></tr>
+<tr><td id="c4^2:c3"><a href="1/C4^2sC3.html">C<span class='supb'><sub>4</sub><sup>2</sup></span>&rtimes;C<sub>3</sub></a></td><td><a href="1/e3/C3byC4^2.html#s1">The semidirect product</a> of <a href="1/C4^2.html">C<span class='supb'><sub>4</sub><sup>2</sup></span></a> and <a href="1/C3.html">C<sub>3</sub></a> acting faithfully</td><td><a href="T15.html#c4^2:c3">12</a></td><td><a href="R.html#c4^2:c3">3</a></td><td>C4^2:C3</td><td>48,3</td></tr>
+<tr><td id="c2^2:a4"><a href="1/C2^2sA4.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&rtimes;A<sub>4</sub></a></td><td><a href="1/e5/A4byC2^2.html#s1">The semidirect product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/A4.html">A<sub>4</sub></a> acting via <a href="1/A4.html">A<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>3</sub></td><td><a href="T15.html#c2^2:a4">12</a></td><td></td><td>C2^2:A4</td><td>48,50</td></tr>
+<tr><td id="d6:c4"><a href="1/D6sC4.html">D<sub>6</sub>&rtimes;C<sub>4</sub></a></td><td><a href="1/e5/C4byD6.html#s1">The semidirect product</a> of <a href="1/D6.html">D<sub>6</sub></a> and <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub></td><td><a href="T31.html#d6:c4">24</a></td><td></td><td>D6:C4</td><td>48,14</td></tr>
+<tr><td id="d4:s3"><a href="1/D4sS3.html">D<sub>4</sub>&rtimes;S<sub>3</sub></a></td><td><a href="1/e4/S3byD4.html#s1">The semidirect product</a> of <a href="1/D4.html">D<sub>4</sub></a> and <a href="1/S3.html">S<sub>3</sub></a> acting via <a href="1/S3.html">S<sub>3</sub></a>/C<sub>3</sub>=C<sub>2</sub></td><td><a href="T31.html#d4:s3">24</a></td><td><a href="R.html#d4:s3">4+</a></td><td>D4:S3</td><td>48,15</td></tr>
+<tr><td id="c8:s3"><a href="1/C8sS3.html">C<sub>8</sub>&rtimes;S<sub>3</sub></a></td><td><a href="1/e2/S3byC8.html#s3">3<sup>rd</sup> semidirect product</a> of <a href="1/C8.html">C<sub>8</sub></a> and <a href="1/S3.html">S<sub>3</sub></a> acting via <a href="1/S3.html">S<sub>3</sub></a>/C<sub>3</sub>=C<sub>2</sub></td><td><a href="T31.html#c8:s3">24</a></td><td><a href="R.html#c8:s3">2</a></td><td>C8:S3</td><td>48,5</td></tr>
+<tr><td id="c24:c2"><a href="1/C24sC2.html">C<sub>24</sub>&rtimes;C<sub>2</sub></a></td><td><a href="1/e3/C2byC24.html#s2">2<sup>nd</sup> semidirect product</a> of <a href="1/C24.html">C<sub>24</sub></a> and <a href="1/C2.html">C<sub>2</sub></a> acting faithfully</td><td><a href="T31.html#c24:c2">24</a></td><td><a href="R.html#c24:c2">2</a></td><td>C24:C2</td><td>48,6</td></tr>
+<tr><td id="d4:2s3"><a href="1/D4s2S3.html">D<sub>4</sub>&rtimes;<sub class='subsml'>2</sub>S<sub>3</sub></a></td><td><a href="1/e4/S3byD4.html#s2">The semidirect product</a> of <a href="1/D4.html">D<sub>4</sub></a> and <a href="1/S3.html">S<sub>3</sub></a> acting through Inn(<a href="1/D4.html">D<sub>4</sub></a>)</td><td><a href="T31.html#d4:2s3">24</a></td><td><a href="R.html#d4:2s3">4-</a></td><td>D4:2S3</td><td>48,39</td></tr>
+<tr><td id="q8:2s3"><a href="1/Q8s2S3.html">Q<sub>8</sub>&rtimes;<sub class='subsml'>2</sub>S<sub>3</sub></a></td><td><a href="1/e5/S3byQ8.html#s2">The semidirect product</a> of <a href="1/Q8.html">Q<sub>8</sub></a> and <a href="1/S3.html">S<sub>3</sub></a> acting via <a href="1/S3.html">S<sub>3</sub></a>/C<sub>3</sub>=C<sub>2</sub></td><td><a href="T31.html#q8:2s3">24</a></td><td><a href="R.html#q8:2s3">4+</a></td><td>Q8:2S3</td><td>48,17</td></tr>
+<tr><td id="q8:3s3"><a href="1/Q8s3S3.html">Q<sub>8</sub>&rtimes;<sub class='subsml'>3</sub>S<sub>3</sub></a></td><td><a href="1/e5/S3byQ8.html#s3">The semidirect product</a> of <a href="1/Q8.html">Q<sub>8</sub></a> and <a href="1/S3.html">S<sub>3</sub></a> acting through Inn(<a href="1/Q8.html">Q<sub>8</sub></a>)</td><td><a href="T31.html#q8:3s3">24</a></td><td><a href="R.html#q8:3s3">4+</a></td><td>Q8:3S3</td><td>48,41</td></tr>
+<tr><td id="c3:c16"><a href="1/C3sC16.html">C<sub>3</sub>&rtimes;C<sub>16</sub></a></td><td><a href="1/e2/C16byC3.html#s1">The semidirect product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/C16.html">C<sub>16</sub></a> acting via <a href="1/C16.html">C<sub>16</sub></a>/C<sub>8</sub>=C<sub>2</sub></td><td><a href="T.html#c3:c16">48</a></td><td><a href="R.html#c3:c16">2</a></td><td>C3:C16</td><td>48,1</td></tr>
+<tr><td id="c4:dic3"><a href="1/C4sDic3.html">C<sub>4</sub>&rtimes;Dic<sub>3</sub></a></td><td><a href="1/e2/Dic3byC4.html#s1">The semidirect product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/Dic3.html">Dic<sub>3</sub></a> acting via <a href="1/Dic3.html">Dic<sub>3</sub></a>/C<sub>6</sub>=C<sub>2</sub></td><td><a href="T.html#c4:dic3">48</a></td><td></td><td>C4:Dic3</td><td>48,13</td></tr>
+<tr><td id="c3:q16"><a href="1/C3sQ16.html">C<sub>3</sub>&rtimes;Q<sub>16</sub></a></td><td><a href="1/e10/Q16byC3.html#s2">The semidirect product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/Q16.html">Q<sub>16</sub></a> acting via <a href="1/Q16.html">Q<sub>16</sub></a>/Q<sub>8</sub>=C<sub>2</sub></td><td><a href="T.html#c3:q16">48</a></td><td><a href="R.html#c3:q16">4-</a></td><td>C3:Q16</td><td>48,18</td></tr>
+<tr><td id="dic3:c4"><a href="1/Dic3sC4.html">Dic<sub>3</sub>&rtimes;C<sub>4</sub></a></td><td><a href="1/e2/C4byDic3.html#s1">The semidirect product</a> of <a href="1/Dic3.html">Dic<sub>3</sub></a> and <a href="1/C4.html">C<sub>4</sub></a> acting via <a href="1/C4.html">C<sub>4</sub></a>/C<sub>2</sub>=C<sub>2</sub></td><td><a href="T.html#dic3:c4">48</a></td><td></td><td>Dic3:C4</td><td>48,12</td></tr>
+<tr><td id="c4.a4"><a href="1/C4.A4.html">C<sub>4</sub>.A<sub>4</sub></a></td><td><a href="1/e4/A4byC4.html#d1">The central extension</a> by <a href="1/C4.html">C<sub>4</sub></a> of <a href="1/A4.html">A<sub>4</sub></a></td><td><a href="T31.html#c4.a4">16</a></td><td><a href="R.html#c4.a4">2</a></td><td>C4.A4</td><td>48,33</td></tr>
+<tr><td id="d4.s3"><a href="1/D4.S3.html">D<sub>4</sub>.S<sub>3</sub></a></td><td><a href="1/e4/S3byD4.html#d1">The non-split extension</a> by <a href="1/D4.html">D<sub>4</sub></a> of <a href="1/S3.html">S<sub>3</sub></a> acting via <a href="1/S3.html">S<sub>3</sub></a>/C<sub>3</sub>=C<sub>2</sub></td><td><a href="T31.html#d4.s3">24</a></td><td><a href="R.html#d4.s3">4-</a></td><td>D4.S3</td><td>48,16</td></tr>
+<tr><td id="c4.dic3"><a href="1/C4.Dic3.html">C<sub>4</sub>.Dic<sub>3</sub></a></td><td><a href="1/e2/Dic3byC4.html#d1">The non-split extension</a> by <a href="1/C4.html">C<sub>4</sub></a> of <a href="1/Dic3.html">Dic<sub>3</sub></a> acting via <a href="1/Dic3.html">Dic<sub>3</sub></a>/C<sub>6</sub>=C<sub>2</sub></td><td><a href="T31.html#c4.dic3">24</a></td><td><a href="R.html#c4.dic3">2</a></td><td>C4.Dic3</td><td>48,10</td></tr>
+<tr><td id="c6.d4"><a href="1/C6.D4.html">C<sub>6</sub>.D<sub>4</sub></a></td><td><a href="1/e5/D4byC6.html#d11">7<sup>th</sup> non-split extension</a> by <a href="1/C6.html">C<sub>6</sub></a> of <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>2</sub></td><td><a href="T31.html#c6.d4">24</a></td><td></td><td>C6.D4</td><td>48,19</td></tr>
+<tr><td id="c4xc12"><a href="1/C4xC12.html">C<sub>4</sub>&times;C<sub>12</sub></a></td><td><a href="A.html">Abelian</a> group of type [4,12]</td><td><a href="T.html#c4xc12">48</a></td><td></td><td>C4xC12</td><td>48,20</td></tr>
+<tr><td id="c2xc24"><a href="1/C2xC24.html">C<sub>2</sub>&times;C<sub>24</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,24]</td><td><a href="T.html#c2xc24">48</a></td><td></td><td>C2xC24</td><td>48,23</td></tr>
+<tr><td id="c2^3xc6"><a href="1/C2^3xC6.html">C<span class='supb'><sub>2</sub><sup>3</sup></span>&times;C<sub>6</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,2,2,6]</td><td><a href="T.html#c2^3xc6">48</a></td><td></td><td>C2^3xC6</td><td>48,52</td></tr>
+<tr><td id="c2^2xc12"><a href="1/C2^2xC12.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;C<sub>12</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,2,12]</td><td><a href="T.html#c2^2xc12">48</a></td><td></td><td>C2^2xC12</td><td>48,44</td></tr>
+<tr><td id="c2xs4"><a href="1/C2xS4.html">C<sub>2</sub>&times;S<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/S4.html">S<sub>4</sub></a>; = <a href="linear.html#o">O</a><sub>3</sub>(&#x1D53D;<sub>3</sub>) = cube/octahedron symmetries</td><td><a href="T15.html#c2xs4">6</a></td><td><a href="R.html#c2xs4">3+</a></td><td>C2xS4</td><td>48,48</td></tr>
+<tr><td id="c4xa4"><a href="1/C4xA4.html">C<sub>4</sub>&times;A<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/A4.html">A<sub>4</sub></a></td><td><a href="T15.html#c4xa4">12</a></td><td><a href="R.html#c4xa4">3</a></td><td>C4xA4</td><td>48,31</td></tr>
+<tr><td id="s3xd4"><a href="1/S3xD4.html">S<sub>3</sub>&times;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/S3.html">S<sub>3</sub></a> and <a href="1/D4.html">D<sub>4</sub></a>; = Aut(<a href="1/D12.html">D<sub>12</sub></a>) = Hol(<a href="1/C12.html">C<sub>12</sub></a>)</td><td><a href="T15.html#s3xd4">12</a></td><td><a href="R.html#s3xd4">4+</a></td><td>S3xD4</td><td>48,38</td></tr>
+<tr><td id="c2^2xa4"><a href="1/C2^2xA4.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;A<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/A4.html">A<sub>4</sub></a></td><td><a href="T15.html#c2^2xa4">12</a></td><td></td><td>C2^2xA4</td><td>48,49</td></tr>
+<tr><td id="c2xsl(2,3)"><a href="1/C2xSL(2,3).html">C<sub>2</sub>&times;SL<sub>2</sub>(&#x1D53D;<sub>3</sub>)</a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/SL(2,3).html">SL<sub>2</sub>(&#x1D53D;<sub>3</sub>)</a></td><td><a href="T31.html#c2xsl(2,3)">16</a></td><td></td><td>C2xSL(2,3)</td><td>48,32</td></tr>
+<tr><td id="s3xc8"><a href="1/S3xC8.html">S<sub>3</sub>&times;C<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C8.html">C<sub>8</sub></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T31.html#s3xc8">24</a></td><td><a href="R.html#s3xc8">2</a></td><td>S3xC8</td><td>48,4</td></tr>
+<tr><td id="c3xd8"><a href="1/C3xD8.html">C<sub>3</sub>&times;D<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/D8.html">D<sub>8</sub></a></td><td><a href="T31.html#c3xd8">24</a></td><td><a href="R.html#c3xd8">2</a></td><td>C3xD8</td><td>48,25</td></tr>
+<tr><td id="c6xd4"><a href="1/C6xD4.html">C<sub>6</sub>&times;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C6.html">C<sub>6</sub></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T31.html#c6xd4">24</a></td><td></td><td>C6xD4</td><td>48,45</td></tr>
+<tr><td id="s3xq8"><a href="1/S3xQ8.html">S<sub>3</sub>&times;Q<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/S3.html">S<sub>3</sub></a> and <a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T31.html#s3xq8">24</a></td><td><a href="R.html#s3xq8">4-</a></td><td>S3xQ8</td><td>48,40</td></tr>
+<tr><td id="c2xd12"><a href="1/C2xD12.html">C<sub>2</sub>&times;D<sub>12</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/D12.html">D<sub>12</sub></a></td><td><a href="T31.html#c2xd12">24</a></td><td></td><td>C2xD12</td><td>48,36</td></tr>
+<tr><td id="s3xc2^3"><a href="1/S3xC2^3.html">S<sub>3</sub>&times;C<span class='supb'><sub>2</sub><sup>3</sup></span></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2^3.html">C<span class='supb'><sub>2</sub><sup>3</sup></span></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T31.html#s3xc2^3">24</a></td><td></td><td>S3xC2^3</td><td>48,51</td></tr>
+<tr><td id="c3xsd16"><a href="1/C3xSD16.html">C<sub>3</sub>&times;SD<sub>16</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/SD16.html">SD<sub>16</sub></a></td><td><a href="T31.html#c3xsd16">24</a></td><td><a href="R.html#c3xsd16">2</a></td><td>C3xSD16</td><td>48,26</td></tr>
+<tr><td id="c3xm4(2)"><a href="1/C3xM4(2).html">C<sub>3</sub>&times;M<sub>4</sub>(2)</a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/M4(2).html">M<sub>4</sub>(2)</a></td><td><a href="T31.html#c3xm4(2)">24</a></td><td><a href="R.html#c3xm4(2)">2</a></td><td>C3xM4(2)</td><td>48,24</td></tr>
+<tr><td id="c6xq8"><a href="1/C6xQ8.html">C<sub>6</sub>&times;Q<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C6.html">C<sub>6</sub></a> and <a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T.html#c6xq8">48</a></td><td></td><td>C6xQ8</td><td>48,46</td></tr>
+<tr><td id="c3xq16"><a href="1/C3xQ16.html">C<sub>3</sub>&times;Q<sub>16</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/Q16.html">Q<sub>16</sub></a></td><td><a href="T.html#c3xq16">48</a></td><td><a href="R.html#c3xq16">2</a></td><td>C3xQ16</td><td>48,27</td></tr>
+<tr><td id="c4xdic3"><a href="1/C4xDic3.html">C<sub>4</sub>&times;Dic<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/Dic3.html">Dic<sub>3</sub></a></td><td><a href="T.html#c4xdic3">48</a></td><td></td><td>C4xDic3</td><td>48,11</td></tr>
+<tr><td id="c2xdic6"><a href="1/C2xDic6.html">C<sub>2</sub>&times;Dic<sub>6</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/Dic6.html">Dic<sub>6</sub></a></td><td><a href="T.html#c2xdic6">48</a></td><td></td><td>C2xDic6</td><td>48,34</td></tr>
+<tr><td id="c2^2xdic3"><a href="1/C2^2xDic3.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;Dic<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/Dic3.html">Dic<sub>3</sub></a></td><td><a href="T.html#c2^2xdic3">48</a></td><td></td><td>C2^2xDic3</td><td>48,42</td></tr>
+<tr><td id="s3xc2xc4"><a href="1/S3xC2xC4.html">S<sub>3</sub>&times;C<sub>2</sub>&times;C<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2xC4.html">C<sub>2</sub>&times;C<sub>4</sub></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T31.html#s3xc2xc4">24</a></td><td></td><td>S3xC2xC4</td><td>48,35</td></tr>
+<tr><td id="c2xc3:d4"><a href="1/C2xC3sD4.html">C<sub>2</sub>&times;C<sub>3</sub>&rtimes;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/C3sD4.html">C<sub>3</sub>&rtimes;D<sub>4</sub></a></td><td><a href="T31.html#c2xc3:d4">24</a></td><td></td><td>C2xC3:D4</td><td>48,43</td></tr>
+<tr><td id="c3xc4od4"><a href="1/C3xC4oD4.html">C<sub>3</sub>&times;C<sub>4</sub>&#x25CB;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/C4oD4.html">C<sub>4</sub>&#x25CB;D<sub>4</sub></a></td><td><a href="T31.html#c3xc4od4">24</a></td><td><a href="R.html#c3xc4od4">2</a></td><td>C3xC4oD4</td><td>48,47</td></tr>
+<tr><td id="c3xc2^2:c4"><a href="1/C3xC2^2sC4.html">C<sub>3</sub>&times;C<span class='supb'><sub>2</sub><sup>2</sup></span>&rtimes;C<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/C2^2sC4.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&rtimes;C<sub>4</sub></a></td><td><a href="T31.html#c3xc2^2:c4">24</a></td><td></td><td>C3xC2^2:C4</td><td>48,21</td></tr>
+<tr><td id="c2xc3:c8"><a href="1/C2xC3sC8.html">C<sub>2</sub>&times;C<sub>3</sub>&rtimes;C<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/C3sC8.html">C<sub>3</sub>&rtimes;C<sub>8</sub></a></td><td><a href="T.html#c2xc3:c8">48</a></td><td></td><td>C2xC3:C8</td><td>48,9</td></tr>
+<tr><td id="c3xc4:c4"><a href="1/C3xC4sC4.html">C<sub>3</sub>&times;C<sub>4</sub>&rtimes;C<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/C4sC4.html">C<sub>4</sub>&rtimes;C<sub>4</sub></a></td><td><a href="T.html#c3xc4:c4">48</a></td><td></td><td>C3xC4:C4</td><td>48,22</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order49'>Groups of order 49</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c49"><a href="1/C49.html">C<sub>49</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c49">49</a></td><td><a href="R.html#dim1">1</a></td><td>C49</td><td>49,1</td></tr>
+<tr><td id="c7^2"><a href="1/C7^2.html">C<span class='supb'><sub>7</sub><sup>2</sup></span></a></td><td>Elementary <a href="A.html">abelian</a> group of type [7,7]</td><td><a href="T.html#c7^2">49</a></td><td></td><td>C7^2</td><td>49,2</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order50'>Groups of order 50</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c50"><a href="1/C50.html">C<sub>50</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c50">50</a></td><td><a href="R.html#dim1">1</a></td><td>C50</td><td>50,2</td></tr>
+<tr><td id="d25"><a href="1/D25.html">D<sub>25</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d25">25</a></td><td><a href="R.html#dim2+">2+</a></td><td>D25</td><td>50,1</td></tr>
+<tr><td id="c5:d5"><a href="1/C5sD5.html">C<sub>5</sub>&rtimes;D<sub>5</sub></a></td><td><a href="1/e2/D5byC5.html#s1">The semidirect product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/D5.html">D<sub>5</sub></a> acting via <a href="1/D5.html">D<sub>5</sub></a>/C<sub>5</sub>=C<sub>2</sub></td><td><a href="T31.html#c5:d5">25</a></td><td></td><td>C5:D5</td><td>50,4</td></tr>
+<tr><td id="c5xc10"><a href="1/C5xC10.html">C<sub>5</sub>&times;C<sub>10</sub></a></td><td><a href="A.html">Abelian</a> group of type [5,10]</td><td><a href="T.html#c5xc10">50</a></td><td></td><td>C5xC10</td><td>50,5</td></tr>
+<tr><td id="c5xd5"><a href="1/C5xD5.html">C<sub>5</sub>&times;D<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/D5.html">D<sub>5</sub></a>; = <a href="linear.html#asigmal">A&Sigma;L</a><sub>1</sub>(&#x1D53D;<sub>25</sub>)</td><td><a href="T15.html#c5xd5">10</a></td><td><a href="R.html#c5xd5">2</a></td><td>C5xD5</td><td>50,3</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order51'>Groups of order 51</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c51"><a href="1/C51.html">C<sub>51</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c51">51</a></td><td><a href="R.html#dim1">1</a></td><td>C51</td><td>51,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order52'>Groups of order 52</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c52"><a href="1/C52.html">C<sub>52</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c52">52</a></td><td><a href="R.html#dim1">1</a></td><td>C52</td><td>52,2</td></tr>
+<tr><td id="d26"><a href="1/D26.html">D<sub>26</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = <a href="1/C2.html">C<sub>2</sub></a>&times;<a href="1/D13.html">D<sub>13</sub></a></td><td><a href="T31.html#d26">26</a></td><td><a href="R.html#dim2+">2+</a></td><td>D26</td><td>52,4</td></tr>
+<tr><td id="dic13"><a href="1/Dic13.html">Dic<sub>13</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C13.html">C<sub>13</sub></a><a href="1/e2/C4byC13.html#s2">&rtimes;<sub class='subsml'>2</sub></a><a href="1/C4.html">C<sub>4</sub></a></td><td><a href="T.html#dic13">52</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic13</td><td>52,1</td></tr>
+<tr><td id="c13:c4"><a href="1/C13sC4.html">C<sub>13</sub>&rtimes;C<sub>4</sub></a></td><td><a href="1/e2/C4byC13.html#s1">The semidirect product</a> of <a href="1/C13.html">C<sub>13</sub></a> and <a href="1/C4.html">C<sub>4</sub></a> acting faithfully</td><td><a href="T15.html#c13:c4">13</a></td><td><a href="R.html#c13:c4">4+</a></td><td>C13:C4</td><td>52,3</td></tr>
+<tr><td id="c2xc26"><a href="1/C2xC26.html">C<sub>2</sub>&times;C<sub>26</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,26]</td><td><a href="T.html#c2xc26">52</a></td><td></td><td>C2xC26</td><td>52,5</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order53'>Groups of order 53</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c53"><a href="1/C53.html">C<sub>53</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c53">53</a></td><td><a href="R.html#dim1">1</a></td><td>C53</td><td>53,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order54'>Groups of order 54</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c54"><a href="1/C54.html">C<sub>54</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c54">54</a></td><td><a href="R.html#dim1">1</a></td><td>C54</td><td>54,2</td></tr>
+<tr><td id="d27"><a href="1/D27.html">D<sub>27</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d27">27</a></td><td><a href="R.html#dim2+">2+</a></td><td>D27</td><td>54,1</td></tr>
+<tr><td id="c9:c6"><a href="1/C9sC6.html">C<sub>9</sub>&rtimes;C<sub>6</sub></a></td><td><a href="1/e3/C6byC9.html#s1">The semidirect product</a> of <a href="1/C9.html">C<sub>9</sub></a> and <a href="1/C6.html">C<sub>6</sub></a> acting faithfully; = Aut(<a href="1/D9.html">D<sub>9</sub></a>) = Hol(<a href="1/C9.html">C<sub>9</sub></a>)</td><td><a href="T15.html#c9:c6">9</a></td><td><a href="R.html#c9:c6">6+</a></td><td>C9:C6</td><td>54,6</td></tr>
+<tr><td id="c3^2:c6"><a href="1/C3^2sC6.html">C<span class='supb'><sub>3</sub><sup>2</sup></span>&rtimes;C<sub>6</sub></a></td><td><a href="1/e4/C6byC3^2.html#s1">The semidirect product</a> of <a href="1/C3^2.html">C<span class='supb'><sub>3</sub><sup>2</sup></span></a> and <a href="1/C6.html">C<sub>6</sub></a> acting faithfully</td><td><a href="T15.html#c3^2:c6">9</a></td><td><a href="R.html#c3^2:c6">6+</a></td><td>C3^2:C6</td><td>54,5</td></tr>
+<tr><td id="he3:c2"><a href="1/He3sC2.html">He<sub>3</sub>&rtimes;C<sub>2</sub></a></td><td><a href="1/e4/C2byHe3.html#s2">2<sup>nd</sup> semidirect product</a> of <a href="1/He3.html">He<sub>3</sub></a> and <a href="1/C2.html">C<sub>2</sub></a> acting faithfully; = Aut(<a href="1/ES-(3,1).html">3<span class='supb'><sub>-</sub><sup>&hairsp;1+2</sup></span></a>)</td><td><a href="T15.html#he3:c2">9</a></td><td><a href="R.html#he3:c2">3</a></td><td>He3:C2</td><td>54,8</td></tr>
+<tr><td id="c9:s3"><a href="1/C9sS3.html">C<sub>9</sub>&rtimes;S<sub>3</sub></a></td><td><a href="1/e2/S3byC9.html#s1">The semidirect product</a> of <a href="1/C9.html">C<sub>9</sub></a> and <a href="1/S3.html">S<sub>3</sub></a> acting via <a href="1/S3.html">S<sub>3</sub></a>/C<sub>3</sub>=C<sub>2</sub></td><td><a href="T31.html#c9:s3">27</a></td><td></td><td>C9:S3</td><td>54,7</td></tr>
+<tr><td id="c3^3:c2"><a href="1/C3^3sC2.html">C<span class='supb'><sub>3</sub><sup>3</sup></span>&rtimes;C<sub>2</sub></a></td><td><a href="1/e6/C2byC3^3.html#s3">3<sup>rd</sup> semidirect product</a> of <a href="1/C3^3.html">C<span class='supb'><sub>3</sub><sup>3</sup></span></a> and <a href="1/C2.html">C<sub>2</sub></a> acting faithfully</td><td><a href="T31.html#c3^3:c2">27</a></td><td></td><td>C3^3:C2</td><td>54,14</td></tr>
+<tr><td id="c3xc18"><a href="1/C3xC18.html">C<sub>3</sub>&times;C<sub>18</sub></a></td><td><a href="A.html">Abelian</a> group of type [3,18]</td><td><a href="T.html#c3xc18">54</a></td><td></td><td>C3xC18</td><td>54,9</td></tr>
+<tr><td id="c3^2xc6"><a href="1/C3^2xC6.html">C<span class='supb'><sub>3</sub><sup>2</sup></span>&times;C<sub>6</sub></a></td><td><a href="A.html">Abelian</a> group of type [3,3,6]</td><td><a href="T.html#c3^2xc6">54</a></td><td></td><td>C3^2xC6</td><td>54,15</td></tr>
+<tr><td id="s3xc9"><a href="1/S3xC9.html">S<sub>3</sub>&times;C<sub>9</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C9.html">C<sub>9</sub></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T31.html#s3xc9">18</a></td><td><a href="R.html#s3xc9">2</a></td><td>S3xC9</td><td>54,4</td></tr>
+<tr><td id="c3xd9"><a href="1/C3xD9.html">C<sub>3</sub>&times;D<sub>9</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/D9.html">D<sub>9</sub></a></td><td><a href="T31.html#c3xd9">18</a></td><td><a href="R.html#c3xd9">2</a></td><td>C3xD9</td><td>54,3</td></tr>
+<tr><td id="c2xhe3"><a href="1/C2xHe3.html">C<sub>2</sub>&times;He<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/He3.html">He<sub>3</sub></a></td><td><a href="T31.html#c2xhe3">18</a></td><td><a href="R.html#c2xhe3">3</a></td><td>C2xHe3</td><td>54,10</td></tr>
+<tr><td id="s3xc3^2"><a href="1/S3xC3^2.html">S<sub>3</sub>&times;C<span class='supb'><sub>3</sub><sup>2</sup></span></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3^2.html">C<span class='supb'><sub>3</sub><sup>2</sup></span></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T31.html#s3xc3^2">18</a></td><td></td><td>S3xC3^2</td><td>54,12</td></tr>
+<tr><td id="c2xes-(3,1)"><a href="1/C2xES-(3,1).html">C<sub>2</sub>&times;3<span class='supb'><sub>-</sub><sup>&hairsp;1+2</sup></span></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/ES-(3,1).html">3<span class='supb'><sub>-</sub><sup>&hairsp;1+2</sup></span></a></td><td><a href="T31.html#c2xes-(3,1)">18</a></td><td><a href="R.html#c2xes-(3,1)">3</a></td><td>C2xES-(3,1)</td><td>54,11</td></tr>
+<tr><td id="c3xc3:s3"><a href="1/C3xC3sS3.html">C<sub>3</sub>&times;C<sub>3</sub>&rtimes;S<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/C3sS3.html">C<sub>3</sub>&rtimes;S<sub>3</sub></a></td><td><a href="T31.html#c3xc3:s3">18</a></td><td></td><td>C3xC3:S3</td><td>54,13</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order55'>Groups of order 55</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c55"><a href="1/C55.html">C<sub>55</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c55">55</a></td><td><a href="R.html#dim1">1</a></td><td>C55</td><td>55,2</td></tr>
+<tr><td id="c11:c5"><a href="1/C11sC5.html">C<sub>11</sub>&rtimes;C<sub>5</sub></a></td><td><a href="1/e2/C5byC11.html#s1">The semidirect product</a> of <a href="1/C11.html">C<sub>11</sub></a> and <a href="1/C5.html">C<sub>5</sub></a> acting faithfully</td><td><a href="T15.html#c11:c5">11</a></td><td><a href="R.html#c11:c5">5</a></td><td>C11:C5</td><td>55,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order56'>Groups of order 56</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c56"><a href="1/C56.html">C<sub>56</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c56">56</a></td><td><a href="R.html#dim1">1</a></td><td>C56</td><td>56,2</td></tr>
+<tr><td id="d28"><a href="1/D28.html">D<sub>28</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d28">28</a></td><td><a href="R.html#dim2+">2+</a></td><td>D28</td><td>56,5</td></tr>
+<tr><td id="f8"><a href="1/F8.html">F<sub>8</sub></a></td><td><a href="frobenius.html">Frobenius</a> group; = <a href="1/C2^3.html">C<span class='supb'><sub>2</sub><sup>3</sup></span></a><a href="1/e6/C7byC2^3.html#s1">&rtimes;</a><a href="1/C7.html">C<sub>7</sub></a> = <a href="linear.html#agl">AGL</a><sub>1</sub>(&#x1D53D;<sub>8</sub>)</td><td><a href="T15.html#f8">8</a></td><td><a href="R.html#f8">7+</a></td><td>F8</td><td>56,11</td></tr>
+<tr><td id="dic14"><a href="1/Dic14.html">Dic<sub>14</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C7.html">C<sub>7</sub></a><a href="1/e5/Q8byC7.html#s1">&rtimes;</a><a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T.html#dic14">56</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic14</td><td>56,3</td></tr>
+<tr><td id="c7:d4"><a href="1/C7sD4.html">C<sub>7</sub>&rtimes;D<sub>4</sub></a></td><td><a href="1/e4/D4byC7.html#s2">The semidirect product</a> of <a href="1/C7.html">C<sub>7</sub></a> and <a href="1/D4.html">D<sub>4</sub></a> acting via <a href="1/D4.html">D<sub>4</sub></a>/C<span class='supb'><sub>2</sub><sup>2</sup></span>=C<sub>2</sub></td><td><a href="T31.html#c7:d4">28</a></td><td><a href="R.html#c7:d4">2</a></td><td>C7:D4</td><td>56,7</td></tr>
+<tr><td id="c7:c8"><a href="1/C7sC8.html">C<sub>7</sub>&rtimes;C<sub>8</sub></a></td><td><a href="1/e2/C8byC7.html#s1">The semidirect product</a> of <a href="1/C7.html">C<sub>7</sub></a> and <a href="1/C8.html">C<sub>8</sub></a> acting via <a href="1/C8.html">C<sub>8</sub></a>/C<sub>4</sub>=C<sub>2</sub></td><td><a href="T.html#c7:c8">56</a></td><td><a href="R.html#c7:c8">2</a></td><td>C7:C8</td><td>56,1</td></tr>
+<tr><td id="c2xc28"><a href="1/C2xC28.html">C<sub>2</sub>&times;C<sub>28</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,28]</td><td><a href="T.html#c2xc28">56</a></td><td></td><td>C2xC28</td><td>56,8</td></tr>
+<tr><td id="c2^2xc14"><a href="1/C2^2xC14.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;C<sub>14</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,2,14]</td><td><a href="T.html#c2^2xc14">56</a></td><td></td><td>C2^2xC14</td><td>56,13</td></tr>
+<tr><td id="c4xd7"><a href="1/C4xD7.html">C<sub>4</sub>&times;D<sub>7</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C4.html">C<sub>4</sub></a> and <a href="1/D7.html">D<sub>7</sub></a></td><td><a href="T31.html#c4xd7">28</a></td><td><a href="R.html#c4xd7">2</a></td><td>C4xD7</td><td>56,4</td></tr>
+<tr><td id="c7xd4"><a href="1/C7xD4.html">C<sub>7</sub>&times;D<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C7.html">C<sub>7</sub></a> and <a href="1/D4.html">D<sub>4</sub></a></td><td><a href="T31.html#c7xd4">28</a></td><td><a href="R.html#c7xd4">2</a></td><td>C7xD4</td><td>56,9</td></tr>
+<tr><td id="c2^2xd7"><a href="1/C2^2xD7.html">C<span class='supb'><sub>2</sub><sup>2</sup></span>&times;D<sub>7</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2^2.html">C<span class='supb'><sub>2</sub><sup>2</sup></span></a> and <a href="1/D7.html">D<sub>7</sub></a></td><td><a href="T31.html#c2^2xd7">28</a></td><td></td><td>C2^2xD7</td><td>56,12</td></tr>
+<tr><td id="c7xq8"><a href="1/C7xQ8.html">C<sub>7</sub>&times;Q<sub>8</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C7.html">C<sub>7</sub></a> and <a href="1/Q8.html">Q<sub>8</sub></a></td><td><a href="T.html#c7xq8">56</a></td><td><a href="R.html#c7xq8">2</a></td><td>C7xQ8</td><td>56,10</td></tr>
+<tr><td id="c2xdic7"><a href="1/C2xDic7.html">C<sub>2</sub>&times;Dic<sub>7</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C2.html">C<sub>2</sub></a> and <a href="1/Dic7.html">Dic<sub>7</sub></a></td><td><a href="T.html#c2xdic7">56</a></td><td></td><td>C2xDic7</td><td>56,6</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order57'>Groups of order 57</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c57"><a href="1/C57.html">C<sub>57</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c57">57</a></td><td><a href="R.html#dim1">1</a></td><td>C57</td><td>57,2</td></tr>
+<tr><td id="c19:c3"><a href="1/C19sC3.html">C<sub>19</sub>&rtimes;C<sub>3</sub></a></td><td><a href="1/e2/C3byC19.html#s1">The semidirect product</a> of <a href="1/C19.html">C<sub>19</sub></a> and <a href="1/C3.html">C<sub>3</sub></a> acting faithfully</td><td><a href="T31.html#c19:c3">19</a></td><td><a href="R.html#c19:c3">3</a></td><td>C19:C3</td><td>57,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order58'>Groups of order 58</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c58"><a href="1/C58.html">C<sub>58</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c58">58</a></td><td><a href="R.html#dim1">1</a></td><td>C58</td><td>58,2</td></tr>
+<tr><td id="d29"><a href="1/D29.html">D<sub>29</sub></a></td><td><a href="dihedral.html">Dihedral</a> group</td><td><a href="T31.html#d29">29</a></td><td><a href="R.html#dim2+">2+</a></td><td>D29</td><td>58,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order59'>Groups of order 59</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c59"><a href="1/C59.html">C<sub>59</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c59">59</a></td><td><a href="R.html#dim1">1</a></td><td>C59</td><td>59,1</td></tr>
+</table>
+
+<h3 class='gpsep' style='width: 70%;'><span id='order60'>Groups of order 60</span></h3>
+
+<table class="gptable" columns="6">
+<tr><th width="12%"></th><th width="60%"></th><th width="5%"><a href='T.html'>d</a></th><th width="5%"><a href='R.html'>&rho;</a></th><th width="12%">Label</th><th width="7%">ID</th></tr><tr><td id="c60"><a href="1/C60.html">C<sub>60</sub></a></td><td><a href="cyclic.html">Cyclic</a> group</td><td><a href="T.html#c60">60</a></td><td><a href="R.html#dim1">1</a></td><td>C60</td><td>60,4</td></tr>
+<tr><td id="a5"><a href="1/A5.html">A<sub>5</sub></a></td><td><a href="alternating.html">Alternating</a> group on 5 letters; = <a href="linear.html#sl">SL</a><sub>2</sub>(&#x1D53D;<sub>4</sub>) = L<sub>2</sub>(5) = L<sub>2</sub>(4) = icosahedron/dodecahedron rotations; 1<sup>st</sup> non-abelian <a href="Si.html">simple</a></td><td><a href="T15.html#a5">5</a></td><td><a href="R.html#a5">3+</a></td><td>A5</td><td>60,5</td></tr>
+<tr><td id="d30"><a href="1/D30.html">D<sub>30</sub></a></td><td><a href="dihedral.html">Dihedral</a> group; = <a href="1/C2.html">C<sub>2</sub></a>&times;<a href="1/D15.html">D<sub>15</sub></a></td><td><a href="T31.html#d30">30</a></td><td><a href="R.html#dim2+">2+</a></td><td>D30</td><td>60,12</td></tr>
+<tr><td id="dic15"><a href="1/Dic15.html">Dic<sub>15</sub></a></td><td><a href="dicyclic.html">Dicyclic</a> group; = <a href="1/C3.html">C<sub>3</sub></a><a href="1/e2/Dic5byC3.html#s1">&rtimes;</a><a href="1/Dic5.html">Dic<sub>5</sub></a></td><td><a href="T.html#dic15">60</a></td><td><a href="R.html#dim2-">2-</a></td><td>Dic15</td><td>60,3</td></tr>
+<tr><td id="c3:f5"><a href="1/C3sF5.html">C<sub>3</sub>&rtimes;F<sub>5</sub></a></td><td><a href="1/e4/F5byC3.html#s1">The semidirect product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/F5.html">F<sub>5</sub></a> acting via <a href="1/F5.html">F<sub>5</sub></a>/D<sub>5</sub>=C<sub>2</sub></td><td><a href="T15.html#c3:f5">15</a></td><td><a href="R.html#c3:f5">4</a></td><td>C3:F5</td><td>60,7</td></tr>
+<tr><td id="c2xc30"><a href="1/C2xC30.html">C<sub>2</sub>&times;C<sub>30</sub></a></td><td><a href="A.html">Abelian</a> group of type [2,30]</td><td><a href="T.html#c2xc30">60</a></td><td></td><td>C2xC30</td><td>60,13</td></tr>
+<tr><td id="s3xd5"><a href="1/S3xD5.html">S<sub>3</sub>&times;D<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/S3.html">S<sub>3</sub></a> and <a href="1/D5.html">D<sub>5</sub></a></td><td><a href="T15.html#s3xd5">15</a></td><td><a href="R.html#s3xd5">4+</a></td><td>S3xD5</td><td>60,8</td></tr>
+<tr><td id="c3xf5"><a href="1/C3xF5.html">C<sub>3</sub>&times;F<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/F5.html">F<sub>5</sub></a></td><td><a href="T15.html#c3xf5">15</a></td><td><a href="R.html#c3xf5">4</a></td><td>C3xF5</td><td>60,6</td></tr>
+<tr><td id="c5xa4"><a href="1/C5xA4.html">C<sub>5</sub>&times;A<sub>4</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/A4.html">A<sub>4</sub></a></td><td><a href="T31.html#c5xa4">20</a></td><td><a href="R.html#c5xa4">3</a></td><td>C5xA4</td><td>60,9</td></tr>
+<tr><td id="c6xd5"><a href="1/C6xD5.html">C<sub>6</sub>&times;D<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C6.html">C<sub>6</sub></a> and <a href="1/D5.html">D<sub>5</sub></a></td><td><a href="T31.html#c6xd5">30</a></td><td><a href="R.html#c6xd5">2</a></td><td>C6xD5</td><td>60,10</td></tr>
+<tr><td id="s3xc10"><a href="1/S3xC10.html">S<sub>3</sub>&times;C<sub>10</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C10.html">C<sub>10</sub></a> and <a href="1/S3.html">S<sub>3</sub></a></td><td><a href="T31.html#s3xc10">30</a></td><td><a href="R.html#s3xc10">2</a></td><td>S3xC10</td><td>60,11</td></tr>
+<tr><td id="c5xdic3"><a href="1/C5xDic3.html">C<sub>5</sub>&times;Dic<sub>3</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C5.html">C<sub>5</sub></a> and <a href="1/Dic3.html">Dic<sub>3</sub></a></td><td><a href="T.html#c5xdic3">60</a></td><td><a href="R.html#c5xdic3">2</a></td><td>C5xDic3</td><td>60,1</td></tr>
+<tr><td id="c3xdic5"><a href="1/C3xDic5.html">C<sub>3</sub>&times;Dic<sub>5</sub></a></td><td><a href="X.html">Direct product</a> of <a href="1/C3.html">C<sub>3</sub></a> and <a href="1/Dic5.html">Dic<sub>5</sub></a></td><td><a href="T.html#c3xdic5">60</a></td><td><a href="R.html#c3xdic5">2</a></td><td>C3xDic5</td><td>60,2</td></tr>
+</table>
+
+
+
+</div>
+
+
+<div id="wc0" class="check">&#x05FF;</div>
+<div id="wc1" class="check">&#x00D7;</div>
+<div id="wc2" class="check">&#x22CA;</div>
+<div id="wc3" class="check">&#x2124;</div>
+<div id="wc4" class="check">&#x1D53D;</div>
+<div id="wc5" class="check">&#x25CB;</div>
+<div id="wc6" class="check">&#x2240;</div>
+<div id="wc7" class="check">&#x211A;</div>
+<div id="wc8" class="check">&#x25C1;</div>
+
+<script>var pathtotop="";</script>
+<script src="scripts.js"></script> 
+</body>
+<script async> HighlightAnchorLinks();</script> 
+
+<script type="text/javascript">
+  var sc_project=11130260; 
+  var sc_invisible=1; 
+  var sc_security="401be3a2"; 
+  var scJsHost = (("https:" == document.location.protocol) ? "https://secure." : "http://www.");
+</script>
+<script async src="https://secure.statcounter.com/counter/counter.js"></script>
+
+
+</html>
