@@ -1,0 +1,81 @@
+DeclareGlobalName("databaseTSFq");
+
+
+
+
+
+
+WriteOrGetTSModulesAndLiftsOverFqViaDatabase:=function(G,p)
+    
+    local str, str0, fileTS, GroupsSameOrder, psi, i, psi_test, dataTSModulesAndLifts, H, U;
+    
+    if Order(G) < 101 then
+        str:="TSLiftsDatabaseOverFq1to100.txt";
+    elif Order(G) < 201 then
+        str:="TSLiftsDatabaseOverFq101to200.txt";
+    elif Order(G) < 301 then
+        str:="TSLiftsDatabaseOverFq201to300.txt";
+    elif Order(G) < 401 then
+        str:="TSLiftsDatabaseOverFq301to400.txt";
+    elif Order(G) < 501 then
+        str:="TSLiftsDatabaseOverFq401to500.txt";
+    elif Order(G) < 601 then
+        str:="TSLiftsDatabaseOverFq501to600.txt";
+    elif Order(G) < 701 then
+        str:="TSLiftsDatabaseOverFq601to700.txt";
+    elif Order(G) < 801 then
+        str:="TSLiftsDatabaseOverFq701to800.txt";
+    elif Order(G) < 901 then
+        str:="TSLiftsDatabaseOverFq801to900.txt";
+    elif Order(G) < 1001 then
+        str:="TSLiftsDatabaseOverFq901to1000.txt";
+    elif Order(G) < 1101 then
+        str:="TSLiftsDatabaseOverFq1001to1100.txt";
+    elif Order(G) < 1201 then
+        str:="TSLiftsDatabaseOverFq1101to1200.txt";
+    elif Order(G) < 1301 then
+        str:="TSLiftsDatabaseOverFq1201to1300.txt";
+    elif Order(G) < 1401 then
+        str:="TSLiftsDatabaseOverFq1301to1400.txt";
+    elif Order(G) < 1501 then
+        str:="TSLiftsDatabaseOverFq1401to1500.txt";
+    else
+       str:="TSLiftsDatabaseOverFqGroupOrdersLargerThan1500.txt"; 
+    fi;
+    
+    Read(
+"/home/bernhard/Schreibtisch/GAP_Database/GAP_Database_Over_Fq/TSModulesAndLiftsOverFq.txt");
+    
+    str0:="/home/bernhard/Schreibtisch/GAP_Database/GAP_Database_Over_Fq/";
+
+    fileTS:=Concatenation(str0,str);
+    
+    Read(fileTS);
+    
+    GroupsSameOrder:=Filtered(databaseTSFq, x -> x.OrderG=Order(G));
+    
+    psi:=0;    
+        
+    for i in [1..Size(GroupsSameOrder)] do
+        if p = GroupsSameOrder[i].Characteristic then
+            psi_test:=IsomorphismGroups(G, GroupsSameOrder[i].G);
+            if psi_test <> fail then
+                psi:=ShallowCopy(psi_test);
+                dataTSModulesAndLifts:=GroupsSameOrder[i];
+            fi;
+        fi;
+    od;
+    if psi <> 0 then
+        return([psi,dataTSModulesAndLifts]);
+    else
+        psi:=IsomorphismPermGroup(G);
+        H:=Image(psi);
+        U:=TSModulesAndLiftsOverFq(H,p);
+        Add(databaseTSFq,U);
+        PrintTo(fileTS, "databaseTSFq:=");
+        AppendTo(fileTS, databaseTSFq);
+        AppendTo(fileTS,";");
+        return([psi,U]);
+    fi;
+end;
+

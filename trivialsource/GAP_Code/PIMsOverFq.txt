@@ -1,0 +1,1251 @@
+
+# The program EquivalentLibraryCharacterTableWithGroup is written by Thomas Breuer:
+
+################################################################
+##
+#F  EquivalentLibraryCharacterTableWithGroup( <G> )
+##
+EquivalentLibraryCharacterTableWithGroup:= function( G )
+    local init, Gcopy, name, attr, Gtbl, tbl, trans, compat, ccl, new, i;
+
+    # If the group stores already an ordinary character table
+    # then we cannot set the attributes consistently.
+    if HasOrdinaryCharacterTable( G ) then
+      Error( "<G> has already a character table" );
+    fi;
+
+    # Test cheap attributes first, and exclude duplicates.
+    init:= AllCharacterTableNames( Size, Size( G ),
+                   NrConjugacyClasses, NrConjugacyClasses( G ),
+                   IsDuplicateTable, false );
+    if Length( init ) = 0 then
+      # No expensive tests are needed.
+      # In particular, do not compute a character table.
+      return fail;
+    fi;
+
+    # Create a copy of the group, in order to compute its character table
+    # without storing it.
+    # (Note that calling 'AttributeValueNotSet' for 'OrdinaryCharacterTable'
+    # does not help, since 'Irr' etc. would appear silently.)
+    # Store the known attributes of 'G' in the copy,
+    # in particular 'Gcopy' and 'G' have the same ordering of conj. classes.
+    Gcopy:= GroupWithGenerators( GeneratorsOfGroup( G ) );
+    for name in KnownAttributesOfObject( G ) do
+      attr:= ValueGlobal( name );
+      Setter( attr )( Gcopy, attr( G ) );
+    od;
+
+    # Compute the character table of the copy.
+    Gtbl:= OrdinaryCharacterTable( Gcopy );
+    for name in init do
+      tbl:= CharacterTable( name );
+      trans:= TransformingPermutationsCharacterTables( tbl, Gtbl );
+      if trans <> fail then
+        # Take this library table:
+        # - Permute the classes stored in the group.
+        compat:= ListPerm( trans.columns, NrConjugacyClasses( tbl ) );
+        ccl:= ConjugacyClasses( G ){ compat };
+
+        # - Copy the contents of the library table.
+        new:= ConvertToLibraryCharacterTableNC(
+                  rec( UnderlyingCharacteristic := 0 ) );
+
+        # - Set the supported attribute values except 'Irr'.
+        for i in [ 3, 6 .. Length( SupportedCharacterTableInfo ) ] do
+          if Tester( SupportedCharacterTableInfo[ i-2 ] )( tbl )
+             and SupportedCharacterTableInfo[ i-1 ] <> "Irr" then
+            Setter( SupportedCharacterTableInfo[ i-2 ] )( new,
+                SupportedCharacterTableInfo[ i-2 ]( tbl ) );
+          fi;
+        od;
+
+        # - Set the irreducibles.
+        SetIrr( new, List( Irr( tbl ),
+            chi -> Character( new, ValuesOfClassFunction( chi ) ) ) );
+
+        # - Set the group in the table.
+        SetUnderlyingGroup( new, G );
+        SetConjugacyClasses( new, ccl );
+        SetIdentificationOfConjugacyClasses( new, compat );
+
+        # - Set the table in the group.
+        SetOrdinaryCharacterTable( G, new );
+
+        return new;
+      fi;
+    od;
+
+    # No library table fits.
+    # However, we set the computed character table, since we know it.
+    SetOrdinaryCharacterTable( G, Gtbl );
+    return fail;
+    end;
+
+
+
+# The following program FromStringToMatrix is an auxiliary program.
+# 
+# Let G be a group with generators gensG, e.g. constructed by the GAP command
+# GroupWithGenerators(gensG). Here, gensG is a list of nrgens generators of G.
+# Let x be an element of G.
+# Moreover, suppose that the matrices M.1,...,M.nrgens are already constructed in
+# binary format. In our applications, these matrices are the images of the group generators
+# gensG under a linear group representation.
+# 
+# The string returned by the command Factorization(G,x) is transformed into the corresponding
+# product of matrices. The latter product is the output of our auxiliary program.
+# Example: if x=(g1*g2)^3, then the matrix (M.1*M.2)^3 is returned. 
+
+FromStringToMatrix := function(G, gensG, p, fAsString) 
+    local M, i, RES, ERGEBNIS, MAT, StringNow, z, PositionsOpenParentheses,
+        PositionsCloseParentheses, KLAMMER, r, SSS, STR, SPLITnow, KlammerAuf, KlammerZu, u,
+        StringNow1, StringNow2, StringNow3, StringYNow, StringToChange, SPLIT, INP,
+        ergebnis_to_return, options, pro, files, f;
+    
+    RES := Filename(MyDir, "RES");
+    ERGEBNIS := Filename(MyDir, "ERGEBNIS");
+    MAT := Filename(MyDir, "MAT");
+    KLAMMER := Filename(MyDir, "KLAMMER");
+        
+    # All files in the directory which start with RES and are not called M
+    files := Filtered(DirectoryContents(MyDir),
+    f -> Length(f)>3 and f[1] = 'R' and f[2] = 'E' and f[3] = 'S');
+    for f in files do
+        # Skip all files with names not starting with RES. or having the form RES<zahl> 
+        if f[4] <> '.' and not ForAll(f{[4..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+
+    files := Filtered(DirectoryContents(MyDir),
+    f -> Length(f)>8 and f[1] = 'E' and f[2] = 'R' and f[3] = 'G' and f[4] = 'E' and f[5] =
+    'B' and f[6] = 'N' and f[7] = 'I' and f[8] = 'S');
+    for f in files do
+# Skip all files with names not starting with ERGEBNIS. or having the form ERGEBNIS<zahl> 
+        if f[9] <> '.' and not ForAll(f{[9..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] =
+    'M' and f[2] = 'A' and f[3] = 'T');
+    for f in files do
+        # Skip all files with names not starting with MAT. or having the form MAT<zahl> 
+        if f[4] <> '.' and not ForAll(f{[4..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>7 and f[1] = 'K' and f[2] =
+    'L' and f[3] = 'A' and f[4] = 'M' and f[5] = 'M' and f[6] = 'E' and f[7] = 'R');
+    for f in files do
+        # Skip all files with names not starting with KALMMER. or having the form KLAMMER<zahl> 
+        if f[8] <> '.' and not ForAll(f{[8..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+     
+    StringNow := ShallowCopy(fAsString);
+    z := 0;
+    
+    # The first step is to eliminate all occurring parentheses in the string fAsString.
+    # We search for the innermost pair of parentheses and evaluate the expression enclosed by
+    # them. Iteratively, after finitely many steps we are done. 
+    
+    while '(' in StringNow do
+        PositionsOpenParentheses := Positions(StringNow,'(');
+        PositionsCloseParentheses := Positions(StringNow,')');
+        z := z+1;
+        KlammerZu := PositionsCloseParentheses[1]; # find first closing parenthesis
+        u := PositionsCloseParentheses[1];
+        while (u in PositionsOpenParentheses)=false do
+            u := u-1;
+        od;
+        KlammerAuf := u;
+        StringToChange := StringNow{ [KlammerAuf+1..KlammerZu-1] } ; 
+        SPLIT := SplitString(StringToChange, "*");
+
+        for i in [1..Size(SPLIT)] do
+            STR := SPLIT[i];
+            SPLITnow := SplitString(STR,"^");
+            if Size(SPLITnow)=2 then # In this case the expression contains an exponent.
+                SSS := ReplacedString(SPLITnow[1],"x","M"); 
+                SSS := ReplacedString(SSS,"y","KLAMMER."); 
+                options := [SSS, String(SPLITnow[2]), Concatenation("MAT.",String(i))];
+                pro := Process(MyDir, LocationOfZPOAsString, STDin, STDout, options);
+                if not IsZero(pro) then
+                    Print("The last process did not return zero!");
+                    return(fail);
+                fi;
+            else
+                SSS := ReplacedString(SPLITnow[1],"x","M");
+                SSS := ReplacedString(SSS,"y","KLAMMER.");                
+                options := [SSS, String(1), Concatenation("MAT.",String(i))];
+                pro := Process(MyDir, LocationOfZPOAsString, STDin, STDout, options);
+                if not IsZero(pro) then
+                    Print("The last process did not return zero!");
+                    return(fail);
+                fi;
+            fi;
+        od;        
+        options := ["MAT.1","MAT.2","RES.2"];
+        pro := Process(MyDir, LocationOfZMUAsString, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;        
+        for i in [2..Size(SPLIT)-1] do        
+            options := [Concatenation("RES.",String(i)),
+            Concatenation("MAT.",String(i+1)),Concatenation("RES.",String(i+1))];            
+            pro := Process(MyDir, LocationOfZMUAsString, STDin, STDout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;
+        od;    
+        r := Maximum(Size(SPLIT),2);        
+        options := [Concatenation("RES.",String(r)), "1", Concatenation("KLAMMER.",String(z))];
+        pro := Process(MyDir, LocationOfZPOAsString, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;        
+        if KlammerAuf > 1 then
+            StringNow1 := StringNow{ [1..KlammerAuf-1] } ;
+        else
+            StringNow1 := "";
+        fi;
+        StringNow2 := Concatenation("KLAMMER.",String(z));
+        if KlammerZu < Size(StringNow) then
+            StringNow3 := StringNow{ [KlammerZu+1..Size(StringNow)] } ;
+        else
+            StringNow3 := "";
+        fi;
+        StringYNow := Concatenation("y",String(z));
+        StringNow := Concatenation(StringNow1,StringYNow,StringNow3);
+    od;    
+    
+    # We have finally eliminated all parentheses.
+
+    StringToChange := StringNow; # This string does not contain any parentheses anymore,
+    # but it can still contain exponents or multiplication symbols.
+
+    SPLIT := SplitString(StringToChange, "*");
+
+    for i in [1..Size(SPLIT)] do
+        STR := SPLIT[i];
+        SPLITnow := SplitString(STR,"^");
+        if Size(SPLITnow)=2 then # this means that ^ occurs in the present string
+            SSS := ReplacedString(SPLITnow[1],"x","M");
+            SSS := ReplacedString(SSS,"y","KLAMMER.");
+            options := [SSS, String(SPLITnow[2]), Concatenation("MAT.",String(i))];
+            pro := Process(MyDir, LocationOfZPOAsString, STDin, STDout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;    
+        else
+            SSS := ReplacedString(SPLITnow[1],"x","M");
+            SSS := ReplacedString(SSS,"y","KLAMMER.");
+            options := [SSS, String(1), Concatenation("MAT.",String(i))];
+            pro := Process(MyDir, LocationOfZPOAsString, STDin, STDout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;
+        fi;
+    od;
+    if Size(SPLIT) = 1 then
+        options := [Concatenation(MAT,".",String(1)), Concatenation(ERGEBNIS,".text")];
+        pro := Process(MyDir, LocationOfZPRAsString, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        INP := InputTextString
+( Concatenation("ergebnis"," := ScanMeatAxeFile(","\"",Concatenation(ERGEBNIS,".text"),"\"",");" ));;
+        Read(INP);      
+    else
+        options := ["MAT.1","MAT.2","RES.2"];
+        pro := Process(MyDir, LocationOfZMUAsString, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        for i in [2..Size(SPLIT)-1] do
+            options := [Concatenation("RES.",String(i)), Concatenation("MAT.",String(i+1)),
+            Concatenation("RES.",String(i+1))];
+            pro := Process(MyDir, LocationOfZMUAsString, STDin, STDout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;
+        od;
+        r := Maximum(Size(SPLIT),2);
+        options := [Concatenation("RES.",String(r)), "1", Concatenation("ERGEBNIS.",String(1))];
+        pro := Process(MyDir, LocationOfZPOAsString, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        options := [Concatenation(ERGEBNIS, ".", String(1)), Concatenation(ERGEBNIS, ".text")];
+        pro := Process(MyDir, LocationOfZPRAsString, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        INP := InputTextString
+( Concatenation("ergebnis"," := ScanMeatAxeFile(","\"",Concatenation(ERGEBNIS,".text"),"\"",");" ));;
+        Read(INP);
+    fi;
+    ergebnis_to_return := ShallowCopy(ergebnis);
+    return ergebnis_to_return;
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########################################################################################################
+
+# The following program TODO !!!
+
+
+MatrixRepsPIMsFpGViaSubgroup := function(gensG, gensH, p)
+
+    local G, H, V, PSI, TheRecord, gensPSIofH, PSI_TO_THE_MINUS_ONE, PreimagesOfGensPSIofH, PSI_AsGroupHomom, PSI_TO_THE_MINUS_ONE_AsGroupHomom, 
+    H_Auxiliary, ListGensAsStrings, a, ps, fac, facAsString, PIMsOverFp_In_Database, TSModulesOverFpWithCorrectMatrices, b, M, files, f, s, MatricesModuleNow, t;
+    
+    
+    ChangeDirectoryCurrent(MyDir);
+	G := Group(gensG);
+	if Size(gensH)>0 then
+		H := Group(gensH);
+	else
+		H:=Group(());
+	fi;
+	
+    V := WriteOrGetPIMsDataOverFqViaDatabase(H,p);
+    PSI := V[1]; # PSI is the map IsomorphismPermGroup from the program WriteOrGetPIMs
+    TheRecord := V[2]; 
+    gensPSIofH := TheRecord.gensG; # i.e. the generators of the image of PSI 
+    PSI_TO_THE_MINUS_ONE := InverseGeneralMapping(PSI);
+    PreimagesOfGensPSIofH := List(gensPSIofH, x -> ImagesRepresentative(PSI_TO_THE_MINUS_ONE,x));
+    PSI_AsGroupHomom := GroupHomomorphismByImages(H,Image(PSI),PreimagesOfGensPSIofH,gensPSIofH);
+    PSI_TO_THE_MINUS_ONE_AsGroupHomom := GroupHomomorphismByImages(Image(PSI),G,gensPSIofH,PreimagesOfGensPSIofH);
+    H_Auxiliary := GroupByGenerators(gensPSIofH); 
+    ListGensAsStrings := [];
+    for a in [1..Size(gensH)] do 
+        ps := Image(PSI_AsGroupHomom,gensH[a]);
+        fac := Factorization(H_Auxiliary, ps);
+        facAsString := String(fac);
+        
+        if 'i' in facAsString then # i.e. if we have "<identity ...>" here
+            facAsString := "x1*x1^-1";
+        fi;     
+        
+        Add(ListGensAsStrings,facAsString);
+    od;
+    
+    # Next, we collect the underlying representations of all the PIMs over Fp from the database,
+
+    PIMsOverFp_In_Database := TheRecord.AllPIMsOver_FAsMTXModules;
+    # This is a list of records.
+    
+    TSModulesOverFpWithCorrectMatrices := [];
+    
+    for b in [1..Size(PIMsOverFp_In_Database)] do
+        M := Filename(DirectoryCurrent(), "M");
+        
+        files := Filtered(DirectoryContents(MyDir), f -> Length(f)>1 and f[1] = 'M');
+        for f in files do
+            if f[2] <> '.' and not ForAll(f{[2..Length(f)]}, IsDigitChar) then
+                continue;
+            fi;
+            f := Filename(MyDir, f);
+            RemoveFile(f);
+        od;
+    
+        for s in [1..Size(gensPSIofH)] do
+            CMtxBinaryFFMatOrPerm(PIMsOverFp_In_Database[b].generators[s],p,Concatenation(M,String(s)));
+        od;
+        
+        MatricesModuleNow := [];
+        
+        for t in [1..Size(gensH)] do # here, we are adding the matrices corresponding to gensH to our list MatricesModuleNow
+            Add(MatricesModuleNow,FromStringToMatrix(H,gensH,p,ListGensAsStrings[t]));
+        od;
+        
+        
+        if Size(PIMsOverFp_In_Database)=1 and PIMsOverFp_In_Database[1].dimension=1 then
+			MatricesModuleNow := PIMsOverFp_In_Database[1].generators;
+        fi;
+        
+        Add(TSModulesOverFpWithCorrectMatrices,GModuleByMats(MatricesModuleNow,GF(p)));
+    od;
+    
+    
+    
+    PIMsH_Over_Fp := ShallowCopy(TSModulesOverFpWithCorrectMatrices);
+    
+    temp_PIMs_Of_G_over_Fp := [];
+	for i in PIMsH_Over_Fp do
+		I := InducedGModule(G,H,i);
+		HomPP := MTX.BasisModuleHomomorphisms(I,I);	
+		A := FullMatrixAlgebra(GF(p), Size(I.generators[1]));
+		B := Subalgebra(A, HomPP);
+		pids := IdempotentsForDecomposition(B);
+		for j in pids do
+			j_new := ShallowCopy(j);
+			bas := MTX.SpinnedBasis(j_new, I.generators, I.field);
+			sub := MTX.InducedActionSubmodule(I,bas);
+			Add(temp_PIMs_Of_G_over_Fp, sub);
+		od;
+	od;
+	
+	
+	ListWithoutIsomorphicCopies := DeleteIsomorphicCopiesFromList(temp_PIMs_Of_G_over_Fp);
+	
+	List_To_Return := List(ListWithoutIsomorphicCopies, x -> GModuleByMats(x.generators,x.field));
+	
+	return(List_To_Return);
+    
+    end;
+    
+    
+
+
+
+
+
+
+
+
+
+################################################################  
+    
+# The following program is the main program:
+
+# In order to compute the projective indecomposable modules over a splitting field k we apply
+# the following strategy:
+# 
+# 1) Computation of the regular GF(p)G-module as a matrix representation
+# 2) Computation of the centrally primitive idempotents of the group algebra GF(p)G
+# 3) Evaluation of the regular representation at these idempotent group algebra elements yields
+# idempotent matrices which blockwise decompose the regular representation as a direct sum of
+# subrepresentations
+# 4) Apply the programs of Magdolna Szöke, Klaus Lux, Jürgen Müller and Michael Ringe to those
+# new representations which are still projective (and hence faithful when considered as modules
+# over the block algebra) in order to get the PIMs over GF(p)G 
+# 5) Compute Hom_{kG}(k\oplus_{GF(p)}P,k\oplus_{GF(p)}P) for each projective indecomposable
+# GF(p)G-module as a subalgebra of a full matrix algebra where k is a minimal splitting field
+# and hence possibly varying for each P 
+# 6) Compute a complete set of orthogonal primitive idempotents of this endomorphism ring 
+# 7) Compute the submodules corresponding to the latter primitive idempotents and save a basis
+# with respect to which the generator matrices of the modules in 5) have block diagonal form
+# since this is needed later 
+# 8) Compute the Brauer characters and the ordinary characters of the projective indecomposable
+# kG-modules 
+
+PIMsFqG := function(G,p)
+
+    local gensG, F, RegularModuleOverF, REG, MatricesRegularRep, i, mat,
+    NumberOfSimplesOverF, MatricesSimplesOverF, ctG, UUU, ctGmodp, dec, cclsG, p_prime_cclsG,
+    BrauerCharsSimplesOverFasClassFunctions, a1, hom, BrVals_hom, phi,
+    BrauerCharsOverSplittingField, pModularReductionsOfOrdinaryChars, j, temp,
+    BrauerCharsPIMsOverSplittingField, ScalProdsOfSimplesFWithPIMsOfDecMatrix,
+    SimplesForVerification, ListOfDifferences, DimensionsOfPIMsOverF, s, MatricesPIMsOverF,
+    MODU, x, exp, facts, pprimefacts, f, k, PIMNumbersToSplitLater, AllPIMsOver_kAsMTXModules,
+    BrauerCharsRepresentationsOfThePIMsOver_k, IdentifyingG, HOMs, OrdinaryCharsOfThePIMs,
+    temp_ordinary_classes, counter, Chi_PIM, temp_scalprods, temp_for_sort, temp_for_sort2,
+    temp_for_sort3, temp_for_sort4, MyRecord, IrrCT, List_Bildmatrizen, elt, pos, COAndMAGMAnow,
+    ListCoefficients, IdempotentMatrices, V, BVS, PIMsInBlocks, BlockIdempotsOverFp, vectors,
+    bas, sub, AllSimplesSortedInBlocks, v, AllBrauerCharsRepresentationsOfThePIMsOver_F,
+    All_temp_scalprods, PIMsHere, rep, MatricesSimplesHere, a, b, DegreesSplittingFields,
+    ListAllPIMsOverSplittingFields, AllBlockDiagonalGens, AllPIMsOver_FAsMTXModules,
+    BasisGalConjugates, k_new, P_new, HomPP, A, pids, SizePids, E_M_B_i,
+    List_modular_cen_prim_ids, NumberOfBlocks, CoefsOverC, e_B_j, FrobAut, r, e_j_now, flag,
+    IdempotentKontrolleur, MAGMAElts, ListNEWCoefficients, FpBlock_aktuell, RelevantGroupEls,
+    Dictionary, List_Factorizations, List_Factorizations_AsStrings,
+    BrauerCharsRepresentationsOfThePIMsOver_F, AllOrdinaryCharsOfThePIMs_OverF,
+    AllPIMsSortedInBlocks, u, Irr_As_List_Of_Lists, SimpleModulesOverF,
+    SimpleModulesOverFforlater, AllBasesForGaloisConjugates, B, ConjugatedGeneratorMatrices,
+    BlockDiagonalGens, E_M_B, pbs, cc, m, kG, BlockIdempotsToSumLater, NewIdempot,
+    NumberOfSimplesHere, ModulesSimpleHere, OrdinaryCharsOfThePIMs_OverF, OldGens,
+    BrauerCharsPIMsOverFqAsClassFunctions, OrdinaryCharsOfThePIMs_OverFq, ScalprodsPIMsOverFq,
+    options, pro, dir, files, CoefsOverFq, MM, STr, ClassNamesOrdinaryTableG, ListComplexIBrs, 
+    Representatives_p_prime_cclsG, ListFrobeniusCharValsOfComplexIBrs, ClassNamesBrauerTableG,
+    List_Factorizations_p_prime_cclsG, ww, List_Factorizations_AsStrings_p_prime_cclsG, 
+    k_max_here, k_max, TeMp, ListForScalProdsTest, w, c, yy, bas_new, FrobCharValsTemp, q, 
+    ListFrobeniusCharValsOfBrauerCharValsOfPIM, COLLECTEDFACSimplesshere, COMPFACSSimplesFq, 
+    ListFrobeniusCharValsOfBrauerCharValsOfSIM, j_new, ModuleForCollectionOfFacs, 
+    COLLECTEDFACSPIMsFq, COMPFACSPIMsFq, MaxSgrps, MyTemp, MyMax, posi, H, gensH, 
+    MyPIMsAsGModulesOverFpG, MySimplesAsGModulesOverFpG;
+    
+    
+    ChangeDirectoryCurrent(MyDir);
+    
+   
+    if Order(G)= 1 then
+        G := Group(());
+    fi;
+    gensG := GeneratorsOfGroup(G);
+    if HasOrdinaryCharacterTable(G) then
+        ctG := CharacterTable(G);
+    else
+        UUU := EquivalentLibraryCharacterTableWithGroup(G);
+        ctG := CharacterTable(G);
+    fi;
+    F := GF(p); # GF is an abbreviation for Galois field.
+    cc := ConjugacyClasses(ctG);
+    exp := Exponent(G);
+    x := X(GF(p), "x");
+    exp := Exponent(G);
+    facts := Factors(exp);
+    pprimefacts := Filtered(facts, x-> x mod p <> 0 mod p);
+    m := Product(pprimefacts);
+    f := x^m - 1;
+    k := SplittingField(f); # This is done in order to define a group ring which is large enough
+    # for the computations to come. Later, we choose the finite field as small as possible when
+    # dealing with modules. 
+
+
+
+
+
+
+
+# jetzt weg:    RegularModuleOverF := RegularModule(G,F);
+# jetzt weg:    REG := RegularModuleOverF[2];
+    
+    
+    
+    
+    
+# jetzt weg:    pbs := PrimeBlocks(ctG,p);
+# jetzt weg:    NumberOfBlocks := Maximum(pbs.block);
+# jetzt weg:    kG := GroupRing(k,G);
+# jetzt weg:    List_modular_cen_prim_ids := [];
+# jetzt weg:    for j in [1..NumberOfBlocks] do
+# jetzt weg:        CoefsOverC := CoefficientsOfOsimaIdempotent(ctG,p,j);
+# jetzt weg:        CoefsOverFq := List(CoefsOverC, x-> FrobeniusCharacterValue(x,p));
+# jetzt weg:        # See https://www.gap-system.org/Manuals/doc/ref/chap72.html#X79BACBC47B4C413E.
+# jetzt weg:        e_B_j := Sum( cc , U -> ElementOfMagmaRing( 
+# jetzt weg:                                      FamilyObj( Zero( kG ) ), 
+# jetzt weg:                                      Zero( k ), 
+# jetzt weg:                                      List(U,u->CoefsOverFq[Position(cc,U)]), 
+# jetzt weg:                                      AsList(U) ) 
+# jetzt weg:                    ); 
+# jetzt weg:        Add(List_modular_cen_prim_ids, e_B_j);
+# jetzt weg:    od;
+# jetzt weg:    
+    # Hence, we have computed all centrally primitive idempotents of the group ring kG. We are
+    # now interested in the calculation of all centrally primitive idempotents of the group
+    # ring GF(p)G.
+    # In order to compute these, we only have to do the following: let e_1 be the first
+    # idempotent in the list List_modular_cen_prim_ids. Apply the Frobenius automorphism to all
+    # coefficients of e_1 and denote the resulting idempotent by e_2.
+    # Continue this process until e_1 is reached again. The sum of all obtained different
+    # idempotents is a centrally primitive idempotents of the group ring GF(p)G.  
+    
+# jetzt weg:    FrobAut := FrobeniusAutomorphism(k);
+# jetzt weg:    BlockIdempotsToSumLater := [];
+# jetzt weg:    IdempotentKontrolleur := [];
+# jetzt weg:    for j in [1..NumberOfBlocks] do
+# jetzt weg:        r := 1;
+# jetzt weg:        FpBlock_aktuell := [];
+# jetzt weg:        flag := false;
+# jetzt weg:        e_j_now := List_modular_cen_prim_ids[j];
+# jetzt weg:        if not e_j_now in IdempotentKontrolleur then
+# jetzt weg:            Add(IdempotentKontrolleur, e_j_now);
+# jetzt weg:            Add(FpBlock_aktuell, e_j_now);
+# jetzt weg:            COAndMAGMAnow := CoefficientsAndMagmaElements(e_j_now);
+# jetzt weg:            MAGMAElts := List([1,3 .. Length(COAndMAGMAnow)-1], x -> COAndMAGMAnow[x]);
+            #   MAGMAElts := [];
+            # for i in [1..Size(COAndMAGMAnow)/2] do
+            #     Add(MAGMAElts,COAndMAGMAnow[2*i-1]);
+            # od;
+    
+# jetzt weg:            while flag = false do
+# jetzt weg:                ListNEWCoefficients := List([2,4 .. Length(COAndMAGMAnow)], x -> COAndMAGMAnow[x]^(FrobAut^r));
+                # ListNEWCoefficients := [];      
+                # for i in [1..Size(COAndMAGMAnow)/2] do
+                #     Add(ListNEWCoefficients,COAndMAGMAnow[2*i]^(FrobAut^r));
+                # od;
+# jetzt weg:    NewIdempot := ElementOfMagmaRing(FamilyObj(Zero(kG)), Zero(k), ListNEWCoefficients, MAGMAElts);
+# jetzt weg:                if NewIdempot in FpBlock_aktuell then
+# jetzt weg:                    flag := true;
+# jetzt weg:                else
+# jetzt weg:                    Add(FpBlock_aktuell, NewIdempot);
+#                    Add(IdempotentKontrolleur, NewIdempot);
+#                    r := r+1;
+#                fi;
+#            od;
+#            Add(BlockIdempotsToSumLater, FpBlock_aktuell);
+#        fi;
+#    od;
+#    BlockIdempotsOverFp := List(BlockIdempotsToSumLater, x -> Sum(x));
+#
+#    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>1 and f[1] = 'M');
+#    for f in files do
+#        if f[2] <> '.' and not ForAll(f{[2..Length(f)]}, IsDigitChar) then
+#            continue;
+#        fi;
+#        f := Filename(MyDir, f);
+#        RemoveFile(f);
+#    od;
+#    M := Filename(DirectoryCurrent(), "M");
+#    for i in [1..Size(REG.generators)] do
+#        CMtxBinaryFFMatOrPerm(REG.generators[i],p,Concatenation(M,String(i)));
+#    od;
+#    RelevantGroupEls := [];
+#    # We find out which elements of G occur as coefficients of the block idempotents.
+#    for j in [1..Size(BlockIdempotsOverFp)] do
+#        e_j_now := BlockIdempotsOverFp[j];
+#        COAndMAGMAnow := CoefficientsAndMagmaElements(e_j_now);
+#        for i in [1..Size(COAndMAGMAnow)/2] do
+#            if (COAndMAGMAnow[2*i-1] in RelevantGroupEls) = false then
+#                Add(RelevantGroupEls,COAndMAGMAnow[2*i-1]);
+#            fi;
+#        od;
+#    od;
+# jetzt weg:     Dictionary := List([1,2 .. Length(RelevantGroupEls)], x -> [RelevantGroupEls[x]]);
+
+
+# Dictionary := [];   
+# for i in [1..Size(RelevantGroupEls)] do
+#     Add(Dictionary,[]);
+# od;
+# 
+# for i in [1..Size(RelevantGroupEls)] do
+#     Add(Dictionary[i], RelevantGroupEls[i]);
+# od;
+
+
+# It is important for the next command that the generators of G have already been computed.
+# jetzt weg:    List_Factorizations := List(RelevantGroupEls, x -> Factorization(G,x));
+# jetzt weg:    List_Factorizations_AsStrings := List(List_Factorizations, x -> String(x));
+
+# We replace the string "<identity ...>" by the string "x1*x1^-1".
+
+# jetzt weg:    for j in [1..Size(List_Factorizations_AsStrings)] do
+# jetzt weg:        if 'i' in List_Factorizations_AsStrings[j] then # i.e. if we have "<identity ...>" here
+# jetzt weg:            List_Factorizations_AsStrings[j] := "x1*x1^-1";
+# jetzt weg:        fi;
+# jetzt weg:    od;
+# jetzt weg:    
+# jetzt weg:    for i in [1..Size(RelevantGroupEls)] do
+# jetzt weg:        STr := List_Factorizations_AsStrings[i];
+# jetzt weg:        Add(Dictionary[i], FromStringToMatrix(G,gensG,p,STr));
+# jetzt weg:    od;
+# jetzt weg:    
+# jetzt weg:        IdempotentMatrices := [];
+# jetzt weg:    
+# jetzt weg:        for j in [1..Size(BlockIdempotsOverFp)] do
+# jetzt weg:            e_j_now := BlockIdempotsOverFp[j];
+# jetzt weg:            COAndMAGMAnow := CoefficientsAndMagmaElements(e_j_now);
+# jetzt weg:            ListCoefficients := [];
+# jetzt weg:            for i in [1..Size(COAndMAGMAnow)/2] do
+# jetzt weg:                Add(ListCoefficients,COAndMAGMAnow[2*i]);
+# jetzt weg:            od;
+# jetzt weg:            List_Bildmatrizen := [];
+# jetzt weg:            for i in [1..Size(COAndMAGMAnow)/2] do
+# jetzt weg:            # We search for the position of the element COAndMAGMAnow[2*i-1] in the list Dictionary
+# jetzt weg:            # and add the corresponding matrix to the list List_Bildmatrizen.
+# jetzt weg:                elt := COAndMAGMAnow[2*i-1];
+# jetzt weg:                pos := Position(RelevantGroupEls,elt);
+# jetzt weg:                Add(List_Bildmatrizen, Dictionary[pos][2]);
+# jetzt weg:            od;
+# jetzt weg:            temp := [];
+# jetzt weg:            for i in [1..Size(COAndMAGMAnow)/2] do
+# jetzt weg:                Add(temp, ListCoefficients[i]*List_Bildmatrizen[i]);
+# jetzt weg:            od;
+# jetzt weg:            Add(IdempotentMatrices, Sum(temp));
+# jetzt weg:        od;
+
+    # Evaluating the GF(p)-linearly extended regular representation at the block idempotents
+    # yields idempotent matrices E_i. They decompose our
+    # vector space k^n accordingly: k^n = E_1 * k^n + ... + E_r * k^n (direct sum).
+    
+# jetzt weg:        V := FullRowSpace(REG.field,REG.dimension);
+# jetzt weg:        BVS := BasisVectors(Basis(V));
+# jetzt weg:        
+# jetzt weg:        PIMsInBlocks := [];
+
+# jetzt weg:        for j in [1..Size(BlockIdempotsOverFp)] do
+# jetzt weg:            vectors := [];
+# jetzt weg:            MM := IdempotentMatrices[j];
+# jetzt weg:            for s in BVS do
+# jetzt weg:                Add(vectors, s*MM); # Recall that GAP acts from the right.
+# jetzt weg:            od;
+# jetzt weg:            bas := MTX.SpinnedBasis(vectors,REG.generators,REG.field);
+# jetzt weg:            sub := MTX.InducedActionSubmodule(REG,bas);
+# jetzt weg:            Add(PIMsInBlocks, sub); # This list gives the block decomposition of the regular module
+# jetzt weg:            # into projective direct summands.
+# jetzt weg:        od;
+    
+    # this deletes some old files:
+    
+    files := Filtered
+    (DirectoryContents(MyDir), f -> Length(f)>1 and f[1] = 'm' and f[2] = 'a' and f[3] = 't' );
+    for f in files do
+        if f[4] <> '.' and not ForAll(f{[4..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>1 and f[1] =
+    'r' and f[2] = 'e' and f[3] = 'p' );
+    for f in files do
+        if f[4] <> '.' and not ForAll(f{[4..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;    
+    
+    
+#    AllSimplesSortedInBlocks := List(BlockIdempotsOverFp, x -> []);
+#    AllPIMsSortedInBlocks := List(BlockIdempotsOverFp, x -> []);
+    
+    AllBrauerCharsRepresentationsOfThePIMsOver_F := [];
+    AllOrdinaryCharsOfThePIMs_OverF := [];
+    All_temp_scalprods := [];
+    ctGmodp := ctG mod p;
+    Display(ctGmodp);
+    dec := DecompositionMatrix(ctGmodp);
+    cclsG := ConjugacyClasses(ctG);
+
+    # TO DO: Hier jetzt das mit dem neuen Plan für die p'-classes einfügen !!! also mit ClassNamesBrauerTableG, ClassNamesOrdinaryTableG und Position(ClassNamesOrdinary, ClassNamesBrauer[3]); !!! und an ALLEN Parallelstellen !!!!
+    # UND DANN NOT TO FORGET: Die database "löschen", damit nicht mit den alten, zT falschen Ergebnissen gerechnet wird (z.B. bei einer Probe mit SmallGroup(44,1) für p=2 !)!
+    
+    p_prime_cclsG := [];
+    ClassNamesOrdinaryTableG := ClassNames(ctG);
+    ClassNamesBrauerTableG := ClassNames(ctGmodp);
+    for i in [1..Size(ClassNamesBrauerTableG)] do
+        pos := Position(ClassNamesOrdinaryTableG, ClassNamesBrauerTableG[i]);
+        Add(p_prime_cclsG, cclsG[pos]);
+    od;
+    
+#    MatricesSimplesOverF := [];
+    
+    BrauerCharsOverSplittingField := [];
+    for i in [1..Size(Irr(ctGmodp))] do
+        Add(BrauerCharsOverSplittingField, Irr(ctGmodp)[i]);
+    od;
+
+    pModularReductionsOfOrdinaryChars:=[];
+    for j in [1..Size(Irr(ctG))] do
+        temp:=[];
+        for i in [1..Size(Irr(ctGmodp))] do
+            Add(temp, dec[j][i]*BrauerCharsOverSplittingField[i]);
+        od;
+        Add(pModularReductionsOfOrdinaryChars, Sum(temp));
+    od;
+
+    BrauerCharsPIMsOverSplittingField := [];
+    for i in [1..Size(Irr(ctGmodp))] do
+        temp := [];
+        for j in [1..Size(Irr(ctG))] do
+            Add(temp, dec[j][i]*pModularReductionsOfOrdinaryChars[j]);
+        od;
+        Add(BrauerCharsPIMsOverSplittingField, Sum(temp));
+    od; # Hence, the list BrauerCharsPIMsOverSplittingField and the columns of the decomposition
+    # matrix dec are sorted in the same fashion !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!.
+     
+     
+     
+     
+   # ################################################################
+   #
+   # Next, we begin with the construction of a list consisting
+   # of pairs (Simples, complex IBr). This is needed and finished later.
+   #  
+   # ################################################################
+ 
+    # The aim is that the orderings of p_prime_classes_IBr
+    # and p_prime_cclsG coincide.
+	
+    # Recall: p_prime_cclsG is the list of p'-classes of G.
+    
+    Representatives_p_prime_cclsG := List(p_prime_cclsG, x -> Representative(x));
+    ListComplexIBrs := List([1..Size(Irr(ctGmodp))], x -> []);
+
+    for a in [1..Size(Irr(ctGmodp))] do
+        for b in [1..Size(Irr(ctGmodp))] do
+            Add(ListComplexIBrs[a], Representatives_p_prime_cclsG[b]^Irr(ctGmodp)[a]);
+        od;
+    od;
+    
+    ListFrobeniusCharValsOfComplexIBrs := List([1..Size(Irr(ctGmodp))], x -> []);
+
+    for a in [1..Size(Irr(ctGmodp))] do
+        for b in [1..Size(Irr(ctGmodp))] do
+Add(ListFrobeniusCharValsOfComplexIBrs[a],FrobeniusCharacterValue(Representatives_p_prime_cclsG[b]^Irr(ctGmodp)[a],p));
+        # This makes sense due to Curtis-Reiner (1962) page 587 (82.5) Corollary 
+        od;
+    od;
+    
+    List_Factorizations_p_prime_cclsG :=
+    List(Representatives_p_prime_cclsG, x -> Factorization(G,x));
+    
+    List_Factorizations_AsStrings_p_prime_cclsG :=
+    List(List_Factorizations_p_prime_cclsG, x -> String(x));
+
+            # We replace the string "<identity ...>" by the string "x1*x1^-1".
+
+            for ww in [1..Size(List_Factorizations_AsStrings_p_prime_cclsG)] do
+                if 'i' in List_Factorizations_AsStrings_p_prime_cclsG[ww] then
+                # i.e. if we have "<identity ...>" here
+                    List_Factorizations_AsStrings_p_prime_cclsG[ww] := "x1*x1^-1";
+                fi;
+            od;
+    
+    ################################################################
+    
+    # The following loop computes the PIMs of GF(p)G.
+
+
+
+
+
+if IsZero(Order(G) mod p) then 
+	MaxSgrps := MaximalSubgroupClassReps(G);
+	MyTemp := List(MaxSgrps, x -> Order(x));
+	MyMax := Maximum(MyTemp);
+	posi := Position(MyTemp, MyMax);
+	H := MaxSgrps[posi];
+
+	gensH := GeneratorsOfGroup(H);
+
+
+	MyPIMsAsGModulesOverFpG := MatrixRepsPIMsFpGViaSubgroup(gensG, gensH, p);
+	MySimplesAsGModulesOverFpG := List(MyPIMsAsGModulesOverFpG, x -> MTX.InducedActionSubmodule(x,MTX.BasisSocle(x)));
+elif Order(G)=1 then
+	MySimplesAsGModulesOverFpG := [GModuleByMats([[[1]]*One(GF(p))],GF(p))];
+	MyPIMsAsGModulesOverFpG := ShallowCopy(MySimplesAsGModulesOverFpG);
+else
+	MySimplesAsGModulesOverFpG := IrreducibleModules(G,GF(p),Order(G))[2];;
+	MyPIMsAsGModulesOverFpG := ShallowCopy(MySimplesAsGModulesOverFpG);
+fi;
+
+
+
+
+
+
+    # We proceed along the following steps:
+    # a) Collect information from the decomposition matrix, such like the ordinary character
+    # of the PIMs of GF(p)G which lie in the currently considered block.
+    # b) Compute a composition series of the projective GF(p)G-module Q under consideration,
+    # i.e. belonging to the current p-block B, save both the irreducible GF(p)G-modules and
+    # their stable peakword kernels. 
+    # c) Fix an irreducible B-module S. Compute the dimension of the corresponding projective
+    # cover P of S character-theoretically.
+    # d) Choose a basis C of the stable peakword kernel of S. Repeat computing the submodule
+    # spinned by a basis vector v of C until a submodule sub having correct dimension is found.
+    # The module sub is automatically isomorphic to P due to the following reason: the module
+    # sub is S-local and, therefore, it is an epimorphic image of P. Hence it is enough to
+    # compare their respective dimensions.
+    # e) In the end, we assign to the PIMs of GF(p)G their respective ordinary characters when
+    # considered as kG-modules, where k is a splitting field for them. This is done by
+    # considering the respective Brauer-characters.
+
+# jetzt ALT:    for j in [1..Size(BlockIdempotsOverFp)] do
+# jetzt ALT:            PIMsHere := [];
+# jetzt ALT:            for i in [1..Size(gensG)] do
+# jetzt ALT:                Add(PIMsHere, PIMsInBlocks[j].generators[i]);
+# jetzt ALT:                # This gives us the generators of the matrix representations of the direct sum of
+# jetzt ALT:                # all PIMs of this block, but with multiplicities.
+# jetzt ALT:            od;
+# jetzt ALT:            rep := Filename(DirectoryCurrent(), Concatenation("rep","_",String(j),"_"));
+# jetzt ALT:            for i in [1..Size(gensG)] do
+# jetzt ALT:                CMtxBinaryFFMatOrPerm(PIMsHere[i],p,Concatenation(rep,Concatenation(".",String(i))));
+# jetzt ALT:            od;
+# jetzt ALT:            options := ["-g",String(Size(gensG)), rep];
+# jetzt ALT:            pro := Process(MyDir, LocationOfCHOPAsString, STDin, STDout, options);
+# jetzt ALT:            if not IsZero(pro) then
+# jetzt ALT:                Print("The last process did not return zero!");
+# jetzt ALT:                return(fail);
+# jetzt ALT:            fi;
+# jetzt ALT:            Read(Concatenation(rep,".cfinfo"));
+# jetzt ALT:        
+# jetzt ALT:            NumberOfSimplesHere := Size(CFInfo.ConstituentNames);
+# jetzt ALT:    
+# jetzt ALT:            options := ["-n", "-k", rep];
+# jetzt ALT:    
+# jetzt ALT:            pro := Process(MyDir, LocationOfPWKONDAsString, STDin, STDout, options);
+# jetzt ALT:            if not IsZero(pro) then
+# jetzt ALT:                Print("The last process did not return zero!");
+# jetzt ALT:                return(fail);
+# jetzt ALT:            fi;
+# jetzt ALT:   
+
+
+
+# HABEN: 
+
+# MyPIMsAsGModulesOverFpG   UND   MySimplesAsGModulesOverFpG
+
+  
+
+        
+        ModulesSimpleHere := ShallowCopy(MySimplesAsGModulesOverFpG);
+        NumberOfSimplesHere := Size(ModulesSimpleHere);
+        BrauerCharsSimplesOverFasClassFunctions := [];
+        for i in [1..NumberOfSimplesHere] do
+            Print("Nun sind wir bei Brauer-Charakter Nr. "); Print(i); Print(" von insgesamt ");
+            Print(NumberOfSimplesHere); Print("\n");
+            
+            Print(MTX.IsAbsolutelyIrreducible(ModulesSimpleHere[i]));
+        
+            k_max_here := GF(p^MTX.DegreeSplittingField(ModulesSimpleHere[i]));
+            # this is fine in that particular case, since we only consider composition factors
+            # of S tensor Fq (and not of P tensor Fq).
+            
+            COLLECTEDFACSimplesshere :=
+            MTX.CollectedFactors(GModuleByMats(ModulesSimpleHere[i].generators,k_max_here));
+            # it's a list of the form [[sim1, anzahl1], [sim2, anzahl2], ...] 
+                
+            COMPFACSSimplesFq:=List(COLLECTEDFACSimplesshere, x -> x[1]);
+            global_a := COMPFACSSimplesFq;
+            ListFrobeniusCharValsOfBrauerCharValsOfSIM := [];
+            for c in [1..Size(COMPFACSSimplesFq)] do
+                FrobCharValsTemp := [];
+                for yy in [1..Size(p_prime_cclsG)] do
+                    # conjugacy class number yy yields string number yy
+                    STr := List_Factorizations_AsStrings_p_prime_cclsG[yy];
+                    for q in [1..Size(COMPFACSSimplesFq[c].generators)] do
+                        STr := ReplacedString(STr, Concatenation("x",String(q)),Concatenation("global_a[",String(c),"].generators","[",String(q),"]"));
+                    od;
+                    Print(COMPFACSSimplesFq);
+                    global_b := STr;
+                    Add(FrobCharValsTemp, TraceMat(EvalString(global_b)));
+                od; 
+                    
+                Add(ListFrobeniusCharValsOfBrauerCharValsOfSIM, FrobCharValsTemp);
+            od;
+                
+            TeMp:=[];
+                
+            for v in [1..Size(ListFrobeniusCharValsOfBrauerCharValsOfSIM)] do
+                for w in [1..Size(ListFrobeniusCharValsOfComplexIBrs)] do
+                    if IsZero(ListFrobeniusCharValsOfBrauerCharValsOfSIM[v] - 
+                    ListFrobeniusCharValsOfComplexIBrs[w]) then
+                        Add(TeMp, COLLECTEDFACSimplesshere[v][2]*ListComplexIBrs[w]);
+                    fi;
+                od;
+            od;
+
+            Print("TeMp is at the moment equal to: "); Print(TeMp); Print("\n"); 
+
+            phi:= ClassFunction( ctGmodp, Sum(TeMp) );
+            Add(BrauerCharsSimplesOverFasClassFunctions, phi);
+        od;          
+                        
+#        Append(MatricesSimplesOverF, MatricesSimplesHere);
+        
+#        for i in [1..Size(CFInfo.ConstituentNames)] do 
+#            Add(AllSimplesSortedInBlocks[j], ModulesSimpleHere[i]);
+#        od;
+               
+        ScalProdsOfSimplesFWithPIMsOfDecMatrix := [];
+        for i in [1..Size(BrauerCharsSimplesOverFasClassFunctions)] do
+            temp := [];
+            for v in [1..Size(BrauerCharsPIMsOverSplittingField)] do
+                Add(temp, ScalarProduct(BrauerCharsPIMsOverSplittingField[v],
+                BrauerCharsSimplesOverFasClassFunctions[i]));
+            od;
+            Add(ScalProdsOfSimplesFWithPIMsOfDecMatrix,temp);
+        od;
+                
+        DimensionsOfPIMsOverF := [];
+        for i in [1..Size(ScalProdsOfSimplesFWithPIMsOfDecMatrix)] do
+            temp := [];
+            for v in [1..Size(Irr(ctGmodp))] do
+Add(temp,ScalProdsOfSimplesFWithPIMsOfDecMatrix[i][v]*Degree(BrauerCharsPIMsOverSplittingField[v]));
+# this is the correct ordering, since above i also runs through the simples (over F).
+            od;
+            Add(DimensionsOfPIMsOverF,Sum(temp)); 
+        od;
+
+        s := Size(gensG);
+
+
+        
+        BrauerCharsRepresentationsOfThePIMsOver_F := [];
+    
+        for i in [1..Size(ScalProdsOfSimplesFWithPIMsOfDecMatrix)] do
+            temp := [];
+                for v in [1..Size(ScalProdsOfSimplesFWithPIMsOfDecMatrix[i])] do
+Add(temp, ScalProdsOfSimplesFWithPIMsOfDecMatrix[i][v]*BrauerCharsPIMsOverSplittingField[v]);
+                od;
+            Add(BrauerCharsRepresentationsOfThePIMsOver_F,Sum(temp));
+        od;
+    
+        OrdinaryCharsOfThePIMs_OverF := [];
+    
+        for i in [1..Size(BrauerCharsRepresentationsOfThePIMsOver_F)] do
+            temp_ordinary_classes := [];
+            counter := 1;
+            for v in [1..Size(cclsG)] do
+                if not Order(Representative(cclsG[v])) mod p = (0 mod p) then
+Add(temp_ordinary_classes,BrauerCharsRepresentationsOfThePIMsOver_F[i][counter]);
+                    counter := counter + 1;
+                else 
+                    Add(temp_ordinary_classes,0);    
+                fi;
+            od;
+            Chi_PIM := ClassFunction(ctG, temp_ordinary_classes);
+            Add(OrdinaryCharsOfThePIMs_OverF,Chi_PIM);
+        od;
+    
+        temp_scalprods := [];
+        for i in [1..Size(OrdinaryCharsOfThePIMs_OverF)] do
+            Add(temp_scalprods,MatScalarProducts(ctG,[OrdinaryCharsOfThePIMs_OverF[i]],Irr(ctG)));
+        od;
+        
+Append(AllBrauerCharsRepresentationsOfThePIMsOver_F,BrauerCharsRepresentationsOfThePIMsOver_F);
+        Append(AllOrdinaryCharsOfThePIMs_OverF,OrdinaryCharsOfThePIMs_OverF);
+        Append(All_temp_scalprods,temp_scalprods);
+
+
+#    od;
+     
+#    NumberOfSimplesOverF := Size(Flat(AllSimplesSortedInBlocks));
+    
+    AllPIMsOver_FAsMTXModules := List(MyPIMsAsGModulesOverFpG, x-> GModuleByMats(x.generators, x.field));
+       
+    if IdGroupsAvailable(Order(G)) then
+        IdentifyingG := IdSmallGroup(G);
+    else
+        IdentifyingG := ["could not identify G !!!"];
+    fi;
+    
+    IrrCT := Irr(ctG);
+    
+    Irr_As_List_Of_Lists := [];
+    
+    for u in [1..Size(IrrCT)] do
+        v := ShallowCopy(IrrCT[u]);
+        Add(Irr_As_List_Of_Lists,v);
+    od;
+    
+    # Next, we define the irreducible modules over F=GF(p), since we would like to return them
+    # later in order to help calculating a splitting field for the PIMs.
+    
+    SimpleModulesOverF := ShallowCopy(MySimplesAsGModulesOverFpG);
+    SimpleModulesOverFforlater := [];
+    
+    for a in [1..Size(SimpleModulesOverF)] do
+        Add(SimpleModulesOverFforlater,
+        ShallowCopy(GModuleByMats(SimpleModulesOverF[a].generators,SimpleModulesOverF[a].field)));
+    od;
+    
+    MyRecord := rec();
+    MyRecord.gensG := gensG;
+    MyRecord.OrderG := Order(G);
+    MyRecord.G := G;
+    MyRecord.IdentifyingG := IdentifyingG;
+    MyRecord.Field := GF(p);
+    MyRecord.Characteristic := p;
+    MyRecord.AllPIMsOver_FAsMTXModules := AllPIMsOver_FAsMTXModules;
+    MyRecord.OrdinaryCharsOfThePIMs_OverF := AllOrdinaryCharsOfThePIMs_OverF;
+    MyRecord.DecompositionMatrix := dec;
+    MyRecord.ConjugacyClasses := cclsG;
+    MyRecord.pPrimeClasses := p_prime_cclsG;
+    MyRecord.temp_scalprods := All_temp_scalprods;
+    MyRecord.Irr_As_List_Of_Lists := Irr_As_List_Of_Lists;
+    MyRecord.SimpleModulesOverF := SimpleModulesOverF;
+
+##################################################################################################    
+# Now, we compute the PIMs of kG, where k is a splitting field for the irreducible GF(p)G-modules.
+    
+    ListAllPIMsOverSplittingFields := [];
+    
+    DegreesSplittingFields := [];
+    
+    for i in [1..Size(MyRecord.SimpleModulesOverF)] do
+        Print(MTX.IsAbsolutelyIrreducible(MyRecord.SimpleModulesOverF[i]));
+        Add(DegreesSplittingFields,MTX.DegreeSplittingField(MyRecord.SimpleModulesOverF[i]));
+    od;
+    
+    AllBasesForGaloisConjugates := [];
+    AllBlockDiagonalGens := [];
+    
+    k_max := GF(p^Lcm(DegreesSplittingFields)); # Lcm stands for least common multiple 
+    
+    for i in [1..Size(DegreesSplittingFields)] do
+        Print("i ist jetzt gleich: ");Print(i);Print(" von ");Print(Size(DegreesSplittingFields));
+        Print("\n");
+        if DegreesSplittingFields[i] = 1 then
+            Add(ListAllPIMsOverSplittingFields, AllPIMsOver_FAsMTXModules[i]);
+        else
+            BasisGalConjugates := [];
+            k_new := GF(p^DegreesSplittingFields[i]);
+            P_new := GModuleByMats(AllPIMsOver_FAsMTXModules[i].generators,k_new);
+            HomPP := MTX.BasisModuleHomomorphisms(P_new,P_new);
+            A := FullMatrixAlgebra(k_new, Size(P_new.generators[1]));
+            B := Subalgebra(A,HomPP);
+            # Next, we consider HommPP as a matrix algebra and compute primitive idempotents for
+            # its decomposition.
+            pids := IdempotentsForDecomposition(B);
+            
+            SizePids := Size(pids);
+            
+            for j in pids do
+                j_new := ShallowCopy(j);
+                bas := MTX.SpinnedBasis(j_new,P_new.generators,P_new.field);
+                bas_new := ShallowCopy(bas);
+                Append(BasisGalConjugates, bas_new);
+                sub := MTX.InducedActionSubmodule(P_new,bas);
+                Add(ListAllPIMsOverSplittingFields, sub);
+            od;
+            
+            Add(AllBasesForGaloisConjugates,[i,BasisGalConjugates,k_new,SizePids]);
+            # This list collects information about which PIMs do not remain indecomposable after
+            # tensoring with a splitting field and saves the matrix for the base change. 
+            
+            ConjugatedGeneratorMatrices := [];
+            
+            for a in [1..Size(P_new.generators)] do
+                OldGens := P_new.generators[a];
+                E_M_B := BasisGalConjugates;
+                E_M_B_i := BasisGalConjugates^-1;
+                BlockDiagonalGens := E_M_B*OldGens*E_M_B_i;
+                Add(ConjugatedGeneratorMatrices, BlockDiagonalGens);
+            od;
+            Add(AllBlockDiagonalGens,[i,ConjugatedGeneratorMatrices]);
+        fi;
+    od;
+    
+          
+################################################################
+# Here is the continuation for the trick with the dictionary.
+# In order to determine the Brauer characters of the PIMs, we compute the composition factors,
+# then the FrobeniusCharacterValues of the occurring simple modules, then use the dictionary
+# such that we obtain the Brauer characters of the simple composition factors without computing
+# Brauer character values at this stage of the program...and last, but not least,  we just have
+# to sum the Brauer characters of the composition factors in order to obtain their
+# desired Brauer character value of the projective indecomposable module(s) in question
+# This uses the Corollary about traces of kG-modules from one of the books of Curtis and Reiner,
+# see Chapter 5 of the thesis.
+
+            BrauerCharsPIMsOverFqAsClassFunctions := [];
+            for i in [1..Size(ListAllPIMsOverSplittingFields)] do
+                Print("Now, we treat Brauer character number "); Print(i);
+                Print(" of the PIMs over Fq of a total of ");
+                Print(Size(ListAllPIMsOverSplittingFields)); Print("Brauer characters here"); Print("\n");
+                ModuleForCollectionOfFacs :=
+                GModuleByMats(ListAllPIMsOverSplittingFields[i].generators,k_max);
+                  
+                COLLECTEDFACSPIMsFq := MTX.CollectedFactors(ModuleForCollectionOfFacs);
+                # it is a list of this form: [[sim1, anzahl1], [sim2, anzahl2], ...]
+   
+                COMPFACSPIMsFq := List(COLLECTEDFACSPIMsFq, x -> x[1]);
+                global_c := COMPFACSPIMsFq;
+                ListFrobeniusCharValsOfBrauerCharValsOfPIM := [];
+                for c in [1..Size(COMPFACSPIMsFq)] do
+                    FrobCharValsTemp:=[];
+                    for yy in [1..Size(p_prime_cclsG)] do
+                    # ccls number yy yields string number yy (i.e.: the yy-th string)
+                        STr := List_Factorizations_AsStrings_p_prime_cclsG[yy];
+                        for q in [1..Size(COMPFACSPIMsFq[c].generators)] do
+                            STr := ReplacedString(STr, Concatenation("x",String(q)),Concatenation("global_c[",String(c),"].generators","[",String(q),"]"));
+                        od;
+                        global_d := STr;
+                        Add(FrobCharValsTemp, TraceMat(EvalString(global_d)));
+                    od;
+                    Add(ListFrobeniusCharValsOfBrauerCharValsOfPIM, FrobCharValsTemp);
+                od;                
+                
+                TeMp := [];
+                
+                for v in [1..Size(ListFrobeniusCharValsOfBrauerCharValsOfPIM)] do
+                    for w in [1..Size(ListFrobeniusCharValsOfComplexIBrs)] do
+                        if IsZero(ListFrobeniusCharValsOfBrauerCharValsOfPIM[v] - 
+                        ListFrobeniusCharValsOfComplexIBrs[w]) then
+                            Add(TeMp, COLLECTEDFACSPIMsFq[v][2]*ListComplexIBrs[w]);
+                        fi;
+                    od;
+                od;
+                Print("TeMp is at the moment equal to: "); Print(TeMp); Print("\n"); 
+                phi := ClassFunction( ctGmodp, Sum(TeMp) );
+                Add(BrauerCharsPIMsOverFqAsClassFunctions,phi);
+            od;
+        
+            MyRecord.ListAllPIMsOverSplittingFields := ListAllPIMsOverSplittingFields;
+            MyRecord.AllBasesForGaloisConjugates := AllBasesForGaloisConjugates;
+            MyRecord.AllBlockDiagonalGens := AllBlockDiagonalGens;
+    
+# Here, we compute the ordinary characters of the PIMs of kG where k is a splitting field.
+    
+            OrdinaryCharsOfThePIMs_OverFq := [];
+            for i in [1..Size(BrauerCharsPIMsOverFqAsClassFunctions)] do
+                temp_ordinary_classes := [];
+                counter := 1;
+                for v in [1..Size(cclsG)] do
+                    if not Order(Representative(cclsG[v])) mod p = (0 mod p) then
+Add(temp_ordinary_classes,BrauerCharsPIMsOverFqAsClassFunctions[i][counter]);
+                        counter := counter + 1;
+                    else 
+                        Add(temp_ordinary_classes, 0);    
+                    fi;
+                od;
+                Chi_PIM := ClassFunction(ctG, temp_ordinary_classes);
+                Add(OrdinaryCharsOfThePIMs_OverFq, Chi_PIM);
+            od;
+        
+            MyRecord.OrdinaryCharsOfThePIMs_OverFq := OrdinaryCharsOfThePIMs_OverFq;
+
+            # Here, we compute the scalar products of the latter ordinary characters with each
+            # ordinary irreducible character:
+            ScalprodsPIMsOverFq := [];
+            for i in [1..Size(OrdinaryCharsOfThePIMs_OverFq)] do
+Add(ScalprodsPIMsOverFq,MatScalarProducts(ctG,[OrdinaryCharsOfThePIMs_OverFq[i]],Irr(ctG)));
+            od;
+            ListForScalProdsTest := Flat(ScalprodsPIMsOverFq);
+            for i in ListForScalProdsTest do
+                if not IsInt(i) then
+                    Print("DAS MIT SCALPRODS hat net geklappt...sind net alles Integers!!!");
+                    return(fail);
+                fi;
+            od;
+            MyRecord.ScalprodsPIMsOverFq := ScalprodsPIMsOverFq;
+            MyRecord.SimpleModulesOverF := 0;
+            MyRecord.SimpleModulesOverF := SimpleModulesOverFforlater;
+            return MyRecord;
+end;
+
+# Example: G := AlternatingGroup(6); p := 2; U := PIMsFqG(G,p);
