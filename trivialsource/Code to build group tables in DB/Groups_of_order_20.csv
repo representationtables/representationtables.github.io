@@ -1,0 +1,5 @@
+C20,Cyclic group,20,1,C20,"20,2"
+D10,Dihedral group; = C2×D5,10,2+,D10,"20,4"
+F5,Frobenius group; = C5&rtimesC4 = AGL1(𝔽5) = Aut(D5) = Hol(C5) = Sz(2),5,4+,F5,"20,3"
+Dic5,Dicyclic group; = C5&rtimes2C4,20,2-,Dic5,"20,1"
+C2×C10,"Abelian group of type [2,10]",20,,C2xC10,"20,5"

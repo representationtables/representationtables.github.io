@@ -1,0 +1,16 @@
+C16,Cyclic group,16,1,C16,"16,1"
+C42,"Abelian group of type [4,4]",16,,C4^2,"16,2"
+C22&rtimesC4,The semidirect product of C22 and C4 acting via C4/C2=C2,8,,C2^2:C4,"16,3"
+C4&rtimesC4,The semidirect product of C4 and C4 acting via C4/C2=C2,16,,C4:C4,"16,4"
+C2×C8,"Abelian group of type [2,8]",16,,C2xC8,"16,5"
+M4(2),Modular maximal-cyclic group; = C8&rtimes3C2,8,2,M4(2),"16,6"
+D8,Dihedral group,8,2+,D8,"16,7"
+SD16,Semidihedral group; = Q8&rtimesC2 = QD16,8,2,SD16,"16,8"
+Q16,Generalised quaternion group; = C8.C2 = Dic4,16,2-,Q16,"16,9"
+C22×C4,"Abelian group of type [2,2,4]",16,,C2^2xC4,"16,10"
+C2×D4,Direct product of C2 and D4,8,,C2xD4,"16,11"
+C2×Q8,Direct product of C2 and Q8,16,,C2xQ8,"16,12"
+C4○D4,Pauli group = central product of C4 and D4,8,2,C4oD4,"16,13"
+C24,"Elementary abelian group of type [2,2,2,2]",16,,C2^4,"16,14"
+
+

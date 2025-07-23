@@ -1,0 +1,15 @@
+C5×Dic3,Direct product of C5 and Dic3,60,2,C5xDic3,"60,1"
+C3×Dic5,Direct product of C3 and Dic5,60,2,C3xDic5,"60,2"
+Dic15,Dicyclic group; = C3&rtimesDic5,60,2-,Dic15,"60,3"
+C60,Cyclic group,60,1,C60,"60,4"
+A5,Alternating group on 5 letters; = SL2(𝔽4) = L2(5) = L2(4) = icosahedron/dodecahedron rotations; 1st non-abelian simple,5,3+,A5,"60,5"
+C3×F5,Direct product of C3 and F5,15,4,C3xF5,"60,6"
+C3&rtimesF5,The semidirect product of C3 and F5 acting via F5/D5=C2,15,4,C3:F5,"60,7"
+S3×D5,Direct product of S3 and D5,15,4+,S3xD5,"60,8"
+C5×A4,Direct product of C5 and A4,20,3,C5xA4,"60,9"
+C6×D5,Direct product of C6 and D5,30,2,C6xD5,"60,10"
+S3×C10,Direct product of C10 and S3,30,2,S3xC10,"60,11"
+D30,Dihedral group; = C2×D15,30,2+,D30,"60,12"
+C2×C30,"Abelian group of type [2,30]",60,,C2xC30,"60,13"
+
+

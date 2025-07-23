@@ -1,0 +1,6 @@
+C42,Cyclic group,42,1,C42,"42,6"
+D21,Dihedral group,21,2+,D21,"42,5"
+F7,Frobenius group; = C7&rtimesC6 = AGL1(𝔽7) = Aut(D7) = Hol(C7),7,6+,F7,"42,1"
+S3×C7,Direct product of C7 and S3,21,2,S3xC7,"42,3"
+C3×D7,Direct product of C3 and D7,21,2,C3xD7,"42,4"
+C2×C7&rtimesC3,Direct product of C2 and C7&rtimesC3,14,3,C2xC7:C3,"42,2"

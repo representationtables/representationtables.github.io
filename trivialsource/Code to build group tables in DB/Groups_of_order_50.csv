@@ -1,0 +1,5 @@
+C50,Cyclic group,50,1,C50,"50,2"
+D25,Dihedral group,25,2+,D25,"50,1"
+C5&rtimesD5,The semidirect product of C5 and D5 acting via D5/C5=C2,25,,C5:D5,"50,4"
+C5×C10,"Abelian group of type [5,10]",50,,C5xC10,"50,5"
+C5×D5,Direct product of C5 and D5; = AΣL1(𝔽25),10,2,C5xD5,"50,3"

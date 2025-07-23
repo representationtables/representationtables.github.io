@@ -1,0 +1,5 @@
+C68,Cyclic group,68,1,C68,"68,2"
+D34,Dihedral group; = C2×D17,34,2+,D34,"68,4"
+Dic17,Dicyclic group; = C17⋊2C4,68,2-,Dic17,"68,1"
+C17⋊C4,The semidirect product of C17 and C4 acting faithfully,17,4+,C17:C4,"68,3"
+C2×C34,"Abelian group of type [2,34]",68,,C2xC34,"68,5"

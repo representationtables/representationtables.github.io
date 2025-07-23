@@ -1,0 +1,6 @@
+C78,Cyclic group,78,1,C78,"78,6"
+D39,Dihedral group,39,2+,D39,"78,5"
+C13⋊C6,The semidirect product of C13 and C6 acting faithfully,13,6+,C13:C6,"78,1"
+S3×C13,Direct product of C13 and S3,39,2,S3xC13,"78,3"
+C3×D13,Direct product of C3 and D13,39,2,C3xD13,"78,4"
+C2×C13⋊C3,Direct product of C2 and C13⋊C3,26,3,C2xC13:C3,"78,2"

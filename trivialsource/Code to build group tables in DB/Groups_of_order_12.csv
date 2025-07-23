@@ -1,0 +1,5 @@
+C12,Cyclic group,12,1,C12,"12,2"
+A4,Alternating group on 4 letters; = PSL2(𝔽3) = L2(3) = tetrahedron rotations,4,3+,A4,"12,3"
+D6,Dihedral group; = C2×S3 = hexagon symmetries,6,2+,D6,"12,4"
+Dic3,Dicyclic group; = C3&rtimesC4,12,2-,Dic3,"12,1"
+C2×C6,"Abelian group of type [2,6]",12,,C2xC6,"12,5"

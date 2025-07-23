@@ -1,0 +1,5 @@
+C18,Cyclic group,18,1,C18,"18,2"
+D9,Dihedral group,9,2+,D9,"18,1"
+C3&rtimesS3,The semidirect product of C3 and S3 acting via S3/C3=C2,9,,C3:S3,"18,4"
+C3×C6,"Abelian group of type [3,6]",18,,C3xC6,"18,5"
+C3×S3,Direct product of C3 and S3; = U2(𝔽2),6,2,C3xS3,"18,3"

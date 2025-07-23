@@ -1,0 +1,5 @@
+C8,Cyclic group,8,1,C8,"8,1"
+D4,Dihedral group; = He2 = AΣL1(𝔽4) = 2+&hairsp1+2 = square symmetries,4,2+,D4,"8,3"
+Q8,Quaternion group; = C4.C2 = Dic2 = 2-&hairsp1+2,8,2-,Q8,"8,4"
+C23,"Elementary abelian group of type [2,2,2]",8,,C2^3,"8,5"
+C2×C4,"Abelian group of type [2,4]",8,,C2xC4,"8,2"

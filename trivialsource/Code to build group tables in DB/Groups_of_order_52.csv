@@ -1,0 +1,5 @@
+C52,Cyclic group,52,1,C52,"52,2"
+D26,Dihedral group; = C2×D13,26,2+,D26,"52,4"
+Dic13,Dicyclic group; = C13&rtimes2C4,52,2-,Dic13,"52,1"
+C13&rtimesC4,The semidirect product of C13 and C4 acting faithfully,13,4+,C13:C4,"52,3"
+C2×C26,"Abelian group of type [2,26]",52,,C2xC26,"52,5"

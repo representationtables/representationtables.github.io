@@ -1,0 +1,17 @@
+C3&rtimesC8,The semidirect product of C3 and C8 acting via C8/C4=C2,24,2,C3:C8,"24,1"
+C24,Cyclic group,24,1,C24,"24,2"
+SL2(𝔽3),"Special linear group on 𝔽32; = Q8&rtimesC3 = 2T = <2,3,3> = 1st non-monomial group",8,2-,"SL(2,3)","24,3"
+Dic6,Dicyclic group; = C3&rtimesQ8,24,2-,Dic6,"24,4"
+C4×S3,Direct product of C4 and S3,12,2,C4xS3,"24,5"
+D12,Dihedral group,12,2+,D12,"24,6"
+C2×Dic3,Direct product of C2 and Dic3,24,,C2xDic3,"24,7"
+C3&rtimesD4,The semidirect product of C3 and D4 acting via D4/C22=C2,12,2,C3:D4,"24,8"
+C2×C12,"Abelian group of type [2,12]",24,,C2xC12,"24,9"
+C3×D4,Direct product of C3 and D4,12,2,C3xD4,"24,10"
+C3×Q8,Direct product of C3 and Q8,24,2,C3xQ8,"24,11"
+S4,Symmetric group on 4 letters; = PGL2(𝔽3) = Aut(Q8) = Hol(C22) = tetrahedron symmetries = cube/octahedron rotations,4,3+,S4,"24,12"
+C2×A4,Direct product of C2 and A4; = AΣL1(𝔽8),6,3+,C2xA4,"24,13"
+C22×S3,Direct product of C22 and S3,12,,C2^2xS3,"24,14"
+C22×C6,"Abelian group of type [2,2,6]",24,,C2^2xC6,"24,15"
+
+
