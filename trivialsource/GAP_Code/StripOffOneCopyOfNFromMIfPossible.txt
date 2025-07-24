@@ -1,0 +1,614 @@
+# The following programs are written in order to be able to test
+# efficiently with GAP, whether a given indecomposable trivial
+# source module is (isomorphic to) a direct summand of a given
+# p-permutation module.
+# Extensive use of the ideas and pseudo-code mentioned in the
+# article "Testing isomorphism of modules"
+# by Brooksbank and Luks is made.
+# We remark that there does exist an implementation of the
+# aforementioned pseudo-code in MAGMA. The name of the function
+# is SummandIsomorphism. Alas, the MAGMA code is not open source.
+# Hence, we have translated those parts of the pseudo-code that
+# we need for our purposes into GAP code.
+# 
+# The notation is inspired by the above article.
+# Unless stated otherwise, we assume that all entered modules
+# and vector spaces are over the field GF(p).
+
+# Furthermore, we make the following remarks.
+# 1) All entered groups are supposed to be permutation groups.
+# 2) During the computations, files get deleted automatically.
+# Hence, we recommend to do the computations in a folder not containing important files.
+# 3) We suppose that a standalone version of
+# the Shared C MeatAxe (see, e.g., https://users.fmi.uni-jena.de/~king/SharedMeatAxe/index.html)
+# is installed.
+# 4) We assume that the GAP system is installed and the version is at least 4.12.2.
+
+
+# The following two functions are concerned with Lemma 2.1 of
+# the article by Brooksbank and Luks.
+
+FromWToWX := function(W, mats)
+# We assume that mats is a list of matrices. 
+	
+	local BVS, i, j, W_now, temp;
+	
+	BVS := BasisVectors(Basis(W));
+	temp := [];
+	for i in mats do
+        for j in BVS do
+            Add(temp, j*i);
+        od;
+    od;
+    W_now := Subspace(W,temp);
+    
+    return W_now;
+end;
+
+
+
+IsEnvNilpotent := function(W,mats)
+	
+	local U, flag;
+	
+	U := ShallowCopy(W);
+	while Dimension(U) <> Dimension(FromWToWX(U, mats)) do
+        U := FromWToWX(U, mats);
+    od;
+    flag := false;
+    if IsZero(Dimension(U)) then
+        flag := true;
+        return flag;
+    fi;
+    return flag;
+end;
+
+
+
+# The following function is concerned with Algorithm 2 of
+# the article. See also Algorithm 1 in the article. We
+# always assume that the function delta mentioned therein
+# is trivial.
+
+FromSplitterToFactorization := function(V,LISTE_X)
+# We remark that the entered variable V must be a full
+# row vector space here as we use this function only once
+# where this has to be the case.
+	
+	local i, LISTE_now, W, W_full, m, Y, z, d, r, y,
+	Y_new, List_LeftMultiplications_Of_z_in_reversed_order,
+	j, List_LeftMultiplications_Of_z;
+	
+	i := 1;
+	LISTE_now := [LISTE_X[1]];
+    W := ShallowCopy(V);
+    W_full := ShallowCopy(V);
+        
+    while IsEnvNilpotent(W,LISTE_now) do
+        i := i+1;
+        Add(LISTE_now,LISTE_X[i]);
+    od;
+    
+    m:= i; # This is indeed correct. There is a typo in the
+    # article. It is written correctly in Algorithm 1 of the article.
+    
+    Y := [];
+	for j in [1..m-1] do
+        Add(Y, LISTE_X[j]);
+	od;
+	z := LISTE_X[m];
+	d := Size(LISTE_X[1]);
+	List_LeftMultiplications_Of_z_in_reversed_order := [];
+	
+	while IsZero(z^d) do # This means: while z is nilpotent do the following:
+        while Dimension(FromWToWX(W,Y)+FromWToWX(W,[z])) < Dimension(W) do
+            W := FromWToWX(W,Y)+FromWToWX(W,[z]);
+            Print("W is at the moment equal to: "); Print(W); Display(W);
+        od;
+        
+        # Now, we find an element y such that W(y*z) is not a subspace of XY: 
+        r := 1;
+        y := Y[1];
+        while IsSubspace(FromWToWX(W,Y),FromWToWX(W,[y*z])) do 
+            r := r+1;
+            y := Y[r];
+        od;
+        
+        Y_new := ShallowCopy(Y);
+        Add(Y_new,y*z);
+        if IsEnvNilpotent(W,Y_new) then
+            Y := ShallowCopy(Y_new);
+        else
+            z := y*z;
+            Add(List_LeftMultiplications_Of_z_in_reversed_order,y);
+        fi;
+    od;
+
+    List_LeftMultiplications_Of_z :=
+    Reversed(List_LeftMultiplications_Of_z_in_reversed_order);
+    
+return [z,List_LeftMultiplications_Of_z];
+end;
+
+
+
+# The following function computes the GF(p)G - linear homomorphisms from M to N.
+# It uses the Shared C MeatAxe, i.e. programs written by M. Szöke, Klaus Lux et al., frequently.
+
+Hom_FpG_MNViaSzoeke := function(M,N)
+# This function returns a list of matrices which form a GF(p)-basis for the hom space in question.
+
+    local F, FF, gensOfM, gensOfN, p, repM, repN, i, U, DIMensionM, DIMensionN, ZEROMat, j, path, rm, files, f, options, pro, MyDir;
+
+	MyDir := Directory("/home/bernhard");
+        
+    path := DirectoriesSystemPrograms();
+	rm := Filename(path,"rm");
+    
+    if IsVectorSpace(M) then # Our other programs are written in such a manner that this
+    # happens exactly when M is the zero module.
+        return(M);
+    fi;
+    
+    if IsVectorSpace(N) then # Our other programs are written in such a manner that this
+    # happens exactly when N is the zero module.
+        return(N);
+    fi;
+
+    F := M.field;
+    FF := N.field;
+    
+    if not IsZero(Size(F) - Size(FF)) then 
+        Print("The acting fields do not coincide.");
+        return(fail);
+    fi;
+    
+    if not IsPrime(Size(F)) then
+        Print("The acting fields have to be of the form GF(p).");
+        return(fail);
+    fi;
+    
+    gensOfM := M.generators;
+    gensOfN := N.generators;
+    
+    DIMensionM := M.dimension;
+    DIMensionN := N.dimension;
+
+    p := Characteristic(F);
+    
+#    LoadPackage("io");
+    ChangeDirectoryCurrent("/home/bernhard");
+    
+    
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] = 'r' and f[2] = 'e' and f[3] = 'p' and f[4] = 'M');
+    for f in files do
+        # Skip all file names not beginning with MAT. or being of the form MAT<zahl>
+        if f[5] <> '.' and not ForAll(f{[5..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] = 'r' and f[2] = 'e' and f[3] = 'p' and f[4] = 'N');
+    for f in files do
+        if f[5] <> '.' and not ForAll(f{[5..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+
+    
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] = 'h' and f[2] = 'o' and f[3] = 'm' and f[4] = 'M' and f[5] = 'N');
+    for f in files do
+        if f[6] <> '.' and not ForAll(f{[6..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] = 'h' and f[2] = 'o' and f[3] = 'm' and f[4] = 'N' and f[5] = 'M');
+    for f in files do
+        if f[6] <> '.' and not ForAll(f{[6..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+
+    
+    
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] = 'H' and f[2] = 'o' and f[3] = 'm' and f[4] = 'M' and f[5] = 'N');
+    for f in files do
+        if f[6] <> '.' and not ForAll(f{[6..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] = 'H' and f[2] = 'o' and f[3] = 'm' and f[4] = 'N' and f[5] = 'M');
+    for f in files do
+        if f[6] <> '.' and not ForAll(f{[6..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    
+    if IsExistingFile("bc") then
+        options:=["bc"];
+        
+        pro := Process(MyDir, rm, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+    fi;
+    
+    
+    repM := Filename(DirectoryCurrent(), "repM");
+    repN := Filename(DirectoryCurrent(), "repN");
+
+	for i in [1..Size(gensOfM)] do 
+		CMtxBinaryFFMatOrPerm(gensOfM[i],p,Concatenation(repM,".",String(i)));
+	od;
+	for i in [1..Size(gensOfN)] do 
+		CMtxBinaryFFMatOrPerm(gensOfN[i],p,Concatenation(repN,".",String(i)));
+	od;
+
+	
+	options := ["-g",String(Size(gensOfM)), repM];
+
+    pro := Process(MyDir, LocationOfCHOPAsString, STDin, STDout, options);
+    if not IsZero(pro) then
+        Print("The last process did not return zero!");
+        return(fail);
+    fi;
+	
+	
+	options := [repM];
+
+    pro := Process(MyDir, LocationOfPWKONDAsString, STDin, STDout, options);
+    if not IsZero(pro) then
+        Print("The last process did not return zero!");
+        return(fail);
+    fi;
+        
+        
+	options := ["repM", "repN", "homMN"];
+
+    pro := Process(MyDir, LocationOfMKHOMAsString, STDin, STDout, options);
+    if not IsZero(pro) then
+        Print("The last process did not return zero!");
+        return(fail);
+    fi;
+	
+
+    if IsExistingFile(Concatenation("homMN.",String(1))) then # This file exists
+    # if and only if the hom sets are nontrivial.
+
+        # The suffix spb is an abbreviation for spinning basis. Cf. line 1093 of the
+        # file mkhom.c and the explanations at the end of that file. We compute the
+        # inverse matrix of repM.spb using the function ziv.
+        
+        options := [Concatenation(repM,".spb"), "bc"];
+
+        pro := Process(MyDir, LocationOfZIVAsString, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        
+        i := 0;
+        while IsExistingFile(Concatenation("homMN.",String(i+1))) do
+            i := i+1;
+            options:=
+            ["bc", Concatenation("homMN.",String(i)), Concatenation("HomMN.",String(i))];
+            pro := Process(MyDir, LocationOfZMUAsString, STDin, STDout, options);
+            # All basis elements of homMN are multiplied by the inverse of repM.spb
+            # in order to transform the output to the standard bases (of M and N) again.
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;           
+        od;
+    
+        U := ReadRepFrom("HomMN",i,F);
+        return U;
+    fi;
+    
+    ZEROMat := List([1..DIMensionM], x -> []);
+    for i in [1..DIMensionM] do
+        for j in  [1..DIMensionN] do
+            Add(ZEROMat[i],0);
+        od;
+    od;
+    
+    return [ZEROMat];
+end;
+
+
+
+StripOffOneCopyOfNFromMIfPossible := function(IND,L)
+
+    local M,N, IRR_CT, DIFFERENZ, HomMN, HomNM, B, C, f, fC, i, DIM_M, FIELD_M, WW,
+    flag2, s, d, PHI, KER, bas, RestOfM, p, MATRIXs, MATRIXphi, List_s, basKerPHI,
+    basImPHI, basComplete, path, rm, files, options, pro, PHI_basis, ConjugationMatr,
+    BlockDiagonalGens, Vaux, GensForRestOfM;
+    
+    LoadPackage("io");
+    ChangeDirectoryCurrent("/home/bernhard");
+    STDin := InputTextUser();;
+	STDout := OutputTextUser();;
+	MyDir := Directory("/home/bernhard");
+
+    LocationOfZPOAsString := "/home/bernhard/Schreibtisch/shared_meataxe-1.0/bin/zpo";
+    
+    path := DirectoriesSystemPrograms();
+	rm := Filename(path,"rm");
+    
+    MATRIXs := Filename(DirectoryCurrent(), "MATRIXs");
+    MATRIXphi := Filename(DirectoryCurrent(), "MATRIXphi");
+    
+    M := ShallowCopy(IND);
+    N := ShallowCopy(L);
+    
+    if IsVectorSpace(M) then # this happens exactly when the dimension of M equals 0
+        return([0,M]);
+    fi;
+    
+    if IsVectorSpace(N) then # this happens exactly when the dimension of N equals 0
+        return([0,N]);
+    fi;
+    
+    
+    HomMN := Hom_FpG_MNViaSzoeke(M,N); # this returns a list whose elements
+    # are rectangular matrices which together form a basis of Hom_FpG(M,N)
+    
+    if HomMN = fail then
+        HomMN := MTX.BasisModuleHomomorphisms(M,N);
+    fi;
+    
+    
+    HomNM := Hom_FpG_MNViaSzoeke(N,M); 
+    
+    if HomNM = fail then
+        HomNM := MTX.BasisModuleHomomorphisms(N,M);
+    fi;
+    
+    
+    # Next, we want to compute a non-trivial direct summand of M
+    
+    B := ShallowCopy(HomMN);
+    C := ShallowCopy(HomNM);
+    for f in B do # recall that GAP acts from the right
+        fC := [];
+        for i in [1..Size(C)] do
+            Add(fC, f*(C[i]));
+        od;
+      
+        DIM_M := M.dimension;
+        FIELD_M := M.field;
+        
+        p := Characteristic(FIELD_M);
+        
+        WW := FullRowSpace(FIELD_M,DIM_M);
+       
+        flag2:=false;
+        if not IsEnvNilpotent(WW,fC) then # hence, f is a splitter in this case...
+            # ...now we compute the variable s from Lemma 3.4 in the article of
+            # Brooksbank and Luks
+            flag2:=true; # i.e., there exists a splitter in the basis B
+            s := FromSplitterToFactorization(WW,fC)[1]; 
+            # We remark that we are in a special situation here: our module N
+            # is indecomposable. Now, we use the definition of f-decomposition (see
+            # Section 3.1 in the article of Brooksbank and Luks);
+            # furthermore, we use the definition of splitter...in
+            # particular: (N_1)f is a direct summand of M2, Ker(f) is a submodule
+            # of K_1 and fg is not nilpotent for some g;
+            # this implies that the f-image of N_1 is isomorphic to our module N
+            # due to the following reasons:
+            # 1) the restriction of f to N_1 is injective
+            # 2) our module N is indecomposable
+            # 3) (N_1)f is simultaneously a submodule and a direct summand of N  
+
+            # Next, we compute the kernel of s^d.......this makes sense due to
+            # the Proof of Lemma 3.4 in  the article of Brooksbank and Luks
+                  
+            d := Size(s);
+                
+            List_s := [s];
+			for i in [1..Size(List_s)] do 
+CMtxBinaryFFMatOrPerm(List_s[i],p,Concatenation(MATRIXs,".",String(i)));
+			od;
+            
+            options:=["MATRIXs.1", String(d), "MATRIXphi.1"];
+
+            pro := Process(MyDir, LocationOfZPOAsString, STDin, STDout, options);
+            # PO in ZPO is an abbreviation for power...
+            # ...we compute s^d here using the Shared C MeatAxe.
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;
+            
+            PHI := ReadRepFrom(MATRIXphi,1,FIELD_M)[1];
+            # we define the matrix  PHI := s^d 
+            
+            options := ["MATRIXs.1"];
+	
+            pro := Process(MyDir, rm, STDin, STDout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!!!");
+                return(fail);
+            fi;
+            
+            options := ["MATRIXphi.1"];
+	
+            pro := Process(MyDir, rm, STDin, STDout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!!!");
+                return(fail);
+            fi;
+            
+            KER := NullspaceMat(PHI); # we compute the kernel of s^d here
+            
+            PHI_basis := BasisVectors(Basis(VectorSpace(GF(p),PHI)));
+            
+            ConjugationMatr := [];
+            Append(ConjugationMatr,PHI_basis); Append(ConjugationMatr, KER); 
+            
+            BlockDiagonalGens := [];
+            for i in [1..Size(M.generators)] do
+Add(BlockDiagonalGens, ConjugationMatr * M.generators[i] * ConjugationMatr^-1);
+            od;
+
+            
+            # we consider the case KER=0 seperately
+            
+            if Size(KER) > 0 then
+                # RestOfM := MTX.InducedActionSubmodule(M,basKerPHI);
+                Vaux:=VectorSpace(GF(p),KER);
+                GensForRestOfM:= List(BlockDiagonalGens, x -> ExtractSubMatrix(x,
+[Size(x) - Dimension(Vaux)+1..Size(x)], [Size(x) - Dimension(Vaux)+1..Size(x)] ) );
+                RestOfM := GModuleByMats(GensForRestOfM,GF(p));
+            else
+                RestOfM:=FullRowModule(GF(Characteristic(FIELD_M)),0);
+                # Also kann man später bei übergeordneten Programmen das so schreiben,
+                # dass man in dem Moment abbricht, wenn die Dimension von RestOfM
+                # gleich 0 ist !!!
+            fi;
+            
+            basComplete := ShallowCopy(ConjugationMatr);
+            
+            return([1,RestOfM,basComplete]); 
+            # if N is isomorphic to a summand of M then return [1,RestOfM,basComplete];
+            # here, 1 means true, RestOfM is the rest of M (after stripping off an
+            # isomorphic copy of N from M), and basComplete is a conjugation matrix C
+            # such that C * rho_M * C^-1 has block diagonal form, where rho_M is
+            # the underlying matrix representation of M from above
+        fi;
+    od;
+    
+    return([0,M]);
+    
+end;
+
+
+
+MaxCommonDirectSummandFq := function(GreenCorresp_Fq,IND_Fq) # we always put the module
+    # that we wish to decompose as the first argument; in the program
+    # TSModulesAndLiftsOverFq, this is the module GRE where GRE is given by extending
+    # scalars of the Green correspondent over Fp from Fp to Fq; 
+    # we remark further that both modules have to be defined over the
+    # same field Fq here; moreover, we remark that in the Green correspondent situation
+    # mentioned two lines above, the module which is given as the second argument is
+    # not necessarily indecomposable; in this case, the algorithm works nevertheless,
+    # as we enter only certain modules (namely: (summands of) GRE as the first argument
+    # and sums SU of indecomposable modules such that each summand of GRE occurs in SU
+    # with multiplicity at most one (or an indecomposable module) as the second argument) 
+    
+    local M, N, Hom_FqG_MN, Hom_FqG_NM, f, fC, i, DIM_M, FIELD_M, p, B, C, WW, flag2,
+    s, RestOfM, d, PHI, PHInew1, basImPHI, PHIasModule, PHInew2, KER, basKerPHI,
+    ConjugationMatr, BlockDiagonalGens, Vaux, GensForRestOfM;
+    
+    LoadPackage("io");
+    ChangeDirectoryCurrent("/home/bernhard");
+    
+    M := ShallowCopy(GreenCorresp_Fq);
+    N := ShallowCopy(IND_Fq);
+    
+    if IsVectorSpace(M) then # das passiert nur, wenn die Dimension von M gleich 0 ist...
+    # ansonsten habe ich es so programmiert, dass immer MeaTAXe-Moduln anstatt
+    # VectorSpaces herauskommen.
+        return([0,M]);
+    fi;
+    
+    if IsVectorSpace(N) then # das passiert nur, wenn die Dimension von N gleich 0 ist...
+        # ...ansonsten habe ich es so programmiert, dass immer MeaTAXe-Moduln anstatt
+        # VectorSpaces herauskommen.
+        return([0,N]);
+    fi;
+    
+    Hom_FqG_MN := MTX.BasisModuleHomomorphisms(M,N);
+    # this uses GAP's MeaTAxe since the involved field Fq my be
+    # too large for the Shared C MeatAxe 
+    
+    Hom_FqG_NM := MTX.BasisModuleHomomorphisms(N,M);
+    
+    B := ShallowCopy(Hom_FqG_MN);
+    C := ShallowCopy(Hom_FqG_NM);
+    for f in B do # GAP acts from the right
+        fC := [];
+        for i in [1..Size(C)] do
+            Add(fC, f*(C[i]));
+        od;
+      
+        DIM_M := M.dimension;
+        FIELD_M := M.field;
+        
+        p := Characteristic(FIELD_M);
+        
+        WW := FullRowSpace(FIELD_M,DIM_M);
+            
+        flag2 := false;
+        if not IsEnvNilpotent(WW,fC) then # hence, f is a splitter now
+            flag2 := true; # also gibt es einen Splitter in B !!!
+            s := FromSplitterToFactorization(WW,fC)[1];
+            
+            d := Maximum(M.dimension,N.dimension);
+            
+            PHI := s^d;
+            
+            PHInew1 := ShallowCopy(PHI)*One(FIELD_M); 
+                        
+            basImPHI := MTX.SpinnedBasis(PHInew1,M.generators,M.field); 
+                      
+            PHIasModule := MTX.InducedActionSubmodule(M,basImPHI);
+
+            PHInew2 := ShallowCopy(PHI)*One(FIELD_M); 
+            
+            KER := TriangulizedNullspaceMat(PHInew2);
+            
+            KER := ShallowCopy(KER)*One(FIELD_M);
+            
+            basKerPHI := MTX.SpinnedBasis(KER,M.generators,M.field);
+        
+            ConjugationMatr := [];
+            Append(ConjugationMatr,basImPHI); Append(ConjugationMatr, basKerPHI); 
+            
+            BlockDiagonalGens := [];
+            for i in [1..Size(M.generators)] do
+Add(BlockDiagonalGens, ConjugationMatr * M.generators[i] * ConjugationMatr^-1);
+            od;
+            
+            if Size(basKerPHI) > 0 then
+                Vaux:=VectorSpace(M.field,basKerPHI);
+            
+                GensForRestOfM := List(BlockDiagonalGens, x -> ExtractSubMatrix(x,
+[Size(x) - Dimension(Vaux)+1..Size(x)], [Size(x) - Dimension(Vaux)+1..Size(x)] ) );
+            
+                RestOfM := GModuleByMats(GensForRestOfM,M.field);
+            else
+                RestOfM := FullRowModule(M.field,0);
+            fi;
+            
+            return([PHIasModule,RestOfM,ConjugationMatr]); 
+                # if there are several splitters, they yield isomorphic copies
+                # of the searched submodule...
+                #...therefore, we stop the present calculation as soon as one splitter
+                # is found; we mention here that we have not fully implemented
+                # a GAP/Shared C MeatAxe version of the pseudo code to find a maximal
+                # common direct summand of two non-isomorphic modules from the article
+                # of Brooksbank and Luks; instead, we have only implemented a
+                # simplified version of it which only works for our purposes.
+        fi;
+            
+    od;
+    return([0,M]);    
+end;
+
