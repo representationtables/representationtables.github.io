@@ -1,0 +1,93 @@
+DeclareGlobalName("databasePIMsFq");
+
+
+
+
+
+WriteOrGetPIMsDataOverFqViaDatabase := function(G,p)
+    
+    local str, str0, file, GroupsSameOrder, psi, i, psi_test, dataPIMs, H, U;
+    
+    if Order(G) < 101 then
+        str := "PIMsDatabaseOverFq1to100.txt";
+    elif Order(G) < 201 then
+        str := "PIMsDatabaseOverFq101to200.txt";
+    elif Order(G) < 301 then
+        str := "PIMsDatabaseOverFq201to300.txt";
+    elif Order(G) < 401 then
+        str := "PIMsDatabaseOverFq301to400.txt";
+    elif Order(G) < 501 then
+        str := "PIMsDatabaseOverFq401to500.txt";
+    elif Order(G) < 601 then
+        str := "PIMsDatabaseOverFq501to600.txt";
+    elif Order(G) < 701 then
+        str := "PIMsDatabaseOverFq601to700.txt";
+    elif Order(G) < 801 then
+        str := "PIMsDatabaseOverFq701to800.txt";
+    elif Order(G) < 901 then
+        str := "PIMsDatabaseOverFq801to900.txt";
+    elif Order(G) < 1001 then
+        str := "PIMsDatabaseOverFq901to1000.txt";
+    elif Order(G) < 1101 then
+        str := "PIMsDatabaseOverFq1001to1100.txt";
+    elif Order(G) < 1201 then
+        str := "PIMsDatabaseOverFq1101to1200.txt";
+    elif Order(G) < 1301 then
+        str := "PIMsDatabaseOverFq1201to1300.txt";
+    elif Order(G) < 1401 then
+        str := "PIMsDatabaseOverFq1301to1400.txt";
+    elif Order(G) < 1501 then
+        str := "PIMsDatabaseOverFq1401to1500.txt";
+    else
+       str := "PIMsDatabaseOverFqGroupOrdersLargerThan1500.txt"; 
+    fi;
+    
+    Read("/home/admin_06/Schreibtisch/myGAP_TrivSource_Programs/PIMsOverFq.txt");
+    
+    str0 := "/home/admin_06/Schreibtisch/myGAP_TrivSource_Programs/";
+
+    file := Concatenation(str0,str);
+    
+    Read(file);
+    
+    psi := 0;    
+        
+    if SmallGroupsAvailable( Order(G) ) then
+        GroupsSameOrder := Filtered(databasePIMsFq, x -> x.IdentifyingG=IdSmallGroup(G));
+    else
+        GroupsSameOrder := Filtered(databasePIMsFq, x -> x.OrderG=Order(G));
+    fi;
+    
+    for i in [1..Size(GroupsSameOrder)] do
+        if p = GroupsSameOrder[i].Characteristic then
+            psi_test := IsomorphismGroups(G, GroupsSameOrder[i].G);
+            if psi_test <> fail then
+                psi := ShallowCopy(psi_test);
+                dataPIMs := GroupsSameOrder[i];
+            fi;
+        fi;
+    od;
+        
+    if psi <> 0 then
+        return([psi,dataPIMs]); 
+    else
+        psi := IsomorphismPermGroup(G);
+        H := Image(psi);
+        U := PIMsFqG(H,p);
+        Unbind(databasePIMsFq);
+        Read(file);
+        Add(databasePIMsFq,U);
+        PrintTo(file, "databasePIMsFq:=");
+        AppendTo(file, databasePIMsFq);
+        AppendTo(file,";");
+        Unbind(databasePIMsFq);
+        return([psi,U]);
+    fi;
+end;
+
+
+
+
+
+
+

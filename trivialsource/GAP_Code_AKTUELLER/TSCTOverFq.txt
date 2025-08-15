@@ -1,0 +1,2376 @@
+LoadPackage("ctbllib");
+LoadPackage("io");
+LoadPackage("qpa", "=1.35");
+
+Read("/home/admin_06/Schreibtisch/myGAP_TrivSource_Programs/PIMsOverFq.txt");
+Read("/home/admin_06/Schreibtisch/myGAP_TrivSource_Programs/WriteOrGetTSModulesAndLiftsOverFqViaDatabase.txt");
+Read("/home/admin_06/Schreibtisch/myGAP_TrivSource_Programs/StripOffOneCopyOfNFromMIfPossible.txt");
+
+
+# The program EquivalentLibraryCharacterTableWithGroup is written by Thomas Breuer:
+
+################################################################
+##
+#F  EquivalentLibraryCharacterTableWithGroup( <G> )
+##
+EquivalentLibraryCharacterTableWithGroup:= function( G )
+    local init, Gcopy, name, attr, Gtbl, tbl, trans, compat, ccl, new, i;
+
+    # If the group stores already an ordinary character table
+    # then we cannot set the attributes consistently.
+    if HasOrdinaryCharacterTable( G ) then
+      Error( "<G> has already a character table" );
+    fi;
+
+    # Test cheap attributes first, and exclude duplicates.
+    init:= AllCharacterTableNames( Size, Size( G ),
+                   NrConjugacyClasses, NrConjugacyClasses( G ),
+                   IsDuplicateTable, false );
+    if Length( init ) = 0 then
+      # No expensive tests are needed.
+      # In patricular, do not compute a character table.
+      return fail;
+    fi;
+
+    # Create a copy of the group, in order to compute its character table
+    # without storing it.
+    # (Note that calling 'AttributeValueNotSet' for 'OrdinaryCharacterTable'
+    # does not help, since 'Irr' etc. would appear silently.)
+    # Store the known attributes of 'G' in the copy,
+    # in particular 'Gcopy' and 'G' have the same ordering of conj. classes.
+    Gcopy:= GroupWithGenerators( GeneratorsOfGroup( G ) );
+    for name in KnownAttributesOfObject( G ) do
+      attr:= ValueGlobal( name );
+      Setter( attr )( Gcopy, attr( G ) );
+    od;
+
+    # Compute the character table of the copy.
+    Gtbl:= OrdinaryCharacterTable( Gcopy );
+    for name in init do
+      tbl:= CharacterTable( name );
+      trans:= TransformingPermutationsCharacterTables( tbl, Gtbl );
+      if trans <> fail then
+        # Take this library table:
+        # - Permute the classes stored in the group.
+        compat:= ListPerm( trans.columns, NrConjugacyClasses( tbl ) );
+        ccl:= ConjugacyClasses( G ){ compat };
+
+        # - Copy the contents of the library table.
+        new:= ConvertToLibraryCharacterTableNC(
+                  rec( UnderlyingCharacteristic := 0 ) );
+
+        # - Set the supported attribute values except 'Irr'.
+        for i in [ 3, 6 .. Length( SupportedCharacterTableInfo ) ] do
+          if Tester( SupportedCharacterTableInfo[ i-2 ] )( tbl )
+             and SupportedCharacterTableInfo[ i-1 ] <> "Irr" then
+            Setter( SupportedCharacterTableInfo[ i-2 ] )( new,
+                SupportedCharacterTableInfo[ i-2 ]( tbl ) );
+          fi;
+        od;
+
+        # - Set the irreducibles.
+        SetIrr( new, List( Irr( tbl ),
+            chi -> Character( new, ValuesOfClassFunction( chi ) ) ) );
+
+        # - Set the group in the table.
+        SetUnderlyingGroup( new, G );
+        SetConjugacyClasses( new, ccl );
+        SetIdentificationOfConjugacyClasses( new, compat );
+
+        # - Set the table in the group.
+        SetOrdinaryCharacterTable( G, new );
+
+        return new;
+      fi;
+    od;
+
+    # No library table fits.
+    # However, we set the computed character table, since we know it.
+    SetOrdinaryCharacterTable( G, Gtbl );
+    return fail;
+    end;
+  
+# The following function DoesVtxContainQ is an auxiliary program that determines 
+# if the p-group Vtx contains an N-conjugate of Q.
+
+DoesVtxContainQ:= function( N, Vtx, Q )
+    local ccsSubgroups, ccsSubgroupsReps, ccsSubgroups_as_Subgroups_Of_N, i, U, U_in_N, Q_in_N, flag;
+    
+    ccsSubgroups := ConjugacyClassesSubgroups(Vtx);
+    ccsSubgroupsReps := List(ccsSubgroups, x ->  Representative(x));
+    ccsSubgroups := Filtered(ccsSubgroupsReps, x -> Order(x) = Order(Q));
+    
+    ccsSubgroups_as_Subgroups_Of_N:=[];
+    for i in [1..Size(ccsSubgroups)] do
+        U:=ccsSubgroups[i];
+        U_in_N:=AsSubgroup(N,U);
+        Add(ccsSubgroups_as_Subgroups_Of_N, U_in_N);
+    od;
+    
+    Q_in_N:=AsSubgroup(N,Q);
+    
+    flag := false;
+    
+    for i in [1..Size(ccsSubgroups)] do
+        flag:= IsConjugate(N,ccsSubgroups_as_Subgroups_Of_N[i],Q_in_N);
+        if flag <> false then
+            return flag;
+        fi;
+    od;
+    
+    return flag;
+    end;
+    
+# The following function converts a GAP expression to tex code.
+# Example: x squared is translated to "x^2".
+
+GAPStringToTex:=function(str)
+	
+	local list1, i, list2, PlusOrMinus;
+	
+	list1:=SplitString(str,"^");
+	
+	if Size(list1) > 1 then
+        for i in [2..Size(list1)] do
+            if Size(SplitString(list1[i],"-"))=2 then
+                list2:=SplitString(list1[i],"-");
+                PlusOrMinus:="-";
+            elif Size(SplitString(list1[i],"+"))=2 then
+                list2:=SplitString(list1[i],"+");
+                PlusOrMinus:="+";
+            else
+                list2:=[list1[i]];
+            fi;
+            if Size(list2)=2 then
+                list1[i-1]:=Concatenation(list1[i-1],"^{",list2[1],"}",PlusOrMinus);
+                list1[i]:=list2[2];
+            else
+                list1[i-1]:=Concatenation(list1[i-1],"^{",list2[1],"}");
+                list1[i]:="";
+            fi;
+        od;
+    fi;
+	return Concatenation(list1);
+end;
+
+# Now we define a function that allows us to evaluate a class function at a group
+# element in GAP.
+
+EvaluationOfClassFunctionAtElement := function(chi, elm, grp, ListConjugacyClasses)
+# Remark: ListConjugacyClasses must be a list of elements, NOT a list of classes.
+
+    local pos, flag, i, ClassNow;
+    
+    pos:=0;
+    flag:=false;
+    i:=0;
+    while flag = false do
+        i:=i+1;
+        ClassNow := ListConjugacyClasses[i];
+    
+        if IsConjugate(grp,ClassNow, elm) then
+            pos:=i;    
+            flag:=true;
+        fi;
+    od;
+    
+    return ValuesOfClassFunction(chi)[pos];
+end;
+
+# Again, we need the program FromStringToMatrix.
+
+FromStringToMatrix:=function(G,gensG,p,fAsString) 
+	
+	local DirOfChop, M, i, RES, ERGEBNIS, MAT, StringNow, z, PositionsOpenParentheses, 
+	PositionsCloseParentheses, KLAMMER, r, SSS, STR, SPLITnow, KlammerAuf, KlammerZu, u, 
+	StringNow1, StringNow2, StringNow3, StringYNow, StringToChange, SPLIT, INP, ergebnis_to_return, 
+	stdin, stdout, MyDir, LocationOfZPRAsString, LocationOfZPOAsString, LocationOfZMUAsString, 
+	path, rm, options, pro, dir, files, f;
+	
+	LoadPackage("io");
+    # DirOfChop:=Directory("/home/admin_06/Schreibtisch/shared_meataxe-1.0/src/");
+    ChangeDirectoryCurrent("/home/admin_06");
+    
+    MyDir:=Directory("/home/admin_06");
+    stdin := InputTextUser();;
+	stdout := OutputTextUser();;
+	LocationOfZPRAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpr";
+	LocationOfZPOAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpo";
+	LocationOfZMUAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zmu";
+    path := DirectoriesSystemPrograms();
+	rm := Filename(path,"rm");
+    
+    RES:=Filename(MyDir, "RES"); 
+
+    ERGEBNIS:=Filename(MyDir, "ERGEBNIS");
+    MAT:=Filename(DirectoryCurrent(), "MAT");
+    KLAMMER:=Filename(DirectoryCurrent(), "KLAMMER");
+    
+    dir := Directory("/home/admin_06");
+
+	files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] = 'R' and f[2] = 'E' 
+	and f[3] = 'S');
+    for f in files do
+
+        if f[4] <> '.' and not ForAll(f{[4..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>8 and f[1] = 'E' and f[2] = 'R' 
+    and f[3] = 'G' and f[4] = 'E' and f[5] = 'B' and f[6] = 'N' and f[7] = 'I' and f[8] = 'S');
+    for f in files do
+
+        if f[9] <> '.' and not ForAll(f{[9..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+     
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>3 and f[1] = 'M' and f[2] = 'A' 
+    and f[3] = 'T');
+    for f in files do
+
+        if f[4] <> '.' and not ForAll(f{[4..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>7 and f[1] = 'K' and f[2] = 'L' 
+    and f[3] = 'A' and f[4] = 'M' and f[5] = 'M' and f[6] = 'E' and f[7] = 'R');
+    for f in files do
+
+        if f[8] <> '.' and not ForAll(f{[8..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+     
+    StringNow:=ShallowCopy(fAsString);
+    z:=0;
+  
+      while '(' in StringNow do
+        PositionsOpenParentheses := Positions(StringNow,'(');
+        PositionsCloseParentheses := Positions(StringNow,')');
+        z:=z+1;
+        KlammerZu:=PositionsCloseParentheses[1]; 
+        u:=PositionsCloseParentheses[1];
+        while (u in PositionsOpenParentheses)=false do
+            u:=u-1;
+        od;
+        KlammerAuf:=u;
+        StringToChange := StringNow{ [KlammerAuf+1..KlammerZu-1] } ; 
+        SPLIT:=SplitString(StringToChange, "*");
+
+        for i in [1..Size(SPLIT)] do
+            STR:=SPLIT[i];
+            SPLITnow:=SplitString(STR,"^");
+            if Size(SPLITnow)=2 then 
+                SSS:=ReplacedString(SPLITnow[1],"x","M");
+                SSS:=ReplacedString(SSS,"y","KLAMMER.");
+                
+                options:=[SSS, String(SPLITnow[2]), Concatenation("MAT.",String(i))];
+
+                pro := Process(MyDir, LocationOfZPOAsString, stdin, stdout, options);
+                if not IsZero(pro) then
+                    Print("The last process did not return zero!");
+                    return(fail);
+                fi;             
+            else
+                SSS:=ReplacedString(SPLITnow[1],"x","M");
+                SSS:=ReplacedString(SSS,"y","KLAMMER.");
+                
+                options:=[SSS, String(1), Concatenation("MAT.",String(i))];
+
+                pro := Process(MyDir, LocationOfZPOAsString, stdin, stdout, options);
+                if not IsZero(pro) then
+                    Print("The last process did not return zero!");
+                    return(fail);
+                fi;
+            fi;
+        od;
+        
+        options:=["MAT.1","MAT.2","RES.2"];
+
+        pro := Process(MyDir, LocationOfZMUAsString, stdin, stdout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        
+        for i in [2..Size(SPLIT)-1] do
+            
+            options:=[Concatenation("RES.",String(i)),
+            Concatenation("MAT.",String(i+1)),Concatenation("RES.",String(i+1))];
+     
+            pro := Process(MyDir, LocationOfZMUAsString, stdin, stdout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;
+        od;
+    
+        r:=Maximum(Size(SPLIT),2);
+         
+        options:=[Concatenation("RES.",String(r)), "1", Concatenation("KLAMMER.",String(z))];
+
+        pro := Process(MyDir, LocationOfZPOAsString, stdin, stdout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        
+        if KlammerAuf > 1 then
+            StringNow1 := StringNow{ [1..KlammerAuf-1] } ;
+        else
+            StringNow1 := "";
+        fi;
+    
+        StringNow2 := Concatenation("KLAMMER.",String(z));
+    
+        if KlammerZu < Size(StringNow) then
+            StringNow3 := StringNow{ [KlammerZu+1..Size(StringNow)] } ;
+        else
+            StringNow3 := "";
+        fi;
+        StringYNow := Concatenation("y",String(z));
+        StringNow:=Concatenation(StringNow1,StringYNow,StringNow3);
+    od;    
+    
+    StringToChange := StringNow;
+
+    SPLIT:=SplitString(StringToChange, "*");
+
+    for i in [1..Size(SPLIT)] do 
+        STR:=SPLIT[i];
+        SPLITnow:=SplitString(STR,"^");
+        if Size(SPLITnow)=2 then 
+            SSS:=ReplacedString(SPLITnow[1],"x","M");
+            SSS:=ReplacedString(SSS,"y","KLAMMER.");
+            
+            options:=[SSS, String(SPLITnow[2]), Concatenation("MAT.",String(i))];
+
+            pro := Process(MyDir, LocationOfZPOAsString, stdin, stdout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;
+        else
+            SSS:=ReplacedString(SPLITnow[1],"x","M");
+            SSS:=ReplacedString(SSS,"y","KLAMMER.");
+            
+            options:=[SSS, String(1), Concatenation("MAT.",String(i))];
+
+            pro := Process(MyDir, LocationOfZPOAsString, stdin, stdout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;
+        fi;
+    od;
+    
+    if Size(SPLIT) = 1 then
+    
+        options:=[Concatenation(MAT,".",String(1)), Concatenation(ERGEBNIS,".text")];
+
+        pro := Process(MyDir, LocationOfZPRAsString, stdin, stdout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        
+        INP :=InputTextString
+( Concatenation("ergebnis"," := ScanMeatAxeFile(","\"",Concatenation(ERGEBNIS,".text"),"\"",");"));;
+        Read(INP);      
+    else
+    
+        options:=["MAT.1","MAT.2","RES.2"];
+
+        pro := Process(MyDir, LocationOfZMUAsString, stdin, stdout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+    
+        for i in [2..Size(SPLIT)-1] do
+        
+        	options:=[Concatenation("RES.",String(i)), Concatenation("MAT.",String(i+1)),
+        	Concatenation("RES.",String(i+1))];
+
+            pro := Process(MyDir, LocationOfZMUAsString, stdin, stdout, options);
+            if not IsZero(pro) then
+                Print("The last process did not return zero!");
+                return(fail);
+            fi;
+        od;
+        
+        r:=Maximum(Size(SPLIT),2);
+        
+        options:=[Concatenation("RES.",String(r)), "1", Concatenation("ERGEBNIS.",String(1))];
+
+        pro := Process(MyDir, LocationOfZPOAsString, stdin, stdout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        
+        options:=[Concatenation(ERGEBNIS, ".", String(1)), Concatenation(ERGEBNIS, ".text")];
+
+        pro := Process(MyDir, LocationOfZPRAsString, stdin, stdout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        
+        INP :=InputTextString
+( Concatenation("ergebnis"," := ScanMeatAxeFile(","\"",Concatenation(ERGEBNIS,".text"),"\"",");"));;
+        Read(INP);
+    fi;
+
+    ergebnis_to_return := ShallowCopy(ergebnis);
+    
+	return ergebnis_to_return;
+end;
+
+# The following auxiliary program evaluates the Brauer character corresponding to an (Fp)N-module
+# at the p'-conjugacy classes of N.
+# Input: (Fp)N-Modul M, group N, gensOfN, ListPPrimeClassesN, p, alpha, AnzSummands
+# Output: BrauerCharacterValues of M at the PPrimeClasses of N
+
+BrauerCharValuesOfMAtPPrimeClassesOfN_neue_Version :=
+function(ModuleOverN,N,gensOfN,ListPPrimeClassesN,p,alpha, AnzSummands)
+
+    local N_Auxiliary, ListPPrimeClassesNAsStrings, a, ps, fac, facAsString, M, r, s, MatricesModuleNow, t;
+    
+    ChangeDirectoryCurrent("/home/admin_06");
+    
+    MyDir:=Directory("/home/admin_06");
+    stdin := InputTextUser();;
+	stdout := OutputTextUser();;
+	LocationOfZPRAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpr";
+	LocationOfZPOAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpo";
+	LocationOfZMUAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zmu";
+    path := DirectoriesSystemPrograms();
+	rm := Filename(path,"rm");
+    
+    N_Auxiliary := GroupByGenerators(gensOfN); # this is the same order as the matrices of ModuleOverN
+    ListPPrimeClassesNAsStrings:=[];
+    
+    for a in [1..Size(ListPPrimeClassesN)] do
+        ps:=ListPPrimeClassesN[a];
+        fac:=Factorization(N_Auxiliary,ps);
+        facAsString:=String(fac);
+        
+        if 'i' in facAsString then # i.e. if we have "<identity ...>" here
+            facAsString := "x1*x1^-1";
+        fi;
+        
+        Add(ListPPrimeClassesNAsStrings,facAsString);
+    od;
+    
+    M:=Filename(DirectoryCurrent(), "M");
+      
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>1 and f[1] = 'M');
+    for f in files do
+        # Skip all files with names not starting with M. or having the form M<zahl> 
+        if f[2] <> '.' and not ForAll(f{[2..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    for s in [1..Size(gensOfN)] do
+        CMtxBinaryFFMatOrPerm(ModuleOverN.generators[s],p,Concatenation(M,String(s)));
+    od;
+    
+    MatricesModuleNow:=[];
+    
+    # here we want the matrices corresponding to ListPPrimeClassesN
+    for t in [1..Size(ListPPrimeClassesN)] do 
+        Add(MatricesModuleNow,FromStringToMatrix(N,gensOfN,p,ListPPrimeClassesNAsStrings[t]));
+    od;
+    
+    # It is only left to conjugate with alpha and collect the determined values in a list. 
+    # We collect all AnzSummands lists in ListAllBrauerEvaluationsNow.
+    # jetzt müssen wir nur noch mit alpha konjugieren und AnzSummands viele Fälle/Auswertungen als kleine Listen in die große Liste packen:
+    ListAllBrauerEvaluationsNow:=[];
+    
+    if AnzSummands > 1 then
+        ListMatricesWithBlockDiagonalEntries := List(MatricesModuleNow, x -> alpha*x*alpha^-1);
+        DimOfDirSummand:=Size(ListMatricesWithBlockDiagonalEntries[1])/AnzSummands;
+    
+        for i in [1..AnzSummands] do
+            ListeSmallModuleMatricesOverFq := 
+            List(ListMatricesWithBlockDiagonalEntries, x -> ExtractSubMatrix(x, 
+            [(i-1)*DimOfDirSummand + 1 .. i*DimOfDirSummand],
+            [(i-1)*DimOfDirSummand + 1 .. i*DimOfDirSummand])); 
+            Add(ListAllBrauerEvaluationsNow, List(ListeSmallModuleMatricesOverFq, 
+            x -> BrauerCharacterValue(x)));
+        od;
+    else
+       Add(ListAllBrauerEvaluationsNow, List(MatricesModuleNow, x -> BrauerCharacterValue(x)));
+    fi;
+	return ListAllBrauerEvaluationsNow;
+end;
+       
+
+
+
+
+
+# The next function restricts a FpG-module to N:
+
+Restriction := function(G,gensG,N,gensOfN,ModuleOverG,p) # ModuleOverG should be a record
+	
+	local G_Auxiliary, ListGensAsStrings, a, ps, fac, facAsString, M, r, s, 
+	        MatricesModuleNow, t, RestrictedModule;
+	
+	ChangeDirectoryCurrent("/home/admin_06");
+	
+	MyDir:=Directory("/home/admin_06");
+        stdin := InputTextUser();;
+	stdout := OutputTextUser();;
+	LocationOfZPRAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpr";
+	LocationOfZPOAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpo";
+	LocationOfZMUAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zmu";
+        path := DirectoriesSystemPrograms();
+	rm := Filename(path,"rm");
+	
+    G_Auxiliary := GroupByGenerators(gensG);
+    ListGensAsStrings:=[];
+    for a in [1..Size(gensOfN)] do
+        ps:=gensOfN[a];
+        fac:=Factorization(G_Auxiliary,ps);
+        facAsString:=String(fac);
+        
+        if 'i' in facAsString then # i.e. if we have "<identity ...>" here
+            facAsString := "x1*x1^-1";
+        fi;
+        
+        Add(ListGensAsStrings,facAsString);
+    od;
+	
+	M:=Filename(DirectoryCurrent(), "M");
+        
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>1 and f[1] = 'M');
+    for f in files do
+        # Skip all files with names not starting with M. or having the form M<zahl> 
+        if f[2] <> '.' and not ForAll(f{[2..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    for s in [1..Size(gensG)] do
+        CMtxBinaryFFMatOrPerm(ModuleOverG.generators[s],p,Concatenation(M,String(s)));
+    od;
+    
+    MatricesModuleNow:=[];
+    
+    for t in [1..Size(gensOfN)] do # now we want the matrices corresponding to gensOfN
+        Add(MatricesModuleNow,FromStringToMatrix(N,gensOfN,p,ListGensAsStrings[t]));
+    od;
+       
+    RestrictedModule := GModuleByMats(MatricesModuleNow,GF(p));
+    
+	return RestrictedModule;
+end;
+
+# In order to compute the off-diagonal entries in the trivial source character table, we apply the following method. We restrict the present module M (with vertex P, say) to the present
+# normaliser N(Q). Then, we compute which direct summands have vertices containing Q and dircard the other modules from the direct sum decomposition. After that, we compute the Brauer
+# character values of the remaining summands at the p'-classes of N(Q). We would like to avoid multiplying matrices over Fq. Therefore, we do not compute a direct sum decomposition
+# directly, but with the help of previously computed information. Our Strategy is analogous to that durig the computation of t.s. kG-modules (i.e.: Green correspondents) over Fq.
+# However, this time, in order to do computations over Fq, we have to keep track of which modules we get rid of. That way, 
+#
+# 1) den eingerahmten Modul erst über N, dann für alle pprime classes definieren Wichtige Bemerkung: zuerst Blockmatrizen geht net, da man dann ja wieder über Fq multiplizieren müsste !!!
+# 2) Endvektoren der Vektorraumschnitte für alle Summands of alpha_now berechnen
+# 3) InducedSubmodule mit 2)
+# 4) BrauerCharValues berechnen und returnen
+
+GetBrauerCharacterValuesOffDiagonalEntries_neue_Version := function(N, gensOfN, ModuleOverN, 
+DIM_after_boese_Lste, List_PPrimeClassesN, alpha_G, NumberOfSummands_alpha_G, MATR, p) 
+
+local ListAllBrauerEvaluationsNow, N_Auxiliary, ListPPrimeClassesNAsStrings, a, ps, fac, 
+        facAsString, M, r, s, MatricesModuleWithPPrimeClasses, t, 
+        MatricesModuleWithPPrimeClassesInBlocksAndOverFq, MatricesSubModuleGuteListe, 
+        k_now, BraverEingerahmterModul, EinheitsMat, RelevantVecs_GuteListe, V1, BAS, BS, 
+        RelevantVecs_FqBackToFp_AsListOfLists, uu, ff, RelevantVecs_FqBackToFp, V2, V3, S, 
+        BSnew, h, hh, ll, bas, submod, temp, b, c;
+
+    ChangeDirectoryCurrent("/home/admin_06");
+    
+    MyDir:=Directory("/home/admin_06");
+    stdin := InputTextUser();;
+	stdout := OutputTextUser();;
+	LocationOfZPRAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpr";
+	LocationOfZPOAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpo";
+	LocationOfZMUAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zmu";
+    path := DirectoriesSystemPrograms();
+	rm := Filename(path,"rm");
+    
+    ListAllBrauerEvaluationsNow:=[];
+    N_Auxiliary := GroupByGenerators(gensOfN); # the matrices of ModuleOverN are given in the same order 
+    ListPPrimeClassesNAsStrings:=[];
+    
+    for a in [1..Size(List_PPrimeClassesN)] do
+        ps:=List_PPrimeClassesN[a];
+        fac:=Factorization(N_Auxiliary,ps);
+        facAsString:=String(fac);
+        
+        if 'i' in facAsString then # i.e. if we have "<identity ...>" here
+            facAsString := "x1*x1^-1";
+        fi;
+        
+        Add(ListPPrimeClassesNAsStrings,facAsString);
+    od;
+    
+    M:=Filename(DirectoryCurrent(), "M");
+        
+    files := Filtered(DirectoryContents(MyDir), f -> Length(f)>1 and f[1] = 'M');
+    for f in files do
+        # Skip all files with names not starting with M. or having the form M<zahl> 
+        if f[2] <> '.' and not ForAll(f{[2..Length(f)]}, IsDigitChar) then
+            continue;
+        fi;
+        f := Filename(MyDir, f);
+        RemoveFile(f);
+    od;
+    
+    for s in [1..Size(gensOfN)] do
+        CMtxBinaryFFMatOrPerm(ModuleOverN.generators[s],p,Concatenation(M,String(s)));
+    od;
+    
+    # now we want the matrices corresponding to List_PPrimeClassesN
+    MatricesModuleWithPPrimeClasses:=[];
+    for t in [1..Size(List_PPrimeClassesN)] do 
+    Add(MatricesModuleWithPPrimeClasses,FromStringToMatrix(N,gensOfN,p,ListPPrimeClassesNAsStrings[t]));
+    od;
+    
+    # next, we conjugate with MATR and focus only on certain blocks of the (block) matrix representation
+    
+    MatricesModuleWithPPrimeClassesInBlocksAndOverFq := 
+    List(MatricesModuleWithPPrimeClasses, x -> MATR * x * MATR^-1);
+    
+    # now we extract the submodule corresponding to a dir. sum of 'good' modules, i.e. modules whose vertices
+    # contain the p-subgroup in question....it is called 'BraverEingerahmterModul' and located on the bottom right
+    # of the block diagonal matrix representation MatricesModuleWithPPrimeClassesInBlocksAndOverFq.
+    
+    MatricesSubModuleGuteListe := List(MatricesModuleWithPPrimeClassesInBlocksAndOverFq, 
+        x -> ExtractSubMatrix(x, [Size(MATR) - DIM_after_boese_Lste+1..Size(MATR)], 
+        [Size(MATR) - DIM_after_boese_Lste+1..Size(MATR)] ) ); 
+    
+    k_now := DefaultField(Flat(alpha_G));
+    
+    BraverEingerahmterModul := GModuleByMats(MatricesSubModuleGuteListe,k_now);
+    
+    EinheitsMat := IdentityMat(Size(MATR) , k_now );
+    RelevantVecs_GuteListe := List([1..DIM_after_boese_Lste], 
+    x -> EinheitsMat[Size(MATR) - DIM_after_boese_Lste + x]);
+     
+    V1 := VectorSpace(k_now, RelevantVecs_GuteListe);
+    
+    # We now compute in the good/bad basis, but define it over Fq:
+    BAS:=Basis(V1); 
+    BS:=BasisVectors(BAS);
+                        
+    RelevantVecs_FqBackToFp_AsListOfLists:=[];
+                                        
+    uu := Size(alpha_G)/NumberOfSummands_alpha_G; # this is the number of rows for each summand
+                        
+    for ff in [1..NumberOfSummands_alpha_G] do
+        RelevantVecs_FqBackToFp := List([(ff-1)*uu+1..(ff-1)*uu+uu], x -> (alpha_G[x])*MATR^-1);
+        Add(RelevantVecs_FqBackToFp_AsListOfLists,RelevantVecs_FqBackToFp);
+    od;
+                        
+    for ff in [1..NumberOfSummands_alpha_G] do
+        V2 := VectorSpace(k_now,RelevantVecs_FqBackToFp_AsListOfLists[ff]); 
+        V3 := Intersection( V1, V2 );
+        BAS:=Basis(V3);
+        BS:=BasisVectors(BAS);
+        
+        # take only the vectors in question and then write new basis which fits for the intersection:
+                           
+        S:=Size(MATR);
+        BSnew:=[];
+        for h in [1..Size(BS)] do
+            Add(BSnew,[]);
+        od;
+                            
+        for hh in [1..Size(BS)] do
+            for ll in [(S-DIM_after_boese_Lste+1)..S] do
+                Add(BSnew[hh],BS[hh][ll]); 
+            od;
+        od;
+
+        bas := MTX.SpinnedBasis(BSnew,BraverEingerahmterModul.generators,k_now);
+                                                      
+        submod := MTX.InducedActionSubmodule(BraverEingerahmterModul,bas); 
+        # This is the module we wanted to determine. It remains to determine the Brauer 
+        # character and its values on the p'-classes of N.           
+        temp:=[];
+                            
+        for r in [1..Size(submod.generators)] do
+            Add(temp,BrauerCharacterValue(submod.generators[r]));
+        od;
+                            
+        Add(ListAllBrauerEvaluationsNow, temp);
+    od;
+    
+	return ListAllBrauerEvaluationsNow;
+end;
+
+# We now give an implemenation of the algorithm in Bezout's lemma. 
+# Input: two natural numbers u, v
+# Output: [s1,t1] where s1*u + t1*v = 1
+# If u and v are not coprime, the program returns 'fail'.
+
+Bezout := function(u,v)
+
+local x, y, r1, r2, s1, s2, t1, t2, s2_old, t2_old, r, q;
+
+if u<v then
+x := v;
+y := u;
+else
+x := u;
+y := v;
+fi;
+
+r1 := x;
+r2 := y;
+s1 := 1;
+s2 := 0;
+t1 := 0;
+t2 := 1;
+
+while r2 > 0 do
+r := ShallowCopy(r1 mod r2); 
+        q := ShallowCopy((r1-r)/r2); 
+        r1 := ShallowCopy(r2); 
+        r2 := ShallowCopy(r); 
+        s2_old := ShallowCopy(s2);
+        s2 := ShallowCopy(s1-q*s2);
+        s1 := ShallowCopy(s2_old);
+        t2_old := ShallowCopy(t2);
+        t2 := ShallowCopy(t1-q*t2);
+        t1 := ShallowCopy(t2_old);
+od;
+
+if not IsZero(1-r1) then
+Print("The gcd of the two numbers is not equal to 1 or you have not entered (a) non-negative integer(s).");
+    return(fail);
+fi;
+
+if u<v then
+    return([t1,s1]);
+fi;
+
+return([s1,t1]);
+end;
+
+# The following computes the p-part resp. the p'-part of a group element g of a finite group.
+# INPUT: (g,p) where g is a group element of a finite permutation group and p is a prime number.
+# OUTPUT: a list that contains the p-part and the p'-part of g as elements.
+
+PPartAndPPrimePartOfGroupElement := function(g,p)
+    
+    local ORD, facs, facs_filtered, n_p, n_q, BEZ, m, n;
+    
+    ORD:=Order(g);
+    facs := Factors(ORD);
+    facs_filtered := Filtered(facs, x -> IsZero(x-p));
+    n_p := Product(facs_filtered);
+    n_q := ORD/n_p;
+    
+    if n_q = 1 then # g is a p-element in this case
+        return([g,g^ORD]);
+    fi;
+    
+    BEZ := Bezout(n_p,n_q);
+
+    m := BEZ[2] * n_q; # hence, g^m is the p-part of g
+    
+    n := BEZ[1] * n_p; # hence, g^n is the p'-part of g
+    
+return([g^m, g^n]);
+end;
+
+# 
+# INPUT: L=Res^G_{N_j} 
+# conjugation matrix turning L into a direct sum of L1,L2,L3,... 
+# number of summands of L over Fq
+# multiplicity list over FpNj (i.e.: how many t.s. Fp N_j - modules occur how often in GOOD_LIST (for the present t.s. FpN_j-module L)
+# number of Fq-summands per FpNj-module
+# the conjugation matrices in order to go from FpNj to FqNj 
+# group generators of Nj
+# present p'-classes 
+
+FromRestrictionToOffDiagonalEntries := 
+        function(V_M_Chi_Over_Fp_Nj, GeneratorsOfNj, L, ConjugMatrixL, NumberOfSummandsL, F_q_max,
+         MultiplicityListFpNj, NumberOfFqSummandsPerFpNjModule, ConjugMatricesFromFpNjToFqNjAsList, 
+         PresentPPrimeClasses)
+         
+# L is already an FpNj-module. MultiplicityListFpNj refers to the complete list vmchiNjoverFp, 
+# but therein only to GOOD modules, i.e. the modules with vertices (conjugate to) Qj where 
+# Qj is such that Nj=N_G(Qj). 
+#
+# Strategy: 
+# 1) Create List_Z := NumberOfSummands-list * V_M_Chi_singleFqModules_in_the_correct_order
+# 2) Create list temp_L_i
+# 3) test the following two modules for maximal common direct summands: Lnow (see below) and the modules in the innermost lists of ListZ;
+# then, insert the integer j at the right place...e.g.: if Lnow=L2 and it has a non-zero common direct summand with ListZ[5][6][7], then insert the number 2 at position [5][6][7] of the list tempLi and
+# overwrite L2 with 'RestOfL2', i.e. L2 after having stripped off the common direct summand
+# 4) Since Brauer characters are additive, there are no further problems
+# we can just conjugate all modules with matrices such that we have all matrices w.r.t. a common basis...after that we obtain the intersection / common dir. summands by intersecting vector spaces;
+# Lastly, we compute the BrauerCharacterValues und return the result
+	
+	local ListZ, ListY, ListZ_BrauerChars, ListY_BrauerChars, i, PresentModuleOverFp, 
+	PresentModuleInBlockDiagonalForm, s, ANZ, t, ListWithDirSummandsFqNjRelevantGoodModules, 
+	j, ModuleGensForJthModule, ListX_BrauerChars, u, ListTemp_L_i, k, ModuleLInBlockDiagonalForm, 
+	ListModulesLi, Lnow, a, b, c, MaxComSum, ListWithBrauerCharValuesOfTheL_i_s_StillToBeAddedUp;
+	
+	ListZ := [];
+    ListY := [];
+    ListZ_BrauerChars := [];
+    ListY_BrauerChars := [];
+    
+	for i in [1..Size(V_M_Chi_Over_Fp_Nj)] do
+        if MultiplicityListFpNj[i] > 0 then
+            
+            Print("MultiplicityListFpNj ist gerade: "); Print(MultiplicityListFpNj);
+            Print("MultiplicityListFpNj[i] ist gerade: "); Print(MultiplicityListFpNj[i]);
+            
+            PresentModuleOverFp := V_M_Chi_Over_Fp_Nj[i][2];
+            
+            if Size(ConjugMatricesFromFpNjToFqNjAsList[i]) > 0 then
+
+PresentModuleInBlockDiagonalForm := GModuleByMats(List(PresentModuleOverFp.generators, 
+x -> ConjugMatricesFromFpNjToFqNjAsList[i]*x*ConjugMatricesFromFpNjToFqNjAsList[i]^-1),F_q_max);
+            
+            else
+                PresentModuleInBlockDiagonalForm := ShallowCopy(PresentModuleOverFp);
+            fi;
+            s := Size(PresentModuleOverFp.generators[1]);
+            ANZ := NumberOfFqSummandsPerFpNjModule[i];
+            t := s/ANZ;
+            ListWithDirSummandsFqNjRelevantGoodModules := [];
+            for j in [1..ANZ] do
+                ModuleGensForJthModule := List(PresentModuleInBlockDiagonalForm.generators, 
+                x -> ExtractSubMatrix(x, [(j-1)*t+1..j*t], [(j-1)*t+1..j*t]));
+                
+                Add(ListWithDirSummandsFqNjRelevantGoodModules, 
+                ShallowCopy(GModuleByMats(ModuleGensForJthModule,F_q_max)));
+            od;
+            
+            if Size(ConjugMatricesFromFpNjToFqNjAsList[i]) > 0 then
+                ListX_BrauerChars := BrauerCharValuesOfMAtPPrimeClassesOfN_neue_Version(PresentModuleOverFp, 
+                Group(GeneratorsOfNj), GeneratorsOfNj, PresentPPrimeClasses, Characteristic(F_q_max), 
+                ConjugMatricesFromFpNjToFqNjAsList[i], ANZ);
+            else
+                ListX_BrauerChars := BrauerCharValuesOfMAtPPrimeClassesOfN_neue_Version(PresentModuleOverFp,
+                Group(GeneratorsOfNj), GeneratorsOfNj, PresentPPrimeClasses, Characteristic(F_q_max), 
+                IdentityMatrix(F_q_max,s), ANZ);
+            fi;
+            
+            # We add as many isomorphic copies to the list ListY as the multiplicitieslist tells us
+            for u in [1..MultiplicityListFpNj[i]] do 
+                Add(ListY,ListWithDirSummandsFqNjRelevantGoodModules);
+                Add(ListY_BrauerChars, ListX_BrauerChars);
+            od;
+            Add(ListZ, ListY);
+            Add(ListZ_BrauerChars, ListY_BrauerChars);
+        fi;
+	od;
+	
+    Print("ListZ ist gerade: "); Print(ListZ);	
+	Print("ListZ_BrauerChars ist gerade: "); Print(ListZ_BrauerChars);
+	
+	# Step 2):
+	
+    ListTemp_L_i := [];
+	
+	for i in [1..Size(ListZ_BrauerChars)] do
+        Add(ListTemp_L_i, []); 
+	od;
+	
+	for i in [1..Size(ListZ)] do
+        for j in [1..Size(ListZ[i])] do
+            Add(ListTemp_L_i[i], []);
+        od;
+	od;
+	
+	for i in [1..Size(ListZ)] do
+        for j in [1..Size(ListZ[i])] do
+            for k in [1..Size(ListZ[i][j])] do
+                Add(ListTemp_L_i[i][j], []);
+            od;
+        od;
+	od;
+
+	# Step 3)
+	
+	# we suppose that the FpNj-module L is part of the input
+		
+	if Size(ConjugMatrixL)>0 then
+        ModuleLInBlockDiagonalForm := GModuleByMats(List(L.generators, 
+        x -> ConjugMatrixL * x * ConjugMatrixL^-1), F_q_max); 
+	else
+        ModuleLInBlockDiagonalForm := ShallowCopy(L); 
+	fi;
+	
+	ListModulesLi:=[];
+	
+	for j in [1..NumberOfSummandsL] do
+        t := Size(L.generators[1])/NumberOfSummandsL; 
+        ModuleGensForJthModule := List(ModuleLInBlockDiagonalForm.generators, 
+        x -> ExtractSubMatrix(x, [(j-1)*t+1..j*t], [(j-1)*t+1..j*t]));
+        Add(ListModulesLi, ShallowCopy(GModuleByMats(ModuleGensForJthModule,F_q_max))); 
+    od;
+    
+    Print("ListModulesLi ist gerade gleich: "); Print(ListModulesLi);
+    
+    # 
+    # Now, we have the modules L1, L2, L3,... and next:
+    # if MaxCommonDirectSummand yields true, then put a "1" at the correct place ot ListTemp_L_i (later, when L2 is considered: put a 2, ...)
+    # and replace L1 (later: L2, L3, ...) 
+    
+
+	List_Boese_Tripels:=[];
+	List_all_abcs:=[];
+	
+	ListZmuh:=[];
+	for a in [1..Size(ListZ)] do
+        Add(ListZmuh,[]);
+	od;
+	for a in [1..Size(ListZ)] do
+        for b in [1..Size(ListZ[a])] do
+            Add(ListZmuh[a],[]);
+        od;
+	od;
+	
+	for a in [1..Size(ListZ)] do
+        for b in [1..Size(ListZ[a])] do
+            for c in [1..Size(ListZ[a][b])] do
+                ListZmuh[a][b][c]:="muh";
+            od;
+        od;
+	od;
+	
+	Print("Jetzt, bevor wir angefangen haben, muss ich noch sagen: ListZ ist gerade: "); 
+	Print(ListZ);
+	
+	for j in [1..Size(ListModulesLi)] do 
+        Lnow := ShallowCopy(ListModulesLi[j]);
+        for a in [1..Size(ListZ)] do
+            for b in [1..Size(ListZ[a])] do
+                for c in [1..Size(ListZ[a][b])] do
+                Add(List_all_abcs,[a,b,c]);
+                    Print("Lnow ist gerade: "); Print(Lnow); 
+                    Print(" und [a,b,c] ist gerade: ");Print([a,b,c]);
+                    if not IsVectorSpace(Lnow) then
+                        if not IsInt(ListZmuh[a][b][c]) then
+                            if not [a,b,c] in List_Boese_Tripels then
+                            Dim_Lnow_vorher:=ShallowCopy(Lnow.dimension);
+                            MaxComSum := MaxCommonDirectSummandFq(Lnow,ListZ[a][b][c]); 
+                            
+                            Print("MaxComSum ist geradeMUH: "); Print(MaxComSum);
+                           
+                            if not IsVectorSpace(MaxComSum[2]) then 
+                                if not IsZero(MaxComSum[2].dimension - Dim_Lnow_vorher) then 
+                                # this means that Lnow got replaced by a module
+                                # which has smaller k-dimension 
+                                
+                                    Add(ListTemp_L_i[a][b][c], j); 
+                                    Print("ListTemp_L_i ist gerade: "); Print(ListTemp_L_i); 
+                                    Print("[a,b,c] ist gerade: "); Print([a,b,c]); 
+                                    Print("Wir sind gerade im Fall MUH1.\n\n");
+                                   
+                                    ListZmuh[a][b][c]:=-1;
+                                    Add(List_Boese_Tripels,[a,b,c]);
+                                    Print("Jetzt ist die -1 passiert!!!");
+                                    Print("ListZmuh ist gerade: "); Print(ListZmuh);
+                                    Lnow := ShallowCopy(MaxComSum[2]);
+                                fi;
+                            else 
+                                if not IsZero(Dim_Lnow_vorher) then 
+                                # this means that Lnow got replaced by a module
+                                # which has smaller k-dimension 
+                                    Add(ListTemp_L_i[a][b][c], j); 
+                                    Print("ListTemp_L_i ist geradeMUHI: "); Print(ListTemp_L_i); 
+                                    Print("[a,b,c] ist gerade: "); Print([a,b,c]); 
+                                    Print("Wir sind gerade im Fall MUH2.\n\n");
+                                    
+                                    Print("1.ListZmuh ist gerade: "); Print(ListZmuh);
+                                    if j=2 then
+                                       ListZmuh[a][b][c]:=-3; 
+                                       Print("Jetzt ist die -3 passiert!!!");
+                                    elif j=1 then
+                                        ListZmuh[a][b][c]:=-4;
+                                    else
+                                        ListZmuh[a][b][c]:=-5;
+                                    fi;
+                                    Print("2.ListZmuh ist gerade: "); Print(ListZmuh); 
+                                    Print("List_all_abcs ist gerade: "); Print(List_all_abcs);
+                                    Add(List_Boese_Tripels,[a,b,c]);
+                                    Lnow := ShallowCopy(MaxComSum[2]); 
+# Hence, at this stage, Lnow is the nullspace...and does not lie in the Filter MTX-module any longer...this is on purpose.
+                                fi;
+                            fi;
+                            
+                            fi;
+                        fi;
+                    fi;
+                od;
+            od;
+        od;
+    od;
+	Print("List_all_abcs ist gerade: "); Print(List_all_abcs);
+
+	ListWithBrauerCharValuesOfTheL_i_s_StillToBeAddedUp := List(ListModulesLi, x -> []);
+
+# For example, if G= A4 and  p=2 then it can happen that  the bad module is gone but the good module
+# decomposes into a direct sum with multiplicities...this happens in the line 6 0 0 2 0 0 0 in the
+# tsct and 2 means 2 times the triviial module
+	
+	#for j in [1..Size(ListModulesLi)] do
+        for a in [1..Size(ListTemp_L_i)] do
+            for b in [1..Size(ListTemp_L_i[a])] do
+                for c in [1..Size(ListTemp_L_i[a][b])] do 
+                # c runs through all boxes of the form [2], [1], [3] , ... in the current list
+                    if Size(ListTemp_L_i[a][b][c])>0 then
+                        u:= ListTemp_L_i[a][b][c][1];
+                        Add(ListWithBrauerCharValuesOfTheL_i_s_StillToBeAddedUp[u], 
+                        ListZ_BrauerChars[a][b][c]);
+                    fi;
+                od;
+            od;
+        od;
+	#od;
+	
+	Print("ListWithBrauerCharValuesOfTheL_i_s_StillToBeAddedUp ist gerade gleich: "); 
+	Print(ListWithBrauerCharValuesOfTheL_i_s_StillToBeAddedUp);
+	
+	Print("ListTemp_L_i ist gerade: "); Print(ListTemp_L_i);
+	
+	return List(ListWithBrauerCharValuesOfTheL_i_s_StillToBeAddedUp, x -> Sum(x));
+end;
+
+################################################################
+################################################################
+# The following program is the main program. 
+# The strategy is as follows:
+# 1) the tsct is computed block columnwise;
+# 2) we start with the PIMs;
+# 3) we collect and use data from the database(s) (i.e. PIMsdatabase and TSLiftsdatabase)
+# and must not forget to express the generators, ordinary characters, etc.
+# via the generators, ordinary characters, etc. of the group entered by the user;
+# 4) we compute the t.s. modules over Fp first and can then use the same 
+# conjugation matrices as those that were used for the groups from the database;
+# 5) the list GuteListe and BoeseListe means the following:
+# if a triv. s. kN-module (for some normaliser N<G) is in GuteListe, then its Brauer
+# construction w.r.t. the p-subgroup in question is equal to 0;
+# 6) we often use our implementation of the algorithm by Brooksbank and Luks that finds 
+# maximal common direct summands of two given modules due to the following reason:
+# the direct summands of a module are often given w.r.t. completely different k-bases (rather
+# than in a uniform way);
+# 7) once the t.s.c.t. is computed, we determine the ordinary characters by using the
+# Corollary of Section 3.1;
+# 8) we collect some further data (for producing the tex-file later)
+# and return the record containing the data.
+################################################################
+################################################################
+
+TSCTFq:=function(G,p)
+
+    local x, exp, facts, pprimefacts, m, f, k, W, PSI, TheOldRecord, HOMs, OldCompleteList_V_M_Chi, 
+    OldIrrCT, OldScalProdsTSModules, OldCclsG, SubgroupsPiOld, PSI_TO_THE_MINUS_ONE, gensPSIofFAC, 
+    gensFAC, PSI_AsGroupHomom, PSI_TO_THE_MINUS_ONE_AsGroupHomom, Subgroups_Pi, j, tempPi, l, ctG, 
+    gensG, NewIrrCT, PermutationsOldAndNewCharTable, PermRows, ChiTSModulesNewTable, a, Chi, 
+    rho_TSModules, t, rho_M, TSModulesNEU, w, b, MODUgenerators, MODU, VerticesNEU, gensGRP, tempVTX, 
+    List_Normalisers, List_FactorGroups, List_NbarEpis, U, N, UU, homNbarEpi, FAC, 
+    List_All_p_prime_Classes, ccFAC, List_p_prime_Classes_Of_N, RNK, P_PRIME_ORDER, List_Test_Now, 
+    Gesamtliste_Characters_Chi_All, gensOfN, Ncopy, ctN, W_N, PSI_N, TheOldRecord_N, HOMs_N, 
+    OldCompleteList_V_M_Chi_N, OldIrrCT_N, OldScalProdsTSModules_N, OldCclsN, SubgroupsPiOld_N, 
+    PSI_TO_THE_MINUS_ONE_N, gensPSIofFAC_N, gensFAC_N, PSI_AsGroupHomom_N, 
+    PSI_TO_THE_MINUS_ONE_AsGroupHomom_N, NewIrrCT_N, PermutationsOldAndNewCharTable_N, PermRows_N, 
+    ChiTSModulesNewTable_N, c, rho_TSModules_N, TSModulesNEU_N, VerticesNEU_N, d, GRP, 
+    CompleteList_V_M_Chi_N, u, AllTSCTMatCharactersForN, ResM_G_N, IdentifyingG, 
+    OrdinaryCTAsListOfLists, MyTSCTRecord, ListAllBrauerEvaluations, 
+    GrosseGesamtliste_V_M_Chi_Over_Fp_All_Normalisers, OldCompleteList_V_M_Chi_Over_Fq, 
+    OldScalProdsPIMsOverFq, UUU, OldConjugacyClasses, List_Preimages_OldConjugacyClasses, cclsG, 
+    TranspMatOldIrr, v, counter, Restr, temp_multiplicities, p_prime_classes_recent, 
+    DIM_after_boese_Lste, MAX_Abspalt, StripErgebnis, NumberOfSummands_alpha_aktuell, GuteListe, 
+    BoeseListe, DIFFERENZ, Chi_N, MatricesForConjugationStillToChopAndMultiply, NewListV_M_Chi, 
+    RestrCopy, Fq_RecentModule, AllBasesGalConjugates_BOTH_PIMS_AND_GREEN_N, NumberOfPIMsInN, 
+    NumberOfSummandsOverFqPerFpNjModuleToEnterInAuxProg, NewListV_M_Chi_N, Pnow, Q, 
+    ListPostitionsGuteListe, CounterNumberOfDirSummandsOf_The_Alpha_i_s_G, 
+    TSModulesOverFp_N_WithCorrectMatrices, MatricesModuleNow, alpha_aktuell, NumberOfPIMsInGOverFp, 
+    cc, TSCTMAT_As_List_With_n_Sublists, fac, ps, N_Auxiliary, dd, SizeTSCT, 
+    ListOrdinaryCharacterValuesOfAllTSModulesOverFq, ListOrdinaryCharsAllTSModules, ee, 
+    OrdinaryClasses_Names, List_All_p_prime_Classes_Names, ScalProdsTSModules, OrdinaryClasses, 
+    flag, ListAllBrauerEvaluationsAsListOfBlockColumns, ListOrdinaryCharOfTSModuleNow, 
+    FinalVertexPosition, PreliminaryVertexOfInterest, List_p_prime_Classes_Names_Of_N, zzz, gg, 
+    pos, DIM_per_Summand_Recent_Module_OverFqN, temp_multiplicities_for_huge_List_V_M_Chi_N, vv, 
+    uu, tt, LISCHDEEE_ModulDIMs, FLAGGE, s, TSModulesOverFpWithCorrectMatrices, pprimeclassesnow, 
+    temp, List_p_prime_Classes_Names_now, gensOfN_vorlaeufig, PreliminaryPPrimePartOfInterest, 
+    AllBasesGalConjugatesForGreen_WITHOUT_PIMS_AT_THE_BEGINNING_N, r, pprimePart, ppart, ListZ;
+    
+    LoadPackage("io");
+    ChangeDirectoryCurrent("/home/admin_06");
+    
+    MyDir:=Directory("/home/admin_06");
+    stdin := InputTextUser();;
+	stdout := OutputTextUser();;
+	LocationOfZPRAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpr";
+	LocationOfZPOAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zpo";
+	LocationOfZMUAsString := "/home/admin_06/Schreibtisch/shared_meataxe-1.0/bin/zmu";
+    path := DirectoriesSystemPrograms();
+	rm := Filename(path,"rm");
+    
+    LoadPackage("PERMUT");
+    
+    x:= X(GF(p), "x");
+    exp:=Exponent(G);
+    facts:=Factors(exp);
+    pprimefacts:=Filtered(facts, x-> x mod p <> 0 mod p);
+    m:=Product(pprimefacts);
+    f:=x^m - 1;
+    k:=SplittingField(f);
+    
+    ListAllBrauerEvaluations:=[];
+    
+    GrosseGesamtliste_V_M_Chi_Over_Fp_All_Normalisers := [];
+    
+    W:=WriteOrGetTSModulesAndLiftsOverFqViaDatabase(G,p);
+    
+    HasOrdinaryCharacterTable( G ); 
+
+    PSI:=W[1]; # PSI denotes the map IsomorphismPermGroup from the progr. WriteOrGetTSModulesAndLiftsOverFqViaDatabase
+    TheOldRecord:=W[2];
+    OldCompleteList_V_M_Chi:=TheOldRecord.CompleteList_V_M_Chi_Over_Fp;
+    OldCompleteList_V_M_Chi_Over_Fq:=TheOldRecord.CompleteList_V_M_Chi_Over_Fq;
+    OldIrrCT:=TheOldRecord.IrrCT;
+    OldScalProdsTSModules:=TheOldRecord.ScalProdsTSModules_Over_Fp;
+    OldCclsG:=TheOldRecord.cclsG;
+    SubgroupsPiOld:=TheOldRecord.SubgroupsPi;
+    PSI_TO_THE_MINUS_ONE:=InverseGeneralMapping(PSI);
+    gensPSIofFAC:=TheOldRecord.gensG; # i.e. the generators of the image of psi
+    gensFAC:=List(gensPSIofFAC, x -> ImagesRepresentative(PSI_TO_THE_MINUS_ONE,x)); 
+    PSI_AsGroupHomom:=GroupHomomorphismByImages(G,Image(PSI),gensFAC,gensPSIofFAC); 
+    PSI_TO_THE_MINUS_ONE_AsGroupHomom:=GroupHomomorphismByImages(Image(PSI),G,gensPSIofFAC,gensFAC); 
+    
+   
+    OldScalProdsPIMsOverFq := TheOldRecord.ScalprodsPIMsOverFq;
+    
+    Subgroups_Pi:=[];
+    for j in [1..Size(SubgroupsPiOld)] do
+        tempPi:=[];
+        if Size(SubgroupsPiOld[j])=0 then
+            Add(Subgroups_Pi,Group(()));
+        else
+            for l in [1..Size(SubgroupsPiOld[j])] do
+                Add(tempPi, ImagesRepresentative(PSI_TO_THE_MINUS_ONE,SubgroupsPiOld[j][l]));
+            od;
+            Add(Subgroups_Pi,Group(tempPi));
+        fi;
+    od; 
+
+    if HasOrdinaryCharacterTable(G) then
+        ctG:=CharacterTable(G);
+    else
+        UUU:=EquivalentLibraryCharacterTableWithGroup(G);
+        ctG:=CharacterTable(G);
+    fi;
+   
+    Display(ctG); # without this command only the head of the character table would be computed in some cases.
+   
+    gensG:=GeneratorsOfGroup(G);
+    
+    NewIrrCT:=Irr(ctG);
+    
+    OldConjugacyClasses := List(TheOldRecord.cclsG, xxx-> Representative(xxx)); 
+    
+    List_Preimages_OldConjugacyClasses := 
+    List(OldConjugacyClasses, yyy -> ImagesRepresentative(PSI_TO_THE_MINUS_ONE,yyy));
+    
+    cclsG:=ConjugacyClasses(ctG);
+    
+    TranspMatOldIrr:=[];
+    
+    for v in [1..Size(cclsG)] do
+        for w in [1..Size(List_Preimages_OldConjugacyClasses)] do
+            if IsConjugate(G,Representative(cclsG[v]),List_Preimages_OldConjugacyClasses[w]) then
+                Add(TranspMatOldIrr,TransposedMat(OldIrrCT)[w]);
+            fi;
+        od;
+    od;
+    
+    NewOldIrrCT:=TransposedMat(TranspMatOldIrr); 
+    
+    PermutationsOldAndNewCharTable:=TransformingPermutations(NewOldIrrCT,NewIrrCT); 
+    PermRows:=PermutationsOldAndNewCharTable.rows; 
+    
+    PermColumns:=PermutationsOldAndNewCharTable.columns;
+    if not IsZero(Order(PermColumns)-1) then
+        Print("Columns war nicht die leere Permutation !!!");
+        return fail;
+    else
+        Print("Das mit PermColumns hat nun beim ersten Mal bei G geklappt!!!   ;-) ");
+    fi;
+    
+    # Now, we collect the data (concerning modules, characters, vertices) from the database...over the field Fp
+  
+    ChiTSModulesNewTable:=[];
+    for a in [1..Size(OldScalProdsTSModules)] do
+        Chi:=0;
+        for j in [1..Size(OldScalProdsTSModules[a])] do
+            Chi := Chi + OldScalProdsTSModules[a][j][1]*NewIrrCT[OnPoints(j,PermRows)];
+        od;
+        Chi := ClassFunction(ctG,Chi);
+        Add(ChiTSModulesNewTable,Chi);
+    od;
+        
+
+
+ChiPIMsNewTableOverFq:=[];
+
+for a in [1..Size(OldScalProdsPIMsOverFq)] do
+    Chi:=0;
+    for j in [1..Size(OldScalProdsPIMsOverFq[a])] do
+        Chi := Chi + OldScalProdsPIMsOverFq[a][j][1]*NewIrrCT[OnPoints(j,PermRows)];
+    od;
+    Chi := ClassFunction(ctG,Chi);
+    Add(ChiPIMsNewTableOverFq,Chi);
+od;
+
+################################################################
+      
+    # A) finish collecting the remaining data from list_V_M_Chi 
+    
+    G_Auxiliary := GroupByGenerators(gensPSIofFAC); # here: FAC = G/<1>
+    ListGensAsStrings:=[];
+    for a in [1..Size(gensG)] do # here, G is the group that was entered by the user, i.e.: as input.
+        ps:=Image(PSI_AsGroupHomom,gensG[a]);
+        fac:=Factorization(G_Auxiliary,ps);
+        facAsString:=String(fac);
+        
+        if 'i' in facAsString then # i.e. if we have "<identity ...>" here
+            facAsString := "x1*x1^-1";
+        fi;
+        
+        Add(ListGensAsStrings,facAsString);
+    od;
+    
+    ListAllTSModulesFpFromTheDatabase := List(OldCompleteList_V_M_Chi, x -> x[2]);
+    
+    Alpha_i_s_G := ShallowCopy(TheOldRecord.AllBasesGalConjugatesForGreen_WITHOUT_PIMS_AT_THE_BEGINNING);
+    
+    CounterNumberOfDirSummandsOf_The_Alpha_i_s_G := 
+    ShallowCopy(TheOldRecord.CounterNumberOfDirSummandsGreenCorrForAllPGroups);
+    
+    NumberOfPIMsInGOverFp := Size(Filtered(OldCompleteList_V_M_Chi, x -> Order(x[1]) = 1 )); 
+    NumberOfPIMsInGOverFq := Size(Filtered(OldCompleteList_V_M_Chi_Over_Fq, x -> Order(x[1]) = 1 )); 
+    
+    TSModulesOverFpWithCorrectMatrices:=[];
+    
+    for b in [1..Size(ListAllTSModulesFpFromTheDatabase)] do
+        M:=Filename(DirectoryCurrent(), "M");
+        
+        files := Filtered(DirectoryContents(MyDir), f -> Length(f)>1 and f[1] = 'M');
+        for f in files do
+            if f[2] <> '.' and not ForAll(f{[2..Length(f)]}, IsDigitChar) then
+                continue;
+            fi;
+            f := Filename(MyDir, f);
+            RemoveFile(f);
+        od;
+    
+        for s in [1..Size(gensPSIofFAC)] do
+            CMtxBinaryFFMatOrPerm(ListAllTSModulesFpFromTheDatabase[b].generators[s],p,
+            Concatenation(M,String(s)));
+        od;
+        
+        # we want the matrices corresponding to gensG 
+        MatricesModuleNow:=[];
+        for t in [1..Size(gensG)] do 
+            Add(MatricesModuleNow,FromStringToMatrix(G,gensG,p,ListGensAsStrings[t]));
+        od;
+        Add(TSModulesOverFpWithCorrectMatrices,GModuleByMats(MatricesModuleNow,GF(p))); 
+    od;
+ 
+    # Now we take care of the vertices: 
+    
+    VerticesNEU:=[];
+    
+    for j in [1..Size(OldCompleteList_V_M_Chi)] do
+        GRP:=OldCompleteList_V_M_Chi[j][1];
+        gensGRP:=GeneratorsOfGroup(GRP);
+        if Size(gensGRP)=0 then
+            Add(VerticesNEU,Group(()));
+        else
+            tempVTX:=[];
+            for a in [1..Size(gensGRP)] do
+                Add(tempVTX,Image(PSI_TO_THE_MINUS_ONE_AsGroupHomom,gensGRP[a]));
+            od;
+            Add(VerticesNEU,Group(tempVTX));
+        fi;
+    od;
+    
+    NewListV_M_Chi := []; # this list will also contain the data about the PIMs
+    for j in [1..Size(OldCompleteList_V_M_Chi)] do
+        Add(NewListV_M_Chi, [VerticesNEU[j],TSModulesOverFpWithCorrectMatrices[j],ChiTSModulesNewTable[j]]);
+    od;
+    
+    Add(GrosseGesamtliste_V_M_Chi_Over_Fp_All_Normalisers, NewListV_M_Chi);
+    
+
+    
+    
+    
+    
+    
+    
+    
+    # hier dann weitermachen!!!
+    
+    
+    
+    
+    
+    
+    
+    
+    # B) take care of the normalisers N_i and the factor groups and p'-classes with the 'correct' representatives:
+    
+    List_Normalisers := [];
+    List_FactorGroups := [];
+    List_NbarEpis := [];
+    
+    for j in [1..Size(Subgroups_Pi)] do
+        U:=AsSubgroup(G,Subgroups_Pi[j]);
+        N:=Normaliser(G,U);
+        UU:=AsSubgroup(N,U);
+        homNbarEpi:=NaturalHomomorphismByNormalSubgroupNC(N,UU);
+        FAC:=Image(homNbarEpi);
+        Add(List_Normalisers, N);
+        Add(List_FactorGroups,FAC);
+        Add(List_NbarEpis,homNbarEpi);
+    od;
+    
+    # find out the p'-classes of the 'correct' representatives:
+    
+    List_All_p_prime_Classes:=[];
+    
+    for j in [1..Size(List_FactorGroups)] do
+        ccFAC:=ConjugacyClasses(List_FactorGroups[j]);
+        List_p_prime_Classes_Of_N:=[];
+        for a in [1..Size(ccFAC)] do
+            if ((Order(Representative(ccFAC[a])) mod p) = (0 mod p)) = false then
+                RNK:= PreImages( List_NbarEpis[j], Representative(ccFAC[a]) );
+                P_PRIME_ORDER:=Filtered(RNK, x -> ((Order(x) mod p) = (0 mod p)) = false);
+                Add(List_p_prime_Classes_Of_N,P_PRIME_ORDER[1]);
+            fi;
+        od;
+        Add(List_All_p_prime_Classes, List_p_prime_Classes_Of_N); 
+    od;
+
+    
+# Next, we add something to the complete list of all TSCT-matrix entries, namely something from the PIMs over Fq:
+        
+pprimeclassesnow := List_All_p_prime_Classes[1];
+
+for t in [1..Size(ChiPIMsNewTableOverFq)] do
+    temp := [];
+    for y in [1..Size(pprimeclassesnow)] do
+        Add(temp, pprimeclassesnow[y]^ChiPIMsNewTableOverFq[t]);
+        # ALT:
+        # Add(temp, EvaluationOfClassFunctionAtElement(ChiPIMsNewTableOverFq[t], 
+        # pprimeclassesnow[y], G, List(ConjugacyClasses(ctG), x -> Representative(x)) ));
+    od;
+    Add(ListAllBrauerEvaluations, temp);
+od; 
+
+List_All_p_prime_Classes_Names := [];
+List_p_prime_Classes_Names_now := [];
+            
+for zzz in pprimeclassesnow do
+    for gg in [1..Size(ConjugacyClasses(ctG))] do 
+        if IsConjugate(G, Representative(ConjugacyClasses(ctG)[gg]), zzz) then
+            pos:=gg;
+        fi;
+    od;
+    Add(List_p_prime_Classes_Names_now, ClassNames(ctG)[pos]);
+od;
+
+Add(List_All_p_prime_Classes_Names, List_p_prime_Classes_Names_now);
+ 
+# It remains to collect the BrauerCharacterValues of all t.s. kG-modules at the p'-conjugacy classes 
+# in the correct order.
+# Recall that the list Alpha_i_s_G is without PIMs.
+# Recall that CounterNumberOfDirSummandsOf_The_Alpha_i_s_G is without PIMs.
+
+for i in [1..Size(NewListV_M_Chi)-NumberOfPIMsInGOverFp] do
+    DAS := BrauerCharValuesOfMAtPPrimeClassesOfN_neue_Version(NewListV_M_Chi[i+NumberOfPIMsInGOverFp][2],
+    G,gensG,pprimeclassesnow,p,Alpha_i_s_G[i], CounterNumberOfDirSummandsOf_The_Alpha_i_s_G[i]);
+    Append(ListAllBrauerEvaluations, DAS);
+od;
+# now, we are done with the first block column of the TSCT
+  
+temp:=[];
+     
+################################################################
+
+# Next, we consider all normalisers except for N1 = N_G(<1>) 
+
+################################################################
+
+    SizeTSCT := Sum(CounterNumberOfDirSummandsOf_The_Alpha_i_s_G) + NumberOfPIMsInGOverFq;
+    
+    for j in [2..Size(List_Normalisers)] do 
+        N:=List_Normalisers[j];
+        Q := ShallowCopy(Subgroups_Pi[j]);
+        if IsZero(Order(G)-Order(N)) then
+            NewListV_M_Chi_N := ShallowCopy(NewListV_M_Chi);
+            Add(GrosseGesamtliste_V_M_Chi_Over_Fp_All_Normalisers, NewListV_M_Chi_N);
+            
+            List_p_prime_Classes_Names_Of_N := []; 
+            # This is done only now, since only now the table ctN is fixed
+            
+            p_prime_classes_recent := List_All_p_prime_Classes[j];
+            
+            for zzz in p_prime_classes_recent do
+                for gg in [1..Size(ConjugacyClasses(ctG))] do 
+                # notice: ctG instead of ctN 
+                    if IsConjugate(G, Representative(ConjugacyClasses(ctG)[gg]), zzz) then 
+                    # again: G instead of N  
+                        pos:=gg; 
+                    fi;
+                od;
+                Add(List_p_prime_Classes_Names_Of_N, ClassNames(ctG)[pos]); # again: ctG instead of ctN
+            od;
+            
+            Add(List_All_p_prime_Classes_Names, List_p_prime_Classes_Names_Of_N);
+            
+            # next, we do the following:
+            # if the function DoesVtxContainQ returns false, then we add zeros; otherwise: compute and save the BrauerCharValues
+            # of the [j]-th p'-class (we consider N[j]...hence it is important not to take the p'-classes of G) 
+            
+            for v in [1..Size(NewListV_M_Chi)] do 
+                if v in [1..NumberOfPIMsInGOverFp-1] then
+                elif v = NumberOfPIMsInGOverFp then
+                    for y in [1..NumberOfPIMsInGOverFq] do
+                        Add(ListAllBrauerEvaluations, List([1..Size(p_prime_classes_recent)], x -> 0));
+                    od;
+                else # i.e. v > NumberOfPIMsInGOverFp and j > 1
+                    if DoesVtxContainQ(G,NewListV_M_Chi[v][1],Q) then 
+ 
+                        # add copies of NumberOfSummands_alpha_aktuell many rows to the right place:
+                        
+    SumSoFar := Sum(CounterNumberOfDirSummandsOf_The_Alpha_i_s_G{[1..v-NumberOfPIMsInGOverFp-1]}) 
+    + NumberOfPIMsInGOverFq;
+                        
+for u in [SumSoFar+1..SumSoFar+CounterNumberOfDirSummandsOf_The_Alpha_i_s_G[v-NumberOfPIMsInGOverFp]] do
+                            temp:=[];
+                            for y in [1..Size(p_prime_classes_recent)] do
+                                for z in [1..Size(List_All_p_prime_Classes[1])] do
+                                    if IsConjugate(G,p_prime_classes_recent[y],
+                                    List_All_p_prime_Classes[1][z]) then
+                                        Add(temp,ListAllBrauerEvaluations[u][z]); # EVTL. : hier der Fehler, da die Reihenfolge der p'-classes von N_1=G und N_2 cong G net gleich sein muss!!!...habe aus [u][y] nun [u][z] genacht!
+                                    fi;
+                                od;
+                            od;
+                            Add(ListAllBrauerEvaluations,temp); 
+                        od;
+                    else
+                        # add NumberOfSummands_alpha_aktuell many rows with zeros
+                    for ss in [1..CounterNumberOfDirSummandsOf_The_Alpha_i_s_G[v-NumberOfPIMsInGOverFp]] do
+                            Add(ListAllBrauerEvaluations, List([1..Size(p_prime_classes_recent)], x -> 0));
+                    od;
+                    fi;
+                fi;
+            od;
+        else   # i.e. Order(G)>Order(N) 
+            gensOfN_vorlaeufig:=GeneratorsOfGroup(N);
+            Ncopy := GroupWithGenerators( gensOfN_vorlaeufig );
+            ctN:=CharacterTable(N); Display(ctN);
+            
+
+            List_p_prime_Classes_Names_Of_N:=[]; 
+        
+            p_prime_classes_recent := List_All_p_prime_Classes[j];
+        
+            for zzz in p_prime_classes_recent do
+                for gg in [1..Size(ConjugacyClasses(ctN))] do
+                    if IsConjugate(N, Representative(ConjugacyClasses(ctN)[gg]), zzz) then
+                        pos:=gg;
+                    fi;
+                od;
+                Add(List_p_prime_Classes_Names_Of_N, ClassNames(ctN)[pos]);
+            od;
+            
+            Add(List_All_p_prime_Classes_Names, List_p_prime_Classes_Names_Of_N);
+
+            W_N:=WriteOrGetTSModulesAndLiftsOverFqViaDatabase(Ncopy,p); #
+            PSI_N := W_N[1]; 
+            TheOldRecord_N := W_N[2];
+            OldCompleteList_V_M_Chi_N:=TheOldRecord_N.CompleteList_V_M_Chi_Over_Fp; 
+            
+            AllBasesGalConjugates_ONLY_THE_PIMS_N := 
+                TheOldRecord_N.AllBasesGalConjugates_ONLY_PIMS_AT_THE_BEGINNING; 
+            CounterNumberSummands_OF_ONLY_THE_Green_Correspondents_N := 
+                TheOldRecord_N.CounterNumberOfDirSummandsGreenCorrForAllPGroups;
+            AllBasesGalConjugatesForGreen_WITHOUT_PIMS_AT_THE_BEGINNING_N := 
+                TheOldRecord_N.AllBasesGalConjugatesForGreen_WITHOUT_PIMS_AT_THE_BEGINNING;
+           
+            OldIrrCT_N:=TheOldRecord_N.IrrCT;
+            OldScalProdsTSModules_N:=TheOldRecord_N.ScalProdsTSModules_Over_Fp; 
+            OldCclsN:=TheOldRecord_N.cclsG;
+            PSI_TO_THE_MINUS_ONE_N:=InverseGeneralMapping(PSI_N);
+            gensPSIofFAC_N:=TheOldRecord_N.gensG; # i.e. the generators of the image of PSI; here: FAC=N despite of the name
+            gensFAC_N:=List(gensPSIofFAC_N, x -> ImagesRepresentative(PSI_TO_THE_MINUS_ONE_N,x));
+            gensOfN := ShallowCopy(gensFAC_N);
+            
+            PSI_AsGroupHomom_N:=GroupHomomorphismByImages(N,Image(PSI_N),gensFAC_N,gensPSIofFAC_N); 
+            PSI_TO_THE_MINUS_ONE_AsGroupHomom_N:=
+                GroupHomomorphismByImages(Image(PSI_N),N,gensPSIofFAC_N,gensFAC_N);
+            
+            # next, we construct complete_list_v_m_chi of N
+            
+            NewIrrCT_N :=Irr(ctN);
+            
+            OldConjugacyClasses_N := List(OldCclsN, xxx-> Representative(xxx));
+            
+            List_Preimages_OldConjugacyClasses_N := List(OldConjugacyClasses_N, 
+                yyy -> ImagesRepresentative(PSI_TO_THE_MINUS_ONE_N,yyy));
+            
+            cclsN:=ConjugacyClasses(ctN);
+            
+            TranspMatOldIrr:=[];
+            
+            for v in [1..Size(cclsN)] do
+                for w in [1..Size(List_Preimages_OldConjugacyClasses_N)] do
+                    if IsConjugate(N,Representative(cclsN[v]),List_Preimages_OldConjugacyClasses_N[w]) then
+                        Add(TranspMatOldIrr,TransposedMat(OldIrrCT_N)[w]);
+                    fi;
+                od;
+            od;
+    
+            NewOldIrrCT_N:=TransposedMat(TranspMatOldIrr); 
+            
+            PermutationsOldAndNewCharTable:=TransformingPermutations(NewOldIrrCT_N,NewIrrCT_N); 
+            PermRows:=PermutationsOldAndNewCharTable.rows;
+            
+            PermColumns:=PermutationsOldAndNewCharTable.columns;
+            if not IsZero(Order(PermColumns)-1) then
+                Print("Columns war nicht die leere Permutation !!!");
+                return fail;
+            else
+                Print("Das mit PermColumns hat nun beim ersten Mal bei N geklappt!!!   ;-) ");
+            fi;
+            
+            PermutationsOldAndNewCharTable_N := ShallowCopy(PermutationsOldAndNewCharTable);
+            PermRows_N := PermutationsOldAndNewCharTable_N.rows; 
+            
+            ChiTSModulesNewTable_N:=[];
+            for a in [1..Size(OldScalProdsTSModules_N)] do # we are working over Fp
+                Chi:=0;
+                for c in [1..Size(OldScalProdsTSModules_N[a])] do 
+                    Chi := Chi + OldScalProdsTSModules_N[a][c][1]*NewIrrCT_N[OnPoints(c,PermRows_N)]; 
+                od;
+                Chi := ClassFunction(ctN,Chi);
+                Add(ChiTSModulesNewTable_N,Chi);
+            od;
+
+            
+            
+            N_Auxiliary := GroupByGenerators(gensPSIofFAC_N); 
+            # now we have the group from the databse
+            ListGensAsStrings_N:=[];
+            for a in [1..Size(gensOfN)] do 
+                ps:=Image(PSI_AsGroupHomom_N,gensOfN[a]);
+                fac:=Factorization(N_Auxiliary,ps);
+                facAsString:=String(fac);
+                
+                if 'i' in facAsString then # i.e. if we have "<identity ...>" here
+                    facAsString := "x1*x1^-1";
+                fi;
+                
+                Add(ListGensAsStrings_N,facAsString);
+            od;
+    
+            ListAllTSModulesFp_N_FromTheDatabase := List(OldCompleteList_V_M_Chi_N , x -> x[2]); 
+    
+            TSModulesOverFp_N_WithCorrectMatrices:=[];
+    
+            for b in [1..Size(ListAllTSModulesFp_N_FromTheDatabase)] do
+                M:=Filename(DirectoryCurrent(), "M");
+        
+                files := Filtered(DirectoryContents(MyDir), f -> Length(f)>1 and f[1] = 'M');
+                for f in files do
+                    if f[2] <> '.' and not ForAll(f{[2..Length(f)]}, IsDigitChar) then
+                        continue;
+                    fi;
+                    f := Filename(MyDir, f);
+                    RemoveFile(f);
+                od;
+    
+                for s in [1..Size(gensPSIofFAC_N)] do
+                    CMtxBinaryFFMatOrPerm(ListAllTSModulesFp_N_FromTheDatabase[b].generators[s],
+                    p,Concatenation(M,String(s)));
+                od;
+        
+                MatricesModuleNow:=[];
+        
+                for t in [1..Size(gensOfN)] do 
+                    Add(MatricesModuleNow,FromStringToMatrix(N,gensOfN,p,ListGensAsStrings_N[t])); 
+                od;
+            
+                Add(TSModulesOverFp_N_WithCorrectMatrices,GModuleByMats(MatricesModuleNow,GF(p))); 
+            od;
+  
+# Next, we compute the actual vertices for the trivial source modules of the normaliser N
+  
+            VerticesNEU_N:=[];
+    
+            for w in [1..Size(OldCompleteList_V_M_Chi_N)] do
+                GRP:=OldCompleteList_V_M_Chi_N[w][1];
+                gensGRP:=GeneratorsOfGroup(GRP);
+                if Size(gensGRP)=0 then
+                    Add(VerticesNEU_N,Group(()));
+                else
+                    tempVTX:=[];
+                    for a in [1..Size(gensGRP)] do
+                        Add(tempVTX,Image(PSI_TO_THE_MINUS_ONE_AsGroupHomom_N,gensGRP[a]));
+                    od;
+                    Add(VerticesNEU_N,Group(tempVTX));
+                fi;
+            od;
+    
+            NewListV_M_Chi_N := [];
+            for w in [1..Size(OldCompleteList_V_M_Chi_N)] do
+                Add(NewListV_M_Chi_N, [VerticesNEU_N[w],TSModulesOverFp_N_WithCorrectMatrices[w],
+                ChiTSModulesNewTable_N[w]]);
+            od;
+    
+            # now we finally have computed NewListV_M_Chi_N   
+            
+            Add(GrosseGesamtliste_V_M_Chi_Over_Fp_All_Normalisers, NewListV_M_Chi_N); 
+            
+            for v in [1..Size(NewListV_M_Chi)] do 
+                if v in [1..NumberOfPIMsInGOverFp-1] then
+                elif v = NumberOfPIMsInGOverFp then
+                    for y in [1..NumberOfPIMsInGOverFq] do
+                        Add(ListAllBrauerEvaluations, List([1..Size(p_prime_classes_recent)], x -> 0));
+                    od;
+                else 
+                    L := NewListV_M_Chi[v][2]; 
+                    Pnow := NewListV_M_Chi[v][1]; # the corresponding vertex
+                    Q := ShallowCopy(Subgroups_Pi[j]); 
+                    BoeseListe := [];
+                    GuteListe := [];
+                    ListPostitionsGuteListe:=[];
+                    for gg in [1..Size(NewListV_M_Chi_N)] do
+                        if DoesVtxContainQ(N,NewListV_M_Chi_N[gg][1],Q) then
+                            Add(GuteListe, NewListV_M_Chi_N[gg]); 
+                            Add(ListPostitionsGuteListe, gg);
+                        else
+                            Add(BoeseListe,NewListV_M_Chi_N[gg]);
+                        fi;
+                    od;
+
+                    if IsZero(Size(GuteListe)) then
+                        NumberOfSummands_alpha_aktuell := ShallowCopy(
+                        CounterNumberOfDirSummandsOf_The_Alpha_i_s_G[v-NumberOfPIMsInGOverFp]);
+                        for rr in [1..NumberOfSummands_alpha_aktuell] do
+                            Add(ListAllBrauerEvaluations, List([1..Size(p_prime_classes_recent)], x -> 0));
+                        od;
+                    else
+                    
+                        # we need the correct alpha_i of the present t.s. FpG-module
+                        
+                        alpha_aktuell := ShallowCopy(Alpha_i_s_G[v-NumberOfPIMsInGOverFp]); 
+                        NumberOfSummands_alpha_aktuell := ShallowCopy(
+                        CounterNumberOfDirSummandsOf_The_Alpha_i_s_G[v-NumberOfPIMsInGOverFp]);
+                        
+                        # the present alpha is still correct/valid at the level of N;
+                        # next, we need the restriction to N of the present FpG-module;
+ 
+                        Restr := Restriction(G,gensG,N,gensOfN,NewListV_M_Chi[v][2],p); # over Fp
+                        RestrCopy := ShallowCopy(Restr);
+                        Chi_N := RestrictedClassFunction( ctG, NewListV_M_Chi[v][3], ctN );
+
+                        MatricesForConjugationStillToChopAndMultiply:=[];
+                            
+                        for a in [1..Size(BoeseListe)] do 
+                            DIFFERENZ := Chi_N - BoeseListe[a][3]; # possible over Fp
+                            if ForAll( Irr(ctN), x -> ScalarProduct(x,DIFFERENZ) > -1 ) then
+                                MAX_Abspalt:=0;
+                                while ForAll( Irr(ctN), x -> ScalarProduct(x,DIFFERENZ) > -1 ) do
+                                    MAX_Abspalt:=MAX_Abspalt+1;
+                                    DIFFERENZ := DIFFERENZ - BoeseListe[a][3];
+                                od;
+                                
+                                counter:=0;
+                                repeat
+                                    StripErgebnis := 
+                                        StripOffOneCopyOfNFromMIfPossible(Restr,BoeseListe[a][2]); 
+                                    Restr := StripErgebnis[2];
+                                    if StripErgebnis[1]=1 then 
+                                    # this means that we can strip off one indec. t.s. module 
+                                    # from Restr, namely the module BoeseListe[a][2]  
+                                        Chi_N := Chi_N - BoeseListe[a][3];
+                                        counter := counter + 1;
+                                        Add(MatricesForConjugationStillToChopAndMultiply, StripErgebnis[3]); 
+                                        Print("Le Matrix in question ist: "); 
+                                        Print(StripErgebnis[3]); Print("\n");
+                                    fi;
+                                until StripErgebnis[1]=0 or counter > MAX_Abspalt;
+                            fi;
+                        od; 
+                       
+                        if IsVectorSpace(Restr) then
+                        
+                            DIM_after_boese_Lste := 0;
+                            
+                            # now, we insert Anz_Fq many zeros into the tsct
+                            
+                            for uu in [1..NumberOfSummands_alpha_aktuell] do
+                                Add(ListAllBrauerEvaluations, List(p_prime_classes_recent, x -> 0)); 
+                            od;  
+                        else
+                        
+                            DIM_after_boese_Lste := Restr.dimension; # still over Fp
+                            
+                            temp_multiplicities := [];
+                            
+                            for a in [1..Size(GuteListe)] do 
+                            DIFFERENZ := Chi_N - GuteListe[a][3]; 
+                                if ForAll( Irr(ctN), x -> ScalarProduct(x,DIFFERENZ) > -1 ) then
+                                    MAX_Abspalt := 0;
+                                    while ForAll( Irr(ctN), x -> ScalarProduct(x,DIFFERENZ) > -1 ) do
+                                        MAX_Abspalt:=MAX_Abspalt+1;
+                                        DIFFERENZ := DIFFERENZ - GuteListe[a][3];
+                                    od;
+                            
+                                    counter:=0;
+                                    repeat
+                                        StripErgebnis := 
+                                            StripOffOneCopyOfNFromMIfPossible(Restr,GuteListe[a][2]); 
+                                        Restr := StripErgebnis[2];
+                                        if StripErgebnis[1]=1 then 
+                                            Chi_N := Chi_N - GuteListe[a][3];
+                                            counter := counter + 1;
+                                            Print("Le Matrix in question ist: "); 
+                                            Print(StripErgebnis[3]); Print("\n");
+                                        fi;
+                                    until StripErgebnis[1]=0 or counter > MAX_Abspalt;
+                                    Add(temp_multiplicities, [a,counter]); 
+                                    # this means: first entry = position of this module in GuteListe;
+                                    # second entry = multiplicity of this module
+                                fi;
+                            od; 
+                            
+                            # Remark: 
+                            # ListPostitionsGuteListe is referring to NewListV_M_Chi_N (over Fp, including PIMs);
+                            # temp_multiplicities however is referring to 1..Size(GuteListe)
+
+                            NumberOfPIMsInN := Size(Filtered(NewListV_M_Chi_N, x -> Size(x[1])<2 )); 
+                            
+                            ListGoodModulesOverFpWithCorrectMultiplicities := [];
+                            
+                            temp_multiplicities_for_huge_List_V_M_Chi_N:=[];
+                                                        
+                            for hh in [1..Size(NewListV_M_Chi_N)] do
+                                FLAGGE:=false;
+                                for jj in [1..Size(ListPostitionsGuteListe)] do 
+                                    if hh=ListPostitionsGuteListe[jj] then # here, the vertex does contain a subgroup but we still have to
+                                    # check if we add zeros or not
+                                        for ll in [1..Size(temp_multiplicities)] do
+                                            if temp_multiplicities[ll][1] = jj then
+                                                Add(temp_multiplicities_for_huge_List_V_M_Chi_N, 
+                                                temp_multiplicities[ll][2]);
+                                                FLAGGE:=true;
+                                            fi;
+                                        od;
+                                    fi;
+                                od;
+                                if FLAGGE = false then
+                                    Add(temp_multiplicities_for_huge_List_V_M_Chi_N,0); # still over Fp
+                                fi;
+                            od;
+                            
+                            LISCHDEEE_ModulDIMs := List(NewListV_M_Chi_N, x -> x[2].dimension);
+                            
+                            if IsZero(temp_multiplicities_for_huge_List_V_M_Chi_N*LISCHDEEE_ModulDIMs - 
+                                DIM_after_boese_Lste ) then
+                                Print("test hat geklappt"); 
+                            else
+                                Print("FEHLER");
+                            fi;
+                            
+                            # we define some of the modules in question over smaller fields: 
+                            
+DIM_per_Summand_Recent_Module_OverFqN := Size(alpha_aktuell) / NumberOfSummands_alpha_aktuell;
+                            
+                            if Size(Flat(alpha_aktuell))>0 then
+                                Fq_RecentModule := Field(Flat(alpha_aktuell));
+                            else
+                                Fq_RecentModule := GF(p);
+                            fi;
+                                                       
+                    AllBasesGalConjugates_BOTH_PIMS_AND_GREEN_N := List([1..NumberOfPIMsInN], x -> []); 
+                            
+                    CounterNumberSummandsOfThePIMsInN := List([1..NumberOfPIMsInN], x -> []);
+                            
+                    for tt in [1..NumberOfPIMsInN] do 
+                        for uu in [1..Size(AllBasesGalConjugates_ONLY_THE_PIMS_N)] do
+                            if Size(AllBasesGalConjugates_ONLY_THE_PIMS_N[uu])>0 and 
+                                AllBasesGalConjugates_ONLY_THE_PIMS_N[uu][1] = tt then
+                                
+                                AllBasesGalConjugates_BOTH_PIMS_AND_GREEN_N[tt] := 
+                                    ShallowCopy(AllBasesGalConjugates_ONLY_THE_PIMS_N[uu][2]);
+                                CounterNumberSummandsOfThePIMsInN[tt] := 
+                                    ShallowCopy(AllBasesGalConjugates_ONLY_THE_PIMS_N[uu][4]);
+                            fi;
+                        od;
+                    od;
+                             
+                    for vv in [1..Size(CounterNumberSummandsOfThePIMsInN)] do
+                        if CounterNumberSummandsOfThePIMsInN[vv]=0 then 
+                            CounterNumberSummandsOfThePIMsInN[vv] := 1; 
+                        fi;
+                    od;
+                            
+                    Append(AllBasesGalConjugates_BOTH_PIMS_AND_GREEN_N, 
+                    AllBasesGalConjugatesForGreen_WITHOUT_PIMS_AT_THE_BEGINNING_N); 
+                            
+                            # example: let G=A4 and p= 2. Then, matrices of the underlying representations of the PIMs are given as follows:
+                            # V.AllBasesGalConjugates_ONLY_PIMS_AT_THE_BEGINNING;
+                            #[ [ 2, [ [ Z(2)^0, 0*Z(2), Z(2)^0, Z(2)^0, Z(2^2)^2, Z(2^2), Z(2^2), Z(2^2) ], [ 0*Z(2), Z(2)^0, Z(2)^0, 0*Z(2), Z(2)^0, Z(2)^0, Z(2)^0, Z(2^2) ], [ 0*Z(2), 0*Z(2), Z(2)^0, 0*Z(2), Z(2^2)^2, 0*Z(2), Z(2)^0, Z(2)^0 ], 
+                            #[ 0*Z(2), 0*Z(2), 0*Z(2), Z(2)^0, 0*Z(2), Z(2^2)^2, 0*Z(2), Z(2^2) ], [ Z(2)^0, Z(2)^0, Z(2)^0, 0*Z(2), Z(2)^0, Z(2)^0, Z(2)^0, Z(2^2) ], [ 0*Z(2), Z(2)^0, Z(2^2), Z(2)^0, 0*Z(2), Z(2)^0, Z(2)^0, Z(2^2)^2 ], 
+                            #[ 0*Z(2), 0*Z(2), Z(2)^0, 0*Z(2), 0*Z(2), Z(2)^0, Z(2^2)^2, 0*Z(2) ], [ 0*Z(2), 0*Z(2), 0*Z(2), Z(2)^0, Z(2^2), 0*Z(2), Z(2^2)^2, Z(2^2) ] ], GF(2^2), 2 ] ]
+                            
+                            Fieldq1 := Fq_RecentModule;
+                            
+                            if Size(Flat(AllBasesGalConjugates_BOTH_PIMS_AND_GREEN_N))>0 then
+                                Fieldq2 := Field(Flat(AllBasesGalConjugates_BOTH_PIMS_AND_GREEN_N));
+                            else
+                                Fieldq2:=GF(p);
+                            fi;
+                            
+                            Fqmax := GF(Maximum([Size(Fieldq1),Size(Fieldq2)])); 
+                            
+                            NumberOfSummandsOverFqPerFpNjModuleToEnterInAuxProg := [];
+                            Append(NumberOfSummandsOverFqPerFpNjModuleToEnterInAuxProg, 
+                            ShallowCopy(CounterNumberSummandsOfThePIMsInN)); 
+                            
+                            Append(NumberOfSummandsOverFqPerFpNjModuleToEnterInAuxProg, 
+                            ShallowCopy(CounterNumberSummands_OF_ONLY_THE_Green_Correspondents_N));
+                            
+                            ZZZZ := FromRestrictionToOffDiagonalEntries(NewListV_M_Chi_N, gensOfN, 
+                            RestrCopy, alpha_aktuell, NumberOfSummands_alpha_aktuell, Fqmax, 
+                            temp_multiplicities_for_huge_List_V_M_Chi_N, 
+                            NumberOfSummandsOverFqPerFpNjModuleToEnterInAuxProg, 
+                            AllBasesGalConjugates_BOTH_PIMS_AND_GREEN_N, p_prime_classes_recent);
+                             
+                            Append(ListAllBrauerEvaluations,ZZZZ);
+                        
+                        fi;
+                    fi;     
+                fi;
+            od;
+        fi;
+    od;
+    
+    
+    # Next, we construct the ordinary characters of the trivial source modules using Rickard's formula;
+    # then, we save the whole triv. s. c. t. as a big matrix.
+
+    
+    ListAllBrauerEvaluationsAsListOfBlockColumns := [];
+    
+    SizeAuxiliary := Size(ListAllBrauerEvaluations)/SizeTSCT;
+    
+    for i in [1..SizeAuxiliary] do
+        Add(ListAllBrauerEvaluationsAsListOfBlockColumns, 
+        ListAllBrauerEvaluations{[(i-1)*SizeTSCT+1..(i-1)*SizeTSCT+SizeTSCT]});
+    od;
+
+    TSCTMAT_As_List_With_n_Sublists:=[];
+    
+    for i in [1..SizeTSCT] do
+        temp:=[];
+        for j in [1..SizeAuxiliary] do
+            Append(temp, ListAllBrauerEvaluationsAsListOfBlockColumns[j][i]);
+        od;
+        Add(TSCTMAT_As_List_With_n_Sublists,temp);
+    od;
+    
+    ListOrdinaryCharacterValuesOfAllTSModulesOverFq := []; 
+    
+    for s in [1..SizeTSCT] do
+        ListOrdinaryCharOfTSModuleNow := [];
+        for x in ConjugacyClasses(ctG) do
+            g := Representative(x);
+            PPartAndPPrimePart := PPartAndPPrimePartOfGroupElement(g,p);
+            ppart := PPartAndPPrimePart[1];
+            pprimePart := PPartAndPPrimePart[2];
+            PreliminaryVertexOfInterest := GroupByGenerators([ppart]);
+            r := fail;
+            t := 0;
+            while r = fail do
+                t := t+1;
+                PSubGroupNow := Subgroups_Pi[t];
+                r := RepresentativeAction(G,Subgroups_Pi[t],PreliminaryVertexOfInterest); 
+                # if H := Subgroups_Pi[t] and K := PreliminaryVertexOfInterest are conjugate in G, 
+                # then we have H = r*K*r^-1.
+            od;
+        
+            FinalVertexPosition := ShallowCopy(t);
+            PreliminaryPPrimePartOfInterest := r*pprimePart*r^-1; 
+            # conjugating the old p'-part into the correct p-subgroup of G
+                
+            N:=List_Normalisers[FinalVertexPosition];
+        
+            u := 0;
+            flag := false;
+            while flag = false do
+                u := u+1;
+                if IsConjugate(N,List_All_p_prime_Classes[FinalVertexPosition][u],
+                    PreliminaryPPrimePartOfInterest) then
+                    flag := true;
+                fi;
+            od;
+            Add(ListOrdinaryCharOfTSModuleNow, ListAllBrauerEvaluationsAsListOfBlockColumns[t][s][u]);
+        od;
+        Add(ListOrdinaryCharacterValuesOfAllTSModulesOverFq, ListOrdinaryCharOfTSModuleNow);
+    od;
+    
+    if IdGroupsAvailable(Order(G)) then
+        IdentifyingG:=IdSmallGroup(G);
+    else
+        IdentifyingG:=["could not identify G !!!"];
+    fi;
+    
+    OrdinaryClasses := List(ConjugacyClasses(ctG), x -> Representative(x));
+    OrdinaryClasses_Names := ClassNames(ctG);
+
+    OrdinaryCTAsListOfLists:=[];
+    for m in [1..Size(Irr(ctG))] do
+        Add(OrdinaryCTAsListOfLists, ShallowCopy(Irr(ctG)[m]));
+    od;
+    
+    ListOrdinaryCharsAllTSModules := List(ListOrdinaryCharacterValuesOfAllTSModulesOverFq, x -> ClassFunction(ctG,x));
+    
+    ScalProdsTSModules:=[];
+    for m in [1..Size(ListOrdinaryCharsAllTSModules)] do
+        Add(ScalProdsTSModules,Flat(MatScalarProducts(ctG,[ListOrdinaryCharsAllTSModules[m]],Irr(ctG))));
+    od;
+    
+    MyTSCTRecord :=  rec(); 
+    
+    MyTSCTRecord.G := G;
+    MyTSCTRecord.gensG := gensG;
+    MyTSCTRecord.OrderG := Order(G);
+    MyTSCTRecord.IdentifyingG := IdentifyingG;
+    MyTSCTRecord.Gesamtliste_Characters_Chi_All := ListOrdinaryCharsAllTSModules;
+    MyTSCTRecord.TSCTMAT_As_List_With_n_Sublists := TSCTMAT_As_List_With_n_Sublists;
+    MyTSCTRecord.Field := k;
+    MyTSCTRecord.Characteristic := Characteristic(k);
+    MyTSCTRecord.List_All_p_prime_Classes := List_All_p_prime_Classes;
+    MyTSCTRecord.Pis := Subgroups_Pi;
+    MyTSCTRecord.Nis := List_Normalisers;
+    
+    MyTSCTRecord.OrdinaryClasses := OrdinaryClasses;
+    MyTSCTRecord.OrdinaryClasses_Names := OrdinaryClasses_Names;
+    MyTSCTRecord.OrdinaryCTAsListOfLists := OrdinaryCTAsListOfLists;
+    MyTSCTRecord.ScalProdsTSModules := ScalProdsTSModules;
+    MyTSCTRecord.List_All_p_prime_Classes_Names := List_All_p_prime_Classes_Names;
+    
+    # we insert two tests here:
+    # 1) Do the degrees of the ordinary characters of the t.s. modules coincide with the degrees of
+    # the underlying modular representations of the triv. s. modules?
+    # 2) Is Triv_p(G) invertible?
+    
+    cc:=0;
+    
+    dd:=SizeTSCT;
+    
+    for ee in [1..dd] do
+        if not IsZero(TSCTMAT_As_List_With_n_Sublists[ee][1] - ListOrdinaryCharsAllTSModules[ee][1]) then
+            cc:=cc+1;
+        fi;
+    od;
+    
+    if not IsZero(cc) then
+Print("The computed character degrees do probably not coincide with the dimensions of the trivial source modules.");
+        return(fail);
+    fi;
+    
+    
+    if IsZero(Determinant(TSCTMAT_As_List_With_n_Sublists)) then
+        Print("The determinant is equal to zero. Hence, the trivial source characters are linearly dependend.",
+        "Thus, there is a mistake somewhere.");
+        return(fail);
+    fi;
+    
+    FlatScalProds := Flat(ScalProdsTSModules);
+    FlagInt := true;
+    
+    for i in FlatScalProds do
+        if not IsInt(i) then
+            FlagInt := false;
+        fi;
+    od;
+    
+    if FlagInt=false then
+        return("ERROR!");
+    fi;
+    
+	return MyTSCTRecord;
+  
+end;
+
+############################
+
+# We now define an auxiliary function that converts the computed
+# entries of the t.s.c.t., as well as the characters and the conjugacy classes
+# from GAP to tex
+
+TSCTDataToTexFile:=function(G,p,file) 
+# Here, 'file' is the name of a file given as a string, e.g. "SmallGroup_36_3_p_is_3.tex".
+# The output of the function will be saved in this file.   
+  
+    local f, TSCT_Record, Classes_OrdinaryTable, OrdinaryTableAsList, m, i, 
+    beginning_of_chi_as_string, j, ClassesNamesOfctG;
+    
+    if IsString(file) then f := OutputTextFile(file,false);
+        SetPrintFormattingStatus(f,false);
+    else
+        f:= file;
+    fi;
+    
+    TSCT_Record := TSCTFq(G,p);
+    
+    Classes_OrdinaryTable := TSCT_Record.OrdinaryClasses;
+    
+    ClassesNamesOfctG := TSCT_Record.OrdinaryClasses_Names;
+    
+    OrdinaryTableAsList := TSCT_Record.OrdinaryCTAsListOfLists;
+    
+    m := Size(Classes_OrdinaryTable);
+    
+    # We now start with the LaTeX-file.
+    
+    PrintTo(f, "\\documentclass[varwidth=\\maxdimen,border=10]{standalone}\n");
+    PrintTo(f, "\\begin{document}\n");
+    PrintTo(f, "The group \$G\$ is isomorphic to the group labelled by\\ "); 
+    PrintTo(f, TSCT_Record.IdentifyingG); PrintTo(f, "\\ "); 
+	PrintTo(f, "in the Small Groups library."); PrintTo(f,"\\");PrintTo(f,"\\"); PrintTo(f, "\n");
+    PrintTo(f, "Ordinary character table of "); PrintTo(f, "\$G\$"); 
+    PrintTo(f, "\\ \$\\cong\$\\ "); PrintTo(f, StructureDescription(G)); PrintTo(f, ":");
+    PrintTo(f,"\\");PrintTo(f,"\\"); PrintTo(f, "\n");
+   
+    # Now we generate a LaTex-code for the ordinary character table of G.
+    
+    PrintTo(f, "\\begin{center}");PrintTo(f, "\n");
+    
+    PrintTo(f, "\\begin{tabular}{\@{}l\@{}l\@{}l\@{}");
+    PrintTo(f, "}\n");
+    
+    PrintTo(f,   "\\hline\n");
+    
+    PrintTo(f, "\\(\\begin{array}{|l");
+    PrintTo(f, "|");
+    PrintTo(f, ListWithIdenticalEntries(m, 'c'));
+    PrintTo(f, "|}\n");
+    PrintTo(f, " ");
+    
+    for i in [1..m] do
+       PrintTo(f, " & ");
+       PrintTo(f, ClassesNamesOfctG[i]);
+    od;
+    PrintTo(f,   "\\\\ \\hline\n");
+
+    beginning_of_chi_as_string:="\\chi_{";
+
+    for i in [1..m] do
+        PrintTo(f, Concatenation(beginning_of_chi_as_string,String(i),"}"));
+        for j in [1..m] do
+            PrintTo(f, " & ");
+            PrintTo(f, GAPStringToTex(String(OrdinaryTableAsList[i][j])));
+        od;
+        PrintTo(f, "\\\\"); PrintTo(f, "\n");
+    od;
+
+    PrintTo(f,   "\\hline\n");
+    PrintTo(f,"\\end{array}\\)\\\\");
+    PrintTo(f, "\n");
+    PrintTo(f,"\\end{tabular}\n");
+
+    PrintTo(f, "\\end{center}"); PrintTo(f, "\n");
+
+    # Next, we collect some data for the creation of the t.s.c.t., the p'-classes, the normalisers, etc.
+
+    Pis := TSCT_Record.Pis;
+    Nis := TSCT_Record.Nis;
+
+    p := TSCT_Record.Characteristic;
+
+    List_All_p_prime_Classes := TSCT_Record.List_All_p_prime_Classes;
+
+    TSCTMAT_As_List_With_n_Sublists := TSCT_Record.TSCTMAT_As_List_With_n_Sublists;
+
+    PrintTo(f, "\\begin{tabular}{\@{}l\@{}l\@{}l\@{}");
+    stri:= "l\@{}";
+    len:=1+Size(Pis)+Size(Pis);
+    li:= ListWithIdenticalEntries(len, stri);
+
+    PrintTo(f, Concatenation(li));
+    PrintTo(f, "}\n");
+
+    PrintTo(f, "Trivial source character table of "); PrintTo(f, "\$G\$"); 
+    PrintTo(f, "\\ \$\\cong\$\\ "); PrintTo(f, StructureDescription(G)); PrintTo(f, " at"); 
+    PrintTo(f, "\\ \$p="); PrintTo(f, p); PrintTo(f, "\$:");
+    PrintTo(f, "\\\\"); PrintTo(f, "\n");
+    PrintTo(f, "\\(\\begin{array}{|l");
+
+    for i in [1..Size(List_All_p_prime_Classes)] do
+        j:=Size(List_All_p_prime_Classes[i]);
+        PrintTo(f, "|");
+        PrintTo(f, ListWithIdenticalEntries(j, 'c'));
+    od;
+    PrintTo(f, "|}\n");
+
+    List_ccls_flat:=Flat(List_All_p_prime_Classes);
+
+    PrintTo(f,   "\\hline\n");
+    PrintTo(f, "\\textup{Normalisers}\\ N_i");
+
+    for i in [1..Size(List_All_p_prime_Classes)] do
+        PrintTo(f, " & ");
+        PrintTo(f, "\\multicolumn{"); PrintTo(f, Size(List_All_p_prime_Classes[i])); 
+        PrintTo(f, "}{c|}{"); PrintTo(f,Concatenation("N_{",String(i),"}"));PrintTo(f,"}");
+    od;
+
+    PrintTo(f,   "\\\\ \\hline\n");
+
+    PrintTo(f, "p\\textup{-subgroups\\ of\\ } G\\ \\textup{up\\ to\\ conjugacy\\ in\\ } G");
+    for i in [1..Size(List_All_p_prime_Classes)] do
+        PrintTo(f, " & ");
+        PrintTo(f, "\\multicolumn{"); PrintTo(f, Size(List_All_p_prime_Classes[i])); 
+        PrintTo(f, "}{c|}{"); PrintTo(f,Concatenation("P_{",String(i),"}"));PrintTo(f,"}");
+    od;
+    PrintTo(f,   "\\\\ \\hline\n");
+
+    List_Representatives_Names := [];
+    for b in [1..Size(TSCT_Record.List_All_p_prime_Classes_Names)] do
+        Append(List_Representatives_Names,TSCT_Record.List_All_p_prime_Classes_Names[b]);
+    od;
+
+    PrintTo(f, "\\textup{Representatives}\\ n_j\\ \\in\\ N_i");
+    for i in [1..Size(List_ccls_flat)] do
+        PrintTo(f, " & ");
+        PrintTo(f, List_Representatives_Names[i]);
+    od;
+    PrintTo(f,   "\\\\ \\hline\n");
+
+    nsq:=Size(Flat(TSCTMAT_As_List_With_n_Sublists));
+
+    if IsSquareInt(nsq) then
+        sqrt:=RootInt(nsq);
+    else
+        Print("The number of the matrix entries is not a square!");
+        return(fail);
+    fi;
+
+    List_numbers_for_grid:=[];
+
+    u:=0;
+    for i in [1..Size(List_All_p_prime_Classes)] do
+        j:=Size(List_All_p_prime_Classes[i]);
+        Append(List_numbers_for_grid,[u+j]);
+        u:=u+j;
+    od;
+
+    Remove(List_numbers_for_grid);;
+
+    my_chi_string:="";
+
+    beginning_of_chi_as_string:="\\chi_{";
+
+    plus_as_string:="+";
+
+    times_as_string:="\\cdot\ ";
+
+    new_string_lists_for_characters:=[];
+
+    for i in [1..sqrt] do
+        Append(new_string_lists_for_characters,[[]]);
+    od;
+
+    The_TS_characters := TSCT_Record.ScalProdsTSModules;
+
+    for i in [1..Size(The_TS_characters)] do
+        for j in [1..Size(The_TS_characters[i])] do
+            my_chi_string:= Concatenation(my_chi_string,"{");
+            my_chi_string:= Concatenation(my_chi_string,String(The_TS_characters[i][j]));
+            my_chi_string:= Concatenation(my_chi_string,"}");
+            my_chi_string:= Concatenation(my_chi_string, times_as_string);
+            my_chi_string:= Concatenation(my_chi_string, beginning_of_chi_as_string);
+            my_chi_string:= Concatenation(my_chi_string, String(j));
+            my_chi_string:= Concatenation(my_chi_string, "}");
+            Append(new_string_lists_for_characters[i],[my_chi_string]);
+            my_chi_string:="";
+        od;
+    od;
+
+    The_TS_characters_new:=[];
+
+    String_TS_Char:="";
+
+for i in [1..Size(new_string_lists_for_characters)] do
+       for j in [1..Size(new_string_lists_for_characters[i])] do
+               String_TS_Char:=Concatenation(String_TS_Char, new_string_lists_for_characters[i][j]);
+               if j < Size(new_string_lists_for_characters[i]) then
+                       String_TS_Char:=Concatenation(String_TS_Char, plus_as_string);
+               fi;
+       od;
+       Append(The_TS_characters_new,[String_TS_Char]);
+       String_TS_Char:="";
+od;
+
+for i in [1..sqrt] do
+       PrintTo( f, The_TS_characters_new[i]);
+       for j in [1..sqrt] do
+               PrintTo( f, " & ");
+               PrintTo( f, GAPStringToTex(String(Flat(TSCTMAT_As_List_With_n_Sublists)[(i-1)*sqrt + j])));
+       od;
+       PrintTo(f,   "\\\\");
+       PrintTo(f, "\n");
+       if i in List_numbers_for_grid then
+               PrintTo(f,   " \\hline\n");
+       fi;
+od;
+
+    PrintTo(f,   "\\hline\n\n");
+    PrintTo(f,"\\end{array}\\)\\\\");
+    PrintTo(f, "\n");
+
+    PrintTo(f,"\\ \\\\"); PrintTo(f, "\n");
+
+    The_groups_P_i:=TSCT_Record.Pis;
+    The_groups_N_i:=TSCT_Record.Nis;
+
+    for i in [1..Size(The_groups_P_i)] do
+        PrintTo(f,"\\ \\\\"); PrintTo(f, "\n");
+        my_P_i_string:= Concatenation("\$P","_","{",String(i),"}");
+        PrintTo(f, my_P_i_string);
+        PrintTo(f,"\ =\ ");
+        PrintTo(f, The_groups_P_i[i]);
+        PrintTo(f,"\\cong\$\ ");
+        PrintTo(f, StructureDescription(The_groups_P_i[i]));
+    od;
+
+    PrintTo(f,"\\ \\\\"); PrintTo(f, "\n");
+
+    for i in [1..Size(The_groups_N_i)] do
+        PrintTo(f,"\\ \\\\"); PrintTo(f, "\n");
+        my_N_i_string:= Concatenation("\$N","_","{",String(i),"}");
+        PrintTo(f, my_N_i_string);
+        PrintTo(f,"\ =\ ");
+        PrintTo(f, The_groups_N_i[i]);
+        PrintTo(f,"\\cong\$\ ");
+        PrintTo(f, StructureDescription(The_groups_N_i[i]));
+    od;
+
+    PrintTo(f,"\\end{tabular}\n");
+
+    PrintTo(f,"\\end{document}\n");
+
+    if IsString(file) then
+        CloseStream(f);
+    fi;
+    return(TSCT_Record);
+end;
+
+
+
+
+
+
+# The function TSCT_pdf_producer has as input a positive integer t and
+# produces the trivial source character tables (pdf's) of all small groups
+# with order t at once.
+
+TSCT_pdf_producer := function(t)
+
+    local StrFolder, ALL, primedivs, i, iso, G, IIDD, p, file, V, STR, z;
+    
+    ChangeDirectoryCurrent("/home/admin_06");
+
+    StrFolder:=Concatenation("mkdir ",String(t));
+    Exec(StrFolder); 
+    ChangeDirectoryCurrent(Concatenation("/home/admin_06","/",String(t)));
+
+    ALL:=AllSmallGroups(t);
+    primedivs:=PrimeDivisors(t);
+    for i in ALL do
+        iso:=IsomorphismPermGroup(i);
+        G:=Image(iso);
+        IIDD:=IdSmallGroup(G); # a list with two entries
+        for p in primedivs do
+            file:=Concatenation("SmallGroup","_",String(IIDD[1]),"_",String(IIDD[2]),
+            "_for_the_prime_",String(p),".tex");
+            ChangeDirectoryCurrent(Concatenation("/home/admin_06","/",String(t)));
+            V:=TSCTDataToTexFile(G,p,file);
+        od;
+    od;
+
+    ChangeDirectoryCurrent(Concatenation("/home/admin_06","/",String(t)));
+    STR:=Concatenation("for i in ","/home/admin_06","/",String(t),"/","\*",".tex; do pdflatex ",
+    "\"","\$","i","\"",";done");
+
+    Exec(STR); 
+    
+    z:=DirectoryCurrent();
+    
+    return(z);
+end;
+
+################################################################
+# Example:
+################################################################
+
+
+#   p:=11;
+#   GG:=SmallGroup(22,2);
+#   iso:=IsomorphismPermGroup(GG);
+#   G:=Image(iso);
+#   
+#   IIDD:=IdSmallGroup(G);
+#   
+#   # Creation of the tex-file
+#   file:=Concatenation("SmallGroup","_",String(IIDD[1]),"_",String(IIDD[2]),"_for_the_prime_",String(p),".tex");
+#   
+#   
+#   # p:=7;
+#   # G:=AtlasGroup("L2(8).3");
+#   # IIDD:=IdSmallGroup(G);
+#   # file:=Concatenation("L2(8)_DOT_3","_for_the_prime_",String(p),".tex");
+#   
+#   
+#   # Producing the pdf-file of the trivial source character table
+#   V:=TSCTDataToTexFile(G,p,file);
+
+
+
+

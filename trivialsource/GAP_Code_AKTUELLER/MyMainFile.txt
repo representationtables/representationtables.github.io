@@ -1,0 +1,174 @@
+LoadPackage("qpa", "=1.35");
+LoadPackage("io");
+LoadPackage("atlasrep");
+
+
+DeclareGlobalName("global_a");
+DeclareGlobalName("global_b");
+DeclareGlobalName("global_c");
+DeclareGlobalName("global_d");
+DeclareGlobalName("global_e");
+DeclareGlobalName("ergebnis");
+DeclareGlobalName("M");
+DeclareGlobalName("Q");
+DeclareGlobalName("CFInfo");
+DeclareGlobalName("MyPathAsString");
+MyPathAsString := "/home/admin_06";
+DeclareGlobalName("MySystemPaths");
+MySystemPaths := DirectoriesSystemPrograms();
+DeclareGlobalName("MyDir");
+MyDir := Directory(MyPathAsString);
+DeclareGlobalName("STDin");
+DeclareGlobalName("STDout");
+STDin := InputTextUser();;
+STDout := OutputTextUser();;
+
+DeclareGlobalName("LocationOfZPRAsString");
+DeclareGlobalName("LocationOfZPOAsString");
+DeclareGlobalName("LocationOfZMUAsString");
+DeclareGlobalName("LocationOfCHOPAsString");
+DeclareGlobalName("LocationOfPWKONDAsString");
+DeclareGlobalName("LocationOfZSPAsString");
+DeclareGlobalName("LocationOfMKHOMAsString");
+DeclareGlobalName("LocationOfZIVAsString");
+DeclareGlobalName("LocationOfRADAsString");
+DeclareGlobalName("LocationOfSOCAsString");
+DeclareGlobalName("LocationOfDECOMPAsString");
+
+
+
+LocationOfZPRAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/zpr");
+LocationOfZPOAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/zpo");
+LocationOfZMUAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/zmu");
+LocationOfCHOPAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/chop");
+LocationOfPWKONDAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/pwkond");
+LocationOfZSPAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/zsp");
+LocationOfMKHOMAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/mkhom");
+LocationOfZIVAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/ziv");
+LocationOfRADAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/rad");
+LocationOfSOCAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/soc");
+LocationOfDECOMPAsString := Concatenation(MyPathAsString,"/Schreibtisch/shared_meataxe-1.0/bin/decomp");
+
+
+
+
+DeclareGlobalName("REMOVe");
+REMOVe := Filename(MySystemPaths,"rm");
+
+
+
+
+
+DeclareGlobalFunction( "DeleteIsomorphicCopiesFromList" );
+
+
+InstallGlobalFunction( DeleteIsomorphicCopiesFromList, function(L)
+
+    local temp, counter, flag, i;
+    
+    temp := [];
+    counter := 1;
+    while 1 <= counter and counter <= Size(L) do 
+    	flag := false;
+    	i := 1;
+    	while flag=false and i <= Size(temp) do
+    		if IsMatrix(MTX.IsomorphismModules(L[counter], temp[i])) then
+    			flag := true;
+    		else
+    			i := i+1;
+    		fi;	
+    	od;	
+    	if flag=false then
+    		Add(temp, L[counter]);
+    	fi;
+    	counter := counter + 1;
+    od;
+    return temp;
+end);
+
+
+
+
+
+
+DeclareGlobalFunction( "ReadRepFrom" );
+
+# The function ReadRepFrom is an adapted version of a program taken from René Zimmermann's
+# PhD thesis, see R. Zimmermann, Vertizes einfacher Moduln Symmetrischer Gruppen,
+# PhD thesis (German), University of Jena, Jena, 2004.
+#############################################################################
+##
+#F  ReadRepFrom( <file>, <nrgens>, <field> ) . . . . . . . .  Reading the MeatAxe matrices file.1, .., file.nrgens, which are binary files, into GAP
+##
+InstallGlobalFunction( ReadRepFrom, function(file, nrgens, field)
+    local rep, i, options, pro;
+        
+    ChangeDirectoryCurrent(MyPathAsString);
+
+    rep := [];
+    for i in [1..nrgens] do
+        options := [Concatenation(file,".",String(i)), Concatenation(file,".text")];
+        pro := Process(MyDir, LocationOfZPRAsString, STDin, STDout, options);
+        if not IsZero(pro) then
+            Print("The last process did not return zero!");
+            return(fail);
+        fi;
+        rep[i] := ScanMeatAxeFile(Concatenation(file,".text"), Size(field));
+    od;
+    options := [Concatenation(file,".text")];
+    pro := Process(MyDir, REMOVe, STDin, STDout, options);
+    if not IsZero(pro) then
+        Print("The last process did not return zero!");
+        return(fail);
+    fi;
+    return rep;
+end );
+################################################################
+
+
+
+
+
+
+
+DeclareGlobalFunction( "CoefficientsOfOsimaIdempotent" );
+
+
+# The program CoefficientsOfOsimaIdempotent is written by Thomas Breuer.
+# See http://www.math.rwth-aachen.de/~Thomas.Breuer/ctblocks/doc/chap3.html#X79C6AA8A7AD53766
+
+################################################################
+##
+#F  CoefficientsOfOsimaIdempotent( <tbl>, <p>, <b> )
+##
+InstallGlobalFunction( CoefficientsOfOsimaIdempotent, function( tbl, p, b )
+    local blocks, coeffs, irr, i, chi;
+
+    blocks:= PrimeBlocks( tbl, p );
+    coeffs:= 0 * [ 1 .. NrConjugacyClasses( tbl ) ];
+    irr:= List( Irr( tbl ), ValuesOfClassFunction );
+    for i in [ 1 .. Length( blocks.block ) ] do
+      if blocks.block[i] = b then
+        chi:= irr[i];
+        coeffs:= coeffs + chi[1] * chi;
+      fi;
+    od;
+    return List( coeffs, ComplexConjugate ) / Size( tbl );
+    end );
+################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+MyPIMsFqFileAsString := Concatenation(MyPathAsString,"/Schreibtisch/myGAP_TrivSource_Programs/PIMsOverFq.txt");
+Read(MyPIMsFqFileAsString);
+
