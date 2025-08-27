@@ -1,0 +1,53 @@
+\documentclass[varwidth=\maxdimen,border=10]{standalone}
+\begin{document}
+The group $G$ is isomorphic to the alternating group A7.\\
+Ordinary character table of $G$\ $\cong$\ A7:\\
+\begin{center}
+\begin{tabular}{@{}l@{}l@{}l@{}}
+\hline
+\(\begin{array}{|l|ccccccccc|}
+  & 1a & 2a & 3a & 3b & 4a & 5a & 6a & 7a & 7b\\ \hline
+\chi_{1} & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
+\chi_{2} & 6 & 2 & 3 & 0 & 0 & 1 & -1 & -1 & -1\\
+\chi_{3} & 10 & -2 & 1 & 1 & 0 & 0 & 1 & E(7)+E(7)^{2}+E(7)^{4} & E(7)^{3}+E(7)^{5}+E(7)^{6}\\
+\chi_{4} & 10 & -2 & 1 & 1 & 0 & 0 & 1 & E(7)^{3}+E(7)^{5}+E(7)^{6} & E(7)+E(7)^{2}+E(7)^{4}\\
+\chi_{5} & 14 & 2 & 2 & -1 & 0 & -1 & 2 & 0 & 0\\
+\chi_{6} & 14 & 2 & -1 & 2 & 0 & -1 & -1 & 0 & 0\\
+\chi_{7} & 15 & -1 & 3 & 0 & -1 & 0 & -1 & 1 & 1\\
+\chi_{8} & 21 & 1 & -3 & 0 & -1 & 1 & 1 & 0 & 0\\
+\chi_{9} & 35 & -1 & -1 & -1 & 1 & 0 & -1 & 0 & 0\\
+\hline
+\end{array}\)\\
+\end{tabular}
+\end{center}
+\begin{tabular}{@{}l@{}l@{}l@{}l@{}l@{}l@{}l@{}l@{}}
+Trivial source character table of $G$\ $\cong$\ A7 at\ $p=5$:\\
+\(\begin{array}{|l|cccccccc|cccc|}
+\hline
+\textup{Normalisers}\ N_i & \multicolumn{8}{c|}{N_{1}} & \multicolumn{4}{c|}{N_{2}}\\ \hline
+p\textup{-subgroups\ of\ } G\ \textup{up\ to\ conjugacy\ in\ } G & \multicolumn{8}{c|}{P_{1}} & \multicolumn{4}{c|}{P_{2}}\\ \hline
+\textup{Representatives}\ n_j\ \in\ N_i & 1a & 2a & 3a & 6a & 3b & 4a & 7a & 7b & 1a & 4a & 2a & 4b\\ \hline
+{0}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{0}\cdot \chi_{8}+{1}\cdot \chi_{9} & 35 & -1 & -1 & -1 & -1 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+{1}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{1}\cdot \chi_{6}+{0}\cdot \chi_{7}+{0}\cdot \chi_{8}+{0}\cdot \chi_{9} & 15 & 3 & 0 & 0 & 3 & 1 & 1 & 1 & 0 & 0 & 0 & 0\\
+{0}\cdot \chi_{1}+{0}\cdot \chi_{2}+{1}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{0}\cdot \chi_{8}+{0}\cdot \chi_{9} & 10 & -2 & 1 & 1 & 1 & 0 & E(7)+E(7)^{2}+E(7)^{4} & E(7)^{3}+E(7)^{5}+E(7)^{6} & 0 & 0 & 0 & 0\\
+{0}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{1}\cdot \chi_{4}+{0}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{0}\cdot \chi_{8}+{0}\cdot \chi_{9} & 10 & -2 & 1 & 1 & 1 & 0 & E(7)^{3}+E(7)^{5}+E(7)^{6} & E(7)+E(7)^{2}+E(7)^{4} & 0 & 0 & 0 & 0\\
+{0}\cdot \chi_{1}+{1}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{1}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{0}\cdot \chi_{8}+{0}\cdot \chi_{9} & 20 & 4 & 5 & 1 & -1 & 0 & -1 & -1 & 0 & 0 & 0 & 0\\
+{0}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{0}\cdot \chi_{6}+{1}\cdot \chi_{7}+{0}\cdot \chi_{8}+{0}\cdot \chi_{9} & 15 & -1 & 3 & -1 & 0 & -1 & 1 & 1 & 0 & 0 & 0 & 0\\
+{0}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{1}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{1}\cdot \chi_{8}+{0}\cdot \chi_{9} & 35 & 3 & -1 & 3 & -1 & -1 & 0 & 0 & 0 & 0 & 0 & 0\\
+{0}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{1}\cdot \chi_{6}+{0}\cdot \chi_{7}+{1}\cdot \chi_{8}+{0}\cdot \chi_{9} & 35 & 3 & -4 & 0 & 2 & -1 & 0 & 0 & 0 & 0 & 0 & 0\\
+ \hline
+{0}\cdot \chi_{1}+{1}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{0}\cdot \chi_{8}+{0}\cdot \chi_{9} & 6 & 2 & 3 & -1 & 0 & 0 & -1 & -1 & 1 & -1 & 1 & -1\\
+{0}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{1}\cdot \chi_{8}+{0}\cdot \chi_{9} & 21 & 1 & -3 & 1 & 0 & -1 & 0 & 0 & 1 & -E(4) & -1 & E(4)\\
+{0}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{1}\cdot \chi_{8}+{0}\cdot \chi_{9} & 21 & 1 & -3 & 1 & 0 & -1 & 0 & 0 & 1 & E(4) & -1 & -E(4)\\
+{1}\cdot \chi_{1}+{0}\cdot \chi_{2}+{0}\cdot \chi_{3}+{0}\cdot \chi_{4}+{0}\cdot \chi_{5}+{0}\cdot \chi_{6}+{0}\cdot \chi_{7}+{0}\cdot \chi_{8}+{0}\cdot \chi_{9} & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
+\hline
+
+\end{array}\)\\
+\ \\
+\ \\
+$P_{1} = Group( [ () ] )\cong$ 1\ \\
+$P_{2} = Group( [ (2,7,3,4,6) ] )\cong$ C5\ \\
+\ \\
+$N_{1} = AlternatingGroup( [ 1 .. 7 ] )\cong$ A7\ \\
+$N_{2} = Group( [ (2,7,3,4,6), (3,4)(6,7), (1,5)(3,6,4,7) ] )\cong$ C5 : C4\end{tabular}
+\end{document}
