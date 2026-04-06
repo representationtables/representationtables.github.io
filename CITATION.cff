@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this dataset, please cite it as below."
+authors:
+  - family-names: "Böhmler"
+    given-names: "Bernhard"
+  - family-names: "Lassueur"
+    given-names: "Caroline"
+title: "representationtables/representationtables.github.io: Initial release"
+type: dataset
+doi: 10.5281/zenodo.19443249
+version: "0.1.0"
+date-released: 2026-04-06
+url: "https://doi.org/10.5281/zenodo.19443249"
