@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/pcooksey/bibtex-js@1.0.0/src/bibtex_js.js"></script>
 
 <style>
 td {
@@ -23,6 +21,16 @@ td {
   <script type="text/javascript" id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script> 
+</script>
+<!-- Load BibTeX-js -->
+  <script src="https://cdn.jsdelivr.net/gh/pcooksey/bibtex-js@master/src/bibtex_js.js"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    h2 { margin-bottom: 20px; }
+    .bibtexentry { margin-bottom: 12px; }
+    .title { font-style: italic; }
+  </style>
 </head>
 <body>
     
@@ -68,9 +76,19 @@ td {
                 Litterature containing trivial source character tables
              </h5>   
 
+			
+					<!-- Your BibTeX file -->
 						<bibtex src="/bibliography/biblioTRIVIALSOURCEgithub.bib"></bibtex>
-						<div id="bibtex_display"></div>
 
+					<!-- Template for rendering -->
+					<div class="bibtex_template">
+  							<div class="bibtexentry">
+    							<span class="author"></span>,
+    							"<span class="title"></span>,"
+   								<span class="journal"></span>
+    							<span class="if year">(<span class="year"></span>)</span>.
+  							</div>
+					</div>
 
                    <br><br>
                    <br><br>
