@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Citation.js Demo</title>
+  <title>Citation.js with BibTeX File</title>
 
   <!-- Load Citation.js -->
   <script src="https://cdn.jsdelivr.net/npm/citation-js"></script>
@@ -25,44 +25,36 @@
 <div id="bibliography"></div>
 
 <script>
-// Your BibTeX data (can also be loaded from a file)
-const bibtex = `
-@article{smith2020,
-  author = {Smith, John},
-  title = {An Example Article},
-  journal = {Journal of Examples},
-  year = {2020}
-}
+const Cite = window.Cite;
 
-@book{doe2021,
-  author = {Doe, Jane},
-  title = {A Great Book},
-  year = {2021},
-  publisher = {Fictional Press}
-}
-`;
+// Load external BibTeX file
+fetch('biblio.bib')
+  .then(response => response.text())
+  .then(bibtex => {
 
-// Create citation object
-const cite = new Cite(bibtex);
+    // Parse BibTeX
+    const cite = new Cite(bibtex);
 
-// 👉 1. Insert inline citation
-document.getElementById("cite1").innerHTML =
-  cite.format('citation', {
-    format: 'html',
-    template: 'apa'
-  });
+    // 👉 Inline citation (ONLY smith2020)
+    const selected = cite.get().filter(entry => entry.id === "smith2020");
+    const citeOne = new Cite(selected);
 
-// 👉 2. Generate bibliography
-document.getElementById("bibliography").innerHTML =
-  cite.format('bibliography', {
-    format: 'html',
-    template: 'apa'
-  });
+    document.getElementById("cite1").innerHTML =
+      citeOne.format('citation', {
+        format: 'html',
+        template: 'apa'
+      });
 
+    // 👉 Full bibliography (ALL entries)
+    document.getElementById("bibliography").innerHTML =
+      cite.format('bibliography', {
+        format: 'html',
+        template: 'apa'
+      });
+
+  })
+  .catch(err => console.error("Error loading .bib file:", err));
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
