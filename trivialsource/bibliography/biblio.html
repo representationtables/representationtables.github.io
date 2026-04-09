@@ -1,12 +1,4 @@
 <!DOCTYPE html>
-<style>
-td {
-  text-align: left;
-  padding: 10px;
-}
-</style>
-
-
 
 <html lang="de">
 <head>
@@ -16,9 +8,20 @@ td {
   <!-- Bootstrap CSS file -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> 
   <link rel="stylesheet" type="text/css" href="css/style-main.css">
-  <script type="text/javascript" id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-  </script> 
+  <!-- Mathjax -->
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+
+    <script src="/src/bibtex_js.js" type="text/javascript" charset="utf-8"></script>
+    <bibtex src="https://raw.githubusercontent.com/CoolProp/CoolProp/master/CoolPropBibTeXLibrary.bib"></bibtex>
+    <!-- <bibtex src="test.bib"></bibtex> -->
+    
+    <style>
+    bibtex { display: none; }
+    #bibtex_errors { margin-top:10px; color: red;}
+    </style>
+  
 </head>
 
 
