@@ -141,35 +141,57 @@
 <!-- SECTION 1: Computed TSCT's  -->
 <h5 class="card-title"><strong>Existing literature containing fully computed Trivial Source Character Tables</strong></h5>     
 <hr><br>
-<div class="bibtex_template" year="2018">
-  <div>
-    <span class="title"></span>,
-    <span class="author"></span>
-    (<span class="year"></span>)
+<div id="bibtex_display" >  
+  <div class="bibtex_template" style="display: none;">
+    <ul> <li>
+      <span class="if title">
+		<span class="cite key"></span>  
+        <!--<a class="bibtexVar" href="http://www.website.com/~demo/papers/+BIBTEXKEY+.pdf" extra="BIBTEXKEY">-->
+        <span style="font-weight: bold;" class="title"></span>,
+        </a>
+      </span>
+      <div class="if author">
+        <span class="author"></span>
+      </div>
+      <div>
+        <span class="if journal"><em><span class="journal"></span></em>,</span>
+        <span class="if publisher"><em><span class="publisher"></span></em>,</span>
+        <span class="if year"><span class="year"></span>.</span><br>	
+        <span class="if doi"><span class="doi"></span></span> 
+	  </div>
+	  <div>  	
+        <a class="bibtexVar" role="button" data-toggle="collapse"
+	   href="#bib+BIBTEXKEY+" aria-expanded="false"
+	   aria-controls="bib+BIBTEXKEY+" extra="BIBTEXKEY" bibtexjs-css-escape>
+		  [bibtex]
+		</a>
+      </div>
+	
+      <div class="bibtexVar collapse" id="bib+BIBTEXKEY+" extra="BIBTEXKEY">
+		  <div class="well">
+		    <pre><span class="bibtexraw noread"></span></pre>
+		  </div>
+	  </div>
+	  <div style="display:none"><span class="bibtextype"></span></div>
+    </li></ul>
+	  
   </div>
-</div>
+</div>	       
+
+
+			
 
 <!-- SECTION 2: Intros -->
 <h5 class="card-title"><strong>Texts to learn about trivial source modules</strong></h5>     
 			<hr><br>
 <div class="bibtex_template" data-keywords="TrivSourceIntro">
-  <div>
-    <span class="title"></span>,
-    <span class="author"></span>
-    (<span class="year"></span>)
-  </div>
-</div>
+
 
 <!-- SECTION 3: More texts -->
 <h5 class="card-title"><strong>Further texts about trivial source modules</strong></h5>     
 			<hr><br>
 <div class="bibtex_template" data-keywords="TrivSourceGeneral">
-  <div>
-    <span class="title"></span>,
-    <span class="author"></span>
-    (<span class="year"></span>)
-  </div>
-</div>
+
 			
 
 
