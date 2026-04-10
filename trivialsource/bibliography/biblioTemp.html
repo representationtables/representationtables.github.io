@@ -127,13 +127,13 @@
      
 
 
-<div id="bibtex_display">
-  
+<div id="bibtex_display" >  
   <div class="bibtex_template" style="display: none;">
     <ul> <li>
       <span class="if title">
+		<span class="cite key"></span>  
         <!--<a class="bibtexVar" href="http://www.website.com/~demo/papers/+BIBTEXKEY+.pdf" extra="BIBTEXKEY">-->
-            <span style="font-weight: bold;" class="title"></span>,
+        <span style="font-weight: bold;" class="title"></span>,
         </a>
       </span>
       <div class="if author">
@@ -142,10 +142,9 @@
       <div>
         <span class="if journal"><em><span class="journal"></span></em>,</span>
         <span class="if publisher"><em><span class="publisher"></span></em>,</span>
-        <span class="if booktitle">In <em><span class="booktitle"></span></em>,</span>
         <span class="if address"><span class="address"></span>,</span>
-        <span class="if month"><span class="month"></span>,</span>
         <span class="if year"><span class="year"></span>.</span>
+	    <br> 	
         <span class="if doi"><span class="doi"></span></span>
 		<br>  
         <a class="bibtexVar" role="button" data-toggle="collapse"
@@ -154,6 +153,7 @@
 		  [bibtex]
 		</a>
       </div>
+	
       <div class="bibtexVar collapse" id="bib+BIBTEXKEY+" extra="BIBTEXKEY">
 		  <div class="well">
 		    <pre><span class="bibtexraw noread"></span></pre>
@@ -161,6 +161,7 @@
 	  </div>
 	  <div style="display:none"><span class="bibtextype"></span></div>
     </li></ul>
+	  
   </div>
 </div>	       
             
