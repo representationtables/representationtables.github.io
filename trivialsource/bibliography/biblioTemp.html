@@ -46,6 +46,33 @@
 			$("#searchbar").trigger('change');
 		}
     </script>
+
+	<script>
+document.addEventListener("bibtex_js_loaded", function () {
+  const entries = document.querySelectorAll("#bibtex_display .bibtexentry");
+
+  entries.forEach(entry => {
+    const keywords = (entry.getAttribute("data-keywords") || "")
+      .split(",")
+      .map(k => k.trim());
+
+    let target = null;
+
+    if (keywords.includes("ComputedTables")) {
+      target = document.getElementById("section-computed");
+    } else if (keywords.includes("TrivSourceGeneral")) {
+      target = document.getElementById("section-intro");
+    } else {
+      target = document.getElementById("section-rest");
+    }
+
+    target.appendChild(entry);
+  });
+
+  // Optional: hide original container
+  document.getElementById("bibtex_display").style.display = "none";
+});
+</script>  
     
     <style>
 	    bibtex { display: none; }
@@ -134,12 +161,6 @@
         <div class="col-md-12">
 			
 
-  
-
-
-<!-- SECTION 1: Computed TSCT's  -->
-<h5 class="card-title"><strong>Existing literature containing fully computed Trivial Source Character Tables</strong></h5>     
-<hr><br>
 <div id="bibtex_display">  			
   <div class="bibtex_template" data-keywords="ComputedTables">
     <ul> <li>
@@ -175,17 +196,22 @@
       
 
 
-			
+<!-- SECTION 1: Computed TSCT's  -->
+<h5 class="card-title"><strong>Existing literature containing fully computed Trivial Source Character Tables</strong></h5>     
+<hr><br>
+<div id="section-computed"></div>				
 
 <!-- SECTION 2: Intros -->
 <h5 class="card-title"><strong>Texts to learn about trivial source modules</strong></h5>     
 			<hr><br>
+<div id="section-intro"></div>			
 
 
 
 <!-- SECTION 3: More texts -->
 <h5 class="card-title"><strong>Further texts about trivial source modules</strong></h5>     
 			<hr><br>
+<div id="section-rest"></div>			
 
 
 			
