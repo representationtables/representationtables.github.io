@@ -58,98 +58,23 @@
   </head>
 	
 <body>
-<!-- Navigation -->
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-3">
-    <div class="container">
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav">
-                <a href="../index.html" class="nav-item nav-link">Home</a>
-                <a href="../small_groups_by_order.html" class="nav-item nav-link">Small groups by order</a>
-                <a href="../simple_groups_and_related_groups.html" class="nav-item nav-link">Simple groups and related</a>
-                <a href="../infinite_families_finite_groups.html" class="nav-item nav-link">Infinite families of finite groups</a>
-				<a href="biblio.html" class="nav-item nav-link active">References</a>
-            </div>
-            <div class="navbar-nav ml-auto">
-                <a href="https://math.rptu.de/ags/agag" class="nav-item nav-link" target="_blank"><i>RPTU Kaiserslautern-Landau</i></a>
-            </div>
-        </div>
-    </div>    
-</nav>
-<!-- Navigation -->   
-
-<!-- SEARCH BAR -->
-
-	
-<div class="container">
-    <!--Row with two equal columns-->
-    <div class="row">
-        <div class="col-md-12">
-            <h4 class="card-title"><strong>Literature on Trivial Source Modules</strong></h4>    
-    <hr><br>
-			
-	<div class="searchbar">
-		<div style="float:left;">
-			<button type="button" class="btn btn-default" onclick="reset()">Reset</button>
-		</div>
-		<div style="float:left;">
-			<select id="authorselect" class="btn bibtex_search bibtex_author" style="border: 1px solid lightgrey;" search="author">
-			  <option value="">Search Author</option>
-			</select>
-		</div>
-		<div style="float:left;">
-			<select id="topicselect" class="btn bibtex_search" style="border: 1px solid lightgrey;">
-			  <option value="">Search Topic</option>
-			  <!-- Add topic values here -->
-			  <option value="Example topic">Example Topic</option>
-			</select>
-		</div>
-		<div style="float:left;">
-			<input type="text" class="bibtex_search form-control" id="searchbar" placeholder="Search publications">
-			<span class="help-block">Example: journal 2015 (finds the intersection of the two terms)</span>
-		</div>
-	</div>
-
-	<br><br><br><br>	
-	<br><br>		
-
-		</div>
-	</div>
-</div>
-			
 
 
 
-			
-<!-- SEARCH BAR -->
+<!--    ---------------------------------------- --->   
 
 
-<!--    ---------------------------------------- --->    
+<!--    ---------------------------------------- -->
     
-    
-<div class="container">
-    <!--Row with two equal columns-->
-    <div class="row">
-        <div class="col-md-12">
-			
 
+
+<div id="bibtex_display">  
+	<bibtex src="biblioComputedTables.bib"></bibtex>
 	
-      
-
-
-<!-- SECTION 1: Computed TSCT's  -->
-<h5 class="card-title"><strong>Existing literature containing fully computed Trivial Source Character Tables</strong></h5>     
-<hr><br>
-
-<div id="bibtex_display_C">
-  <bibtex src="biblioTS.bib"></bibtex>
-
-  <div class="bibtex_template"  style="display:none;>
+	<div class="bibtex_template" style="display: none;">
     <ul> <li>
-      <span class="if title"> 
-        <span style="font-weight: bold;" class="title"></span>,
+      <span class="if title">
+            <span style="font-weight: bold;" class="title"></span>
       </span>
       <div class="if author">
         <span class="author"></span>
@@ -157,15 +82,17 @@
       <div>
         <span class="if journal"><em><span class="journal"></span></em>,</span>
         <span class="if publisher"><em><span class="publisher"></span></em>,</span>
-        <span class="if year"><span class="year"></span>.</span><br>	
-        <span class="if doi"><span class="doi"></span></span> 
+        <span class="if booktitle">In <em><span class="booktitle"></span></em>,</span>
+        <span class="if address"><span class="address"></span>,</span>
+        <span class="if year"><span class="year"></span>.</span>
 	  </div>
-	  <div>  	
+	   <div>
         <a class="bibtexVar" role="button" data-toggle="collapse"
 	   href="#bib+BIBTEXKEY+" aria-expanded="false"
 	   aria-controls="bib+BIBTEXKEY+" extra="BIBTEXKEY" bibtexjs-css-escape>
 		  [bibtex]
 		</a>
+	   </div>		
       </div>
       <div class="bibtexVar collapse" id="bib+BIBTEXKEY+" extra="BIBTEXKEY">
 		  <div class="well">
@@ -174,49 +101,14 @@
 	  </div>
 	  <div style="display:none"><span class="bibtextype"></span></div>
     </li>
-	</ul>	  
+   </ul>
   </div>
-
+	
 </div>
 
-			
-			
-  
 
 			
-
-<!-- SECTION 2: Intros -->
-<h5 class="card-title"><strong>Texts to learn about trivial source modules</strong></h5>     
-<hr><br><br>
-	
-
-
-
-<!-- SECTION 3: More texts -->
-<h5 class="card-title"><strong>Further texts about trivial source modules</strong></h5>     
-<hr><br><br>
-		
-
-
-
-		
-
-
-
-		
-
-
-<!-- OLD --->
-			
-       
-            
-            
-          
-            
-        </div>
-    </div>
-</div> 
-    
+        
     
 <!--    ---------------------------------------- --->
 	
@@ -226,20 +118,7 @@
 	
 
 	
-
-<!-- FOOTER --------------------------------->	
-<div class="jumbotron jumbotron-fluid">
-    <div class="container">
-        
-   
-        <h5 class="card-title">VERSION 1 / HTML5-CSS-BOOTSTRAP4</h5>
-        <p class="text-justify">
-            Contributors: Bernhard B&ouml;hmler, Niamh Farrell, Caroline Lassueur, Jaikrishna Patil
-        </p>
-	<p><a href="https://representationtables.github.io/trivialsource/disclaimer.html">disclaimer / Impressum</a></p>
-    </div>
-</div>  
-<!-- FOOTER --------------------------------->	    
+ 
      
     
     
