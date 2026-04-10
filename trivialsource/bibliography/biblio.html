@@ -46,6 +46,7 @@
 			$("#searchbar").trigger('change');
 		}
     </script>
+ 
     
     <style>
 	    bibtex { display: none; }
@@ -89,7 +90,27 @@
             <h4 class="card-title"><strong>Literature on Trivial Source Modules</strong></h4>    
     <hr><br>
 			
-	
+	<div class="searchbar">
+		<div style="float:left;">
+			<button type="button" class="btn btn-default" onclick="reset()">Reset</button>
+		</div>
+		<div style="float:left;">
+			<select id="authorselect" class="btn bibtex_search bibtex_author" style="border: 1px solid lightgrey;" search="author">
+			  <option value="">Search Author</option>
+			</select>
+		</div>
+		<div style="float:left;">
+			<select id="topicselect" class="btn bibtex_search" style="border: 1px solid lightgrey;">
+			  <option value="">Search Topic</option>
+			  <!-- Add topic values here -->
+			  <option value="Example topic">Example Topic</option>
+			</select>
+		</div>
+		<div style="float:left;">
+			<input type="text" class="bibtex_search form-control" id="searchbar" placeholder="Search publications">
+			<span class="help-block">Example: journal 2015 (finds the intersection of the two terms)</span>
+		</div>
+	</div>
 
 	<br><br><br><br>	
 	<br><br>		
@@ -103,6 +124,9 @@
 
 			
 <!-- SEARCH BAR -->
+
+
+<!--    ---------------------------------------- --->   
 
 
 <!--    ---------------------------------------- -->
