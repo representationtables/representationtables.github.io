@@ -46,33 +46,7 @@
 			$("#searchbar").trigger('change');
 		}
     </script>
-
-	<script>
-document.addEventListener("bibtex_js_loaded", function () {
-  const entries = document.querySelectorAll("#bibtex_display .bibtexentry");
-
-  entries.forEach(entry => {
-    const keywords = (entry.getAttribute("data-keywords") || "")
-      .split(",")
-      .map(k => k.trim());
-
-    let target = null;
-
-    if (keywords.includes("ComputedTables")) {
-      target = document.getElementById("section-computed");
-    } else if (keywords.includes("TrivSourceGeneral")) {
-      target = document.getElementById("section-intro");
-    } else {
-      target = document.getElementById("section-rest");
-    }
-
-    target.appendChild(entry);
-  });
-
-  // Optional: hide original container
-  document.getElementById("bibtex_display").style.display = "none";
-});
-</script>  
+ 
     
     <style>
 	    bibtex { display: none; }
@@ -161,8 +135,8 @@ document.addEventListener("bibtex_js_loaded", function () {
         <div class="col-md-12">
 			
 
-<div id="bibtex_display">  			
-  <div class="bibtex_template" data-keywords="ComputedTables">
+<div id="bibtex_display" style="display:none;>  			
+  <div class="bibtex_template">
     <ul> <li>
       <span class="if title"> 
         <span style="font-weight: bold;" class="title"></span>,
@@ -214,6 +188,34 @@ document.addEventListener("bibtex_js_loaded", function () {
 <div id="section-rest"></div>			
 
 
+
+		
+	<script>
+document.addEventListener("bibtex_js_loaded", function () {
+  const entries = document.querySelectorAll("#bibtex_display .bibtexentry");
+
+  entries.forEach(entry => {
+    const keywords = (entry.getAttribute("data-keywords") || "")
+      .split(",")
+      .map(k => k.trim());
+
+    let target = null;
+
+    if (keywords.includes("ComputedTables")) {
+      target = document.getElementById("section-computed");
+    } else if (keywords.includes("TrivSourceGeneral")) {
+      target = document.getElementById("section-intro");
+    } else {
+      target = document.getElementById("section-rest");
+    }
+
+    target.appendChild(entry);
+  });
+
+  // Optional: hide original container
+  document.getElementById("bibtex_display").style.display = "none";
+});
+</script> 
 			
 
 
