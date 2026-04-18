@@ -69,8 +69,7 @@
 
 
 <div id="bibtex_display">  
-	<bibtex src="biblioTSadv.bib"></bibtex>
-	
+		<bibtex src="biblioComputedTables.bib"></bibtex>
 	<div class="bibtex_template" style="display: none;">
     <ul> <li>
       <span class="if title">
@@ -79,11 +78,10 @@
       <div class="if author">
         <span class="author"></span>
       </div>
-      <div>
-        <span class="if journal"><em><span class="journal"></span></em>,</span>
-        <span class="if publisher"><em><span class="publisher"></span></em>,</span>
-        <span class="if booktitle">In <em><span class="booktitle"></span></em>,</span>
-        <span class="if year"><span class="year"></span>.</span>
+      <div>  
+        <span class="if journal"><em><span class="journal"></span></em> <span class="if volume"><b><span class="volume"></span></b></span> <span class="if year">(<span class="year"></span>).</span></span>  
+        <span class="if publisher"><em><span class="publisher"></span></em><span class="if volume">&nbsp;<b><span class="volume"></span></b></span>, <span class="if year"><span class="year"></span>.</span></span>   
+        <!--<span class="if booktitle">In <em><span class="booktitle"></span></em>,</span>--> 
 		<br>  
         <a class="bibtexVar" role="button" data-toggle="collapse"
 	   href="#bib+BIBTEXKEY+" aria-expanded="false"
@@ -98,8 +96,7 @@
 	  </div>
 	  <div style="display:none"><span class="bibtextype"></span></div>
     </li></ul>
-  </div>
-	
+  </div>	
 </div>
 
 <!-- JS files: jQuery first, then Popper.js, then Bootstrap JS -->
